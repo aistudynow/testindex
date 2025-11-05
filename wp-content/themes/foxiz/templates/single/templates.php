@@ -2127,26 +2127,26 @@ if ( ! function_exists( 'foxiz_entry_meta_author_single' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( $p_label ): ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
-			<?php endif;
-			if ( $bio_lightbox ) {
-				echo '<div class="ulightbox-holder">';
-				echo '<a class="meta-author-url meta-author" href="' . get_author_posts_url( $author_id ) . '">' . get_the_author_meta( 'display_name', $author_id ) . '</a>';
-				echo foxiz_get_author_lightbox( $author_id );
-				echo '</div>';
-			} else {
-				echo '<a class="meta-author-url meta-author" href="' . get_author_posts_url( $author_id ) . '">' . get_the_author_meta( 'display_name', $author_id ) . '</a>';
-			}
-			if ( $s_label ) : ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
-			<?php elseif ( ! empty( $author_job ) ) : ?>
-				<span class="meta-label meta-job">- <?php echo esc_html( $author_job ); ?></span>
-			<?php endif; ?>
-		</div>
-		<?php
-	}
+		 <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( $p_label ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
+                        <?php endif; ?>
+                        <?php if ( $bio_lightbox ) : ?>
+                                <div class="ulightbox-holder">
+                                        <a class="meta-author-url meta-author" href="<?php echo esc_url( get_author_posts_url( $author_id ) ); ?>"><?php echo get_the_author_meta( 'display_name', $author_id ); ?></a>
+                                        <?php echo foxiz_get_author_lightbox( $author_id ); ?>
+                                </div>
+                        <?php else : ?>
+                                <a class="meta-author-url meta-author" href="<?php echo esc_url( get_author_posts_url( $author_id ) ); ?>"><?php echo get_the_author_meta( 'display_name', $author_id ); ?></a>
+                        <?php endif; ?>
+                        <?php if ( $s_label ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
+                        <?php elseif ( ! empty( $author_job ) ) : ?>
+                                <span class="meta-label meta-job">- <?php echo esc_html( $author_job ); ?></span>
+                        <?php endif; ?>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_authors_single' ) ) {
