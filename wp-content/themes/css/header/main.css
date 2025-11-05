@@ -342,6 +342,22 @@ input {
 
 
 /* Privacy banner ----------------------------------------------------- */
+
+
+/* Improve contrast for the privacy consent button */
+.privacy-bar .privacy-dismiss-btn {
+  background-color: #0053a0;
+  color: #ffffff;
+}
+
+.privacy-bar .privacy-dismiss-btn:hover,
+.privacy-bar .privacy-dismiss-btn:focus-visible {
+  background-color: #003f7d;
+  color: #ffffff;
+
+
+
+
 .privacy-bar {
   --rb-privacy-gap: clamp(12px, 3vw, 24px);
   position: fixed;
