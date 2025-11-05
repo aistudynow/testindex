@@ -1326,13 +1326,36 @@ a.p-flink::before {
   color: var(--g-color);
 }
 
+
+.p-meta {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.p-meta .meta-el {
+  display: inline-flex;
+  align-items: center;
+}
+
+.p-meta .meta-avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.p-meta .meta-avatar .meta-author-avatar {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+
 .collapse-template .p-meta {
   margin-top: clamp(8px, 2vw, 12px);
   font-size: clamp(.78rem, .72rem + 0.12vw, .88rem);
   color: rgba(15, 29, 61, 0.65);
-}
 
-.collapse-template .meta-inner {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4em 1.1em;
