@@ -352,3 +352,18 @@ body.dark-mode {
     transform: rotate(360deg);
   }
 }
+
+/* Hard override: grid cards only animate cheap properties */
+.block-grid .p-wrap {
+  transition-property: background-color, border-color, transform;
+  transition-duration: 160ms;
+  transition-timing-function: ease;
+  will-change: transform;
+}
+
+/* Keep hover effect but without “fancy” anims on box-shadow */
+.block-grid .p-wrap:hover,
+.block-grid .p-wrap:focus-within {
+  /* you can keep the shadow, it just won't be animated */
+  box-shadow: var(--grid-shadow);
+}
