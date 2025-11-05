@@ -300,9 +300,7 @@ body:not([data-theme='dark']).single {
   letter-spacing: var(--meta-fspace);
   text-transform: var(--meta-transform);
   color: var(--meta-fcolor);
-}
 
-.related-sec .meta-inner {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4em 1.1em;

@@ -112,17 +112,14 @@ body.dark-mode {
 }
 
 .block-grid .p-meta {
-  font-size: clamp(0.72rem, 0.68rem + 0.2vw, 0.82rem);
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--grid-muted);
-}
-
-.block-grid .meta-inner {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: clamp(6px, 1vw, 14px);
+  font-size: clamp(0.72rem, 0.68rem + 0.2vw, 0.82rem);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--grid-muted);
 }
 
 .block-grid .meta-label {

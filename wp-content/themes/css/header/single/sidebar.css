@@ -288,9 +288,7 @@
   margin-top: 12px;
   font-size: 0.8125rem;
   color: var(--sidebar-muted);
-}
 
-.sidebar-wrap.single-sidebar .meta-inner {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35em 0.75em;

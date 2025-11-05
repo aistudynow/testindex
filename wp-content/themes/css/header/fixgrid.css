@@ -49,10 +49,7 @@
   gap: clamp(6px, 1vw, 14px);
 }
 
-.search .block-grid .meta-inner,
-.search-results .block-grid .meta-inner {
-  gap: clamp(6px, 1vw, 14px);
-}
+
 
 @media (max-width: 1024px) {
   .search .block-grid .p-wrap,

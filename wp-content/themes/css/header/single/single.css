@@ -629,6 +629,11 @@ body {
   margin-right: -0.1em;
 }
 
+.s-ct .meta-avatar .meta-author-avatar {
+  display: inline-flex;
+  align-items: center;
+}
+
 .s-ct .meta-avatar,
 .s-ct .meta-avatar + div {
   --meta-width: auto;
@@ -650,7 +655,7 @@ body {
   gap: 0.1em;
 }
 
-.s-ct .meta-inner {
+.s-ct .p-meta {
   display: flex;
   align-items: center;
   flex-flow: row wrap;

@@ -152,11 +152,7 @@ body.dark-mode {
   display: none;
 }
 
-#uid_d1a5d75 .p-meta .meta-inner {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 18px;
-}
+
 
 #uid_d1a5d75 .p-meta .meta-el + .meta-el {
   position: relative;
@@ -347,12 +343,11 @@ body.dark-mode {
   margin-top: auto;
   font-size: 0.82rem;
   color: var(--slider-muted);
-}
 
-#uid_8c476fa .p-meta .meta-inner {
   display: flex;
   align-items: center;
   gap: 0.6em;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 767px) {
