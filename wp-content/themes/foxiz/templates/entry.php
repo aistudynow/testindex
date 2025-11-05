@@ -259,26 +259,34 @@ if ( ! function_exists( 'foxiz_entry_meta' ) ) {
 
 		$settings = foxiz_extra_meta_labels( $settings );
 
-		if ( foxiz_get_entry_meta( $settings ) ) {
-			$class_name   = [];
-			$class_name[] = 'p-meta';
-			if ( ! empty( $settings['entry_meta']['avatar'] ) ) {
-				$class_name[] = 'has-avatar';
-			}
-			if ( ! empty( $settings['bookmark'] ) ) {
-				$class_name[] = 'has-bookmark';
-			} ?>
-			<div class="<?php echo join( ' ', $class_name ); ?>">
-				<div class="meta-inner is-meta">
-					<?php echo foxiz_get_entry_meta( $settings ); ?>
-				</div>
-				<?php if ( ! empty( $settings['bookmark'] ) ) {
-					foxiz_bookmark_trigger( get_the_ID() );
-				} ?>
-			</div>
-		<?php }
-	}
+                $meta_markup = foxiz_get_entry_meta( $settings );
+
+                if ( $meta_markup ) {
+                        $class_name   = [];
+                        $class_name[] = 'p-meta';
+                        $class_name[] = 'is-meta';
+                        if ( ! empty( $settings['entry_meta']['avatar'] ) ) {
+                                $class_name[] = 'has-avatar';
+                        }
+                        $has_inline_bookmark = ! empty( $settings['entry_meta'] ) && is_array( $settings['entry_meta'] ) && in_array( 'bookmark', $settings['entry_meta'], true );
+                        if ( ! empty( $settings['bookmark'] ) ) {
+                                $class_name[] = 'has-bookmark';
+                        }
+                        ?>
+                        <ul class="<?php echo join( ' ', $class_name ); ?>">
+                                <?php
+                                echo $meta_markup;
+                                if ( ! empty( $settings['bookmark'] ) && ! $has_inline_bookmark ) {
+                                        ?>
+                                        <li class="meta-el meta-bookmark"><?php foxiz_bookmark_trigger( get_the_ID() ); ?></li>
+                                        <?php
+                                }
+                                ?>
+                        </ul>
+                <?php }
+        }
 }
+
 
 if ( ! function_exists( 'foxiz_entry_meta_date' ) ) {
 	function foxiz_entry_meta_date( $settings ) {
@@ -322,16 +330,16 @@ if ( ! function_exists( 'foxiz_entry_meta_date' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-	<div class="<?php echo join( ' ', $classes ); ?>">
-		<?php if ( foxiz_get_option( 'meta_date_icon' ) ) {
-			echo '<i class="rbi rbi-clock" aria-hidden="true"></i>';
-		}
-		?>
-		<time <?php if ( ! foxiz_get_option( 'force_modified_date' ) ) {
-			echo 'class="date published"';
-		} ?> datetime="<?php echo get_the_date( DATE_W3C, $post_id ); ?>"><?php foxiz_render_inline_html( $p_label . $date_string . $s_label ); ?></time>
-		</div><?php
-	}
+	<li class="<?php echo join( ' ', $classes ); ?>">
+                <?php if ( foxiz_get_option( 'meta_date_icon' ) ) {
+                        echo '<i class="rbi rbi-clock" aria-hidden="true"></i>';
+                }
+                ?>
+                <time <?php if ( ! foxiz_get_option( 'force_modified_date' ) ) {
+                        echo 'class="date published"';
+                } ?> datetime="<?php echo get_the_date( DATE_W3C, $post_id ); ?>"><?php foxiz_render_inline_html( $p_label . $date_string . $s_label ); ?></time>
+                </li><?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_author' ) ) {
@@ -384,17 +392,17 @@ if ( ! function_exists( 'foxiz_entry_meta_author' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( $p_label ): ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
-			<?php endif;
-			echo '<a href="' . get_author_posts_url( $author_id ) . '">' . get_the_author_meta( 'display_name', $author_id ) . '</a>';
-			if ( $s_label ) : ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
-			<?php endif; ?>
-		</div>
-		<?php
-	}
+		 <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( $p_label ): ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
+                        <?php endif;
+                        echo '<a href="' . get_author_posts_url( $author_id ) . '">' . get_the_author_meta( 'display_name', $author_id ) . '</a>';
+                        if ( $s_label ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
+                        <?php endif; ?>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_authors' ) ) {
@@ -441,21 +449,21 @@ if ( ! function_exists( 'foxiz_entry_meta_authors' ) ) {
 			$classes[] = 'has-suffix';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( $p_label ): ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
-			<?php endif;
-			foreach ( $author_data as $author ) : ?>
-				<div class="meta-separate">
-					<a href="<?php echo get_author_posts_url( $author->ID ) ?>"><?php the_author_meta( 'display_name', $author->ID ); ?></a>
-				</div>
-			<?php endforeach;
-			if ( $s_label ) : ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
-			<?php endif; ?>
-		</div>
-	<?php }
+		  <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( $p_label ): ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
+                        <?php endif;
+                        foreach ( $author_data as $author ) : ?>
+                                <a class="meta-separate" href="<?php echo get_author_posts_url( $author->ID ); ?>"><?php the_author_meta( 'display_name', $author->ID ); ?></a>
+                        <?php endforeach;
+                        if ( $s_label ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
+                        <?php endif; ?>
+                </li>
+        <?php }
 }
+
+
 
 if ( ! function_exists( 'foxiz_entry_meta_avatar' ) ) {
 	function foxiz_entry_meta_avatar( $settings ) {
@@ -467,46 +475,74 @@ if ( ! function_exists( 'foxiz_entry_meta_avatar' ) ) {
 		if ( empty( $settings['avatar_size'] ) ) {
 			$settings['avatar_size'] = 44;
 		}
-		$classes[] = 'meta-el meta-avatar';
-		if ( ! empty( $settings['tablet_hide_meta'] ) && is_array( $settings['tablet_hide_meta'] ) && in_array( 'avatar', $settings['tablet_hide_meta'] ) ) {
-			$classes[] = 'tablet-hide';
-		}
-		if ( ! empty( $settings['mobile_hide_meta'] ) && is_array( $settings['mobile_hide_meta'] ) && in_array( 'avatar', $settings['mobile_hide_meta'] ) ) {
-			$classes[] = 'mobile-hide';
-		}
-		if ( function_exists( 'get_post_authors' ) ) {
-			$author_data = get_post_authors( $post_id );
-			if ( is_array( $author_data ) && count( $author_data ) >= 1 ) {
-				$classes[] = 'meta-el multiple-avatar';
-				?>
-				<div class="<?php echo join( ' ', $classes ); ?>">
-					<?php foreach ( $author_data as $author ) {
-						$auth_id         = $author->ID;
-						$author_image_id = (int) get_the_author_meta( 'author_image_id', $auth_id );
-						if ( $author_image_id !== 0 ) {
-							echo foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', $lazy );
-						} else {
-							echo get_avatar( $auth_id, absint( $settings['avatar_size'] ), '', get_the_author_meta( 'display_name', $auth_id ) );
-						}
-					} ?>
-				</div>
-				<?php return;
-			}
-		}
-		$author_id   = get_post_field( 'post_author', $post_id );
-		$author_name = get_the_author_meta( 'display_name', $author_id );
-		?>
-		<a class="<?php echo join( ' ', $classes ); ?>" href="<?php echo get_author_posts_url( $author_id ); ?>" rel="nofollow" aria-label="<?php echo sprintf( foxiz_html__( 'Visit posts by %s', 'foxiz' ), $author_name ); ?>"><?php
-			$author_image_id = (int) get_the_author_meta( 'author_image_id', $author_id );
-			if ( $author_image_id !== 0 ) {
-				echo foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', $lazy );
-			} else {
-				echo get_avatar( $author_id, absint( $settings['avatar_size'] ), '', $author_name );
-			}
-			?></a>
-		<?php
-	}
+                $classes[] = 'meta-el meta-avatar';
+                if ( ! empty( $settings['tablet_hide_meta'] ) && is_array( $settings['tablet_hide_meta'] ) && in_array( 'avatar', $settings['tablet_hide_meta'] ) ) {
+                        $classes[] = 'tablet-hide';
+                }
+                if ( ! empty( $settings['mobile_hide_meta'] ) && is_array( $settings['mobile_hide_meta'] ) && in_array( 'avatar', $settings['mobile_hide_meta'] ) ) {
+                        $classes[] = 'mobile-hide';
+                }
+                $wrap_tag = 'li';
+                if ( ! empty( $settings['wrap_tag'] ) && is_string( $settings['wrap_tag'] ) ) {
+                        $candidate = strtolower( $settings['wrap_tag'] );
+                        if ( in_array( $candidate, [ 'div', 'li', 'span' ], true ) ) {
+                                $wrap_tag = $candidate;
+                        }
+                }
+                if ( function_exists( 'get_post_authors' ) ) {
+                        $author_data = get_post_authors( $post_id );
+                        if ( is_array( $author_data ) && count( $author_data ) >= 1 ) {
+                                $classes[] = 'multiple-avatar';
+                                ?>
+                                <<?php echo $wrap_tag; ?> class="<?php echo join( ' ', $classes ); ?>">
+                                        <?php
+                                        foreach ( $author_data as $author ) {
+                                                $auth_id         = $author->ID;
+                                                $author_name     = get_the_author_meta( 'display_name', $auth_id );
+                                                $author_url      = get_author_posts_url( $auth_id );
+                                                $author_image_id = (int) get_the_author_meta( 'author_image_id', $auth_id );
+                                                ?>
+                                                <a class="meta-author-avatar" href="<?php echo esc_url( $author_url ); ?>" rel="nofollow" aria-label="<?php echo esc_attr( sprintf( foxiz_html__( 'Visit posts by %s', 'foxiz' ), $author_name ) ); ?>">
+                                                        <?php
+                                                        if ( $author_image_id !== 0 ) {
+                                                                echo foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', $lazy );
+                                                        } else {
+                                                                echo get_avatar( $auth_id, absint( $settings['avatar_size'] ), '', $author_name );
+                                                        }
+                                                        ?>
+                                                </a>
+                                                <?php
+                                        }
+                                        ?>
+                                </<?php echo $wrap_tag; ?>>
+                                <?php
+                                return;
+                        }
+                }
+                $author_id   = get_post_field( 'post_author', $post_id );
+                $author_name = get_the_author_meta( 'display_name', $author_id );
+                ?>
+                <<?php echo $wrap_tag; ?> class="<?php echo join( ' ', $classes ); ?>">
+                        <a href="<?php echo get_author_posts_url( $author_id ); ?>" rel="nofollow" aria-label="<?php echo sprintf( foxiz_html__( 'Visit posts by %s', 'foxiz' ), $author_name ); ?>"><?php
+                                $author_image_id = (int) get_the_author_meta( 'author_image_id', $author_id );
+                                if ( $author_image_id !== 0 ) {
+                                        echo foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', $lazy );
+                                } else {
+                                        echo get_avatar( $author_id, absint( $settings['avatar_size'] ), '', $author_name );
+                                }
+                                ?></a>
+                </<?php echo $wrap_tag; ?>>
+                <?php
+        }
 }
+		
+		
+		
+		
+		
+		
+		
+		
 
 if ( ! function_exists( 'foxiz_entry_meta_category' ) ) {
 	function foxiz_entry_meta_category( $settings, $primary = true ) {
@@ -551,11 +587,11 @@ if ( ! function_exists( 'foxiz_entry_meta_category' ) ) {
 			$classes[] = 'has-suffix';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php
-			if ( foxiz_get_option( 'meta_category_icon', false ) ) {
-				echo '<i class="rbi rbi-archive" aria-hidden="true"></i>';
-			}
+		 <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php
+                        if ( foxiz_get_option( 'meta_category_icon', false ) ) {
+                                echo '<i class="rbi rbi-archive" aria-hidden="true"></i>';
+                        }
 			if ( ! empty( $settings['p_label_category'] ) ) : ?>
 				<span class="meta-label"><?php foxiz_render_inline_html( $settings['p_label_category'] ); ?></span>
 			<?php endif;
@@ -571,12 +607,12 @@ if ( ! function_exists( 'foxiz_entry_meta_category' ) ) {
 					$index ++;
 				endforeach;
 			endif;
-			if ( $s_label ) : ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
-			<?php endif; ?>
-		</div>
-		<?php
-	}
+			   if ( $s_label ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
+                        <?php endif; ?>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_tag' ) ) {
@@ -615,24 +651,24 @@ if ( ! function_exists( 'foxiz_entry_meta_tag' ) ) {
 			$classes[] = 'has-suffix';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( ! empty( $p_label ) ): ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
-			<?php endif;
-			foreach ( $tags as $tag ) : ?>
-				<a class="meta-separate term-i-<?php echo strip_tags( $tag->term_id ); ?>" href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" rel="tag"><?php echo strip_tags( $tag->name ); ?></a>
+		 <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( ! empty( $p_label ) ): ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
+                        <?php endif;
+                        foreach ( $tags as $tag ) : ?>
+                                <a class="meta-separate term-i-<?php echo strip_tags( $tag->term_id ); ?>" href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" rel="tag"><?php echo strip_tags( $tag->name ); ?></a>
 				<?php
 				if ( $index >= $limit ) {
 					break;
 				}
 				$index ++;
 			endforeach;
-			if ( ! empty( $s_label ) ) : ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
-			<?php endif; ?>
-		</div>
-		<?php
-	}
+                        if ( ! empty( $s_label ) ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
+                        <?php endif; ?>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_comment' ) ) {
@@ -666,14 +702,14 @@ if ( ! function_exists( 'foxiz_entry_meta_comment' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( foxiz_get_option( 'meta_comment_icon' ) ) : ?>
-				<i class="rbi rbi-comment" aria-hidden="true"></i>
-			<?php endif; ?>
-			<a href="<?php echo get_comments_link( $post_id ); ?>"><?php foxiz_render_inline_html( $p_label . $comment_string . $s_label ); ?></a>
-		</div>
-		<?php
-	}
+		  <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( foxiz_get_option( 'meta_comment_icon' ) ) : ?>
+                                <i class="rbi rbi-comment" aria-hidden="true"></i>
+                        <?php endif; ?>
+                        <a href="<?php echo get_comments_link( $post_id ); ?>"><?php foxiz_render_inline_html( $p_label . $comment_string . $s_label ); ?></a>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_view' ) ) {
@@ -726,16 +762,16 @@ if ( ! function_exists( 'foxiz_entry_meta_view' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php
-			if ( foxiz_get_option( 'meta_view_icon' ) ) {
-				echo '<i class="rbi rbi-chart" aria-hidden="true"></i>';
-			}
-			foxiz_render_inline_html( $p_label . $view_string . $s_label );
-			?>
-		</div>
-		<?php
-	}
+		 <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php
+                        if ( foxiz_get_option( 'meta_view_icon' ) ) {
+                                echo '<i class="rbi rbi-chart" aria-hidden="true"></i>';
+                        }
+                        foxiz_render_inline_html( $p_label . $view_string . $s_label );
+                        ?>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_updated' ) ) {
@@ -777,25 +813,33 @@ if ( ! function_exists( 'foxiz_entry_meta_updated' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( foxiz_get_option( 'meta_updated_icon' ) ) {
-				echo '<i class="rbi rbi-time" aria-hidden="true"></i>';
-			} ?>
-			<time <?php if ( ! foxiz_get_option( 'force_modified_date' ) ) {
-				echo 'class="updated"';
-			} ?> datetime="<?php echo get_the_modified_date( DATE_W3C, $post_id ); ?>"><?php foxiz_render_inline_html( $p_label . $date_string . $s_label ); ?></time>
-		</div>
-		<?php
-	}
+		<li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( foxiz_get_option( 'meta_updated_icon' ) ) {
+                                echo '<i class="rbi rbi-time" aria-hidden="true"></i>';
+                        } ?>
+                        <time <?php if ( ! foxiz_get_option( 'force_modified_date' ) ) {
+                                echo 'class="updated"';
+                        } ?> datetime="<?php echo get_the_modified_date( DATE_W3C, $post_id ); ?>"><?php foxiz_render_inline_html( $p_label . $date_string . $s_label ); ?></time>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_read_time' ) ) {
-	function foxiz_entry_meta_read_time( $settings ) {
+        function foxiz_entry_meta_read_time( $settings = [] ) {
 
-		$post_id    = get_the_ID();
-		$classes    = [];
-		$count      = get_post_meta( $post_id, 'foxiz_content_total_word', true );
-		$read_speed = intval( foxiz_get_option( 'read_speed' ) );
+                if ( ! is_array( $settings ) ) {
+                        $settings = [ 'post_id' => $settings ];
+                }
+
+                $post_id = ! empty( $settings['post_id'] ) ? (int) $settings['post_id'] : 0;
+                if ( $post_id < 1 ) {
+                        $post_id = get_the_ID();
+                }
+
+                $classes    = [];
+                $count      = get_post_meta( $post_id, 'foxiz_content_total_word', true );
+                $read_speed = intval( foxiz_get_option( 'read_speed' ) );
 
 		if ( empty( $count ) ) {
 			$count = foxiz_update_word_count( $post_id );
@@ -837,12 +881,12 @@ if ( ! function_exists( 'foxiz_entry_meta_read_time' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>"><?php if ( foxiz_get_option( 'meta_read_icon', false ) ) {
-				echo '<i class="rbi rbi-watch" aria-hidden="true"></i>';
-			}
-			foxiz_render_inline_html( $p_label . $read_string . $s_label ) ?></div>
-		<?php
-	}
+		    <li class="<?php echo join( ' ', $classes ); ?>"><?php if ( foxiz_get_option( 'meta_read_icon', false ) ) {
+                                echo '<i class="rbi rbi-watch" aria-hidden="true"></i>';
+                        }
+                        foxiz_render_inline_html( $p_label . $read_string . $s_label ); ?></li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_user_custom' ) ) {
@@ -891,14 +935,14 @@ if ( ! function_exists( 'foxiz_entry_meta_user_custom' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( ! empty( $meta_custom_icon ) ) : ?>
-				<i class="<?php echo strip_tags( $meta_custom_icon ); ?>" aria-hidden="true"></i>
-			<?php endif;
-			foxiz_render_inline_html( $p_label . $custom_string . $s_label ); ?>
-		</div>
-		<?php
-	}
+		  <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( ! empty( $meta_custom_icon ) ) : ?>
+                                <i class="<?php echo strip_tags( $meta_custom_icon ); ?>" aria-hidden="true"></i>
+                        <?php endif;
+                        foxiz_render_inline_html( $p_label . $custom_string . $s_label ); ?>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_duration' ) ) {
@@ -934,9 +978,9 @@ if ( ! function_exists( 'foxiz_entry_meta_duration' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>"><?php foxiz_render_inline_html( $p_label . $duration_string . $s_label ); ?></div>
-		<?php
-	}
+		   <li class="<?php echo join( ' ', $classes ); ?>"><?php foxiz_render_inline_html( $p_label . $duration_string . $s_label ); ?></li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_index' ) ) {
@@ -965,9 +1009,9 @@ if ( ! function_exists( 'foxiz_entry_meta_index' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>"><?php foxiz_render_inline_html( $p_label . $post_index . $s_label ); ?></div>
-		<?php
-	}
+		  <li class="<?php echo join( ' ', $classes ); ?>"><?php foxiz_render_inline_html( $p_label . $post_index . $s_label ); ?></li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_bookmark' ) ) {
@@ -992,8 +1036,8 @@ if ( ! function_exists( 'foxiz_entry_meta_bookmark' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>"><?php foxiz_bookmark_trigger( get_the_ID() ); ?></div>
-	<?php }
+		<li class="<?php echo join( ' ', $classes ); ?>"><?php foxiz_bookmark_trigger( get_the_ID() ); ?></li>
+        <?php }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_play' ) ) {
@@ -1795,12 +1839,12 @@ if ( ! function_exists( 'foxiz_entry_meta_like' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		<div class="<?php echo join( ' ', $classes ); ?>" data-like="<?php echo strip_tags( $post_id ); ?>">
-			<span class="el-like like-trigger" data-title="<?php foxiz_html_e( 'Like', 'foxiz' ); ?>"><i class="rbi rbi-like"></i><span class="like-count"><?php echo foxiz_get_post_likes( $post_id ); ?></span></span>
-			<span class="el-dislike dislike-trigger" data-title="<?php foxiz_html_e( 'Dislike', 'foxiz' ); ?>"><i class="rbi rbi-dislike"></i><span class="dislike-count"><?php echo foxiz_get_post_dislikes( $post_id ); ?></span></span>
-		</div>
-		<?php
-	}
+		 <li class="<?php echo join( ' ', $classes ); ?>" data-like="<?php echo strip_tags( $post_id ); ?>">
+                        <span class="el-like like-trigger" data-title="<?php foxiz_html_e( 'Like', 'foxiz' ); ?>"><i class="rbi rbi-like"></i><span class="like-count"><?php echo foxiz_get_post_likes( $post_id ); ?></span></span>
+                        <span class="el-dislike dislike-trigger" data-title="<?php foxiz_html_e( 'Dislike', 'foxiz' ); ?>"><i class="rbi rbi-dislike"></i><span class="dislike-count"><?php echo foxiz_get_post_dislikes( $post_id ); ?></span></span>
+                </li>
+                <?php
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_flex' ) ) {
@@ -1859,8 +1903,8 @@ if ( ! function_exists( 'foxiz_entry_meta_custom_field' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 
-		echo '<span class="' . join( ' ', $classes ) . '">' . foxiz_strip_tags( $p_label . $settings['meta_custom_field_value'] . $s_label ) . '</span>';
-	}
+ echo '<li class="' . join( ' ', $classes ) . '">' . foxiz_strip_tags( $p_label . $settings['meta_custom_field_value'] . $s_label ) . '</li>';
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_meta_tax' ) ) {
@@ -1897,22 +1941,22 @@ if ( ! function_exists( 'foxiz_entry_meta_tax' ) ) {
 		if ( $s_label ) {
 			$classes[] = 'has-suffix';
 		}
-		echo '<span class="' . join( ' ', $classes ) . '">';
-		if ( ! empty( $settings[ 'p_label_' . $key ] ) ) {
-			echo '<span class="meta-label">' . foxiz_strip_tags( $settings[ 'p_label_' . $key ] ) . '</span>';
-		}
-		foreach ( $terms as $category ) {
+		 echo '<li class="' . join( ' ', $classes ) . '">';
+                if ( ! empty( $settings[ 'p_label_' . $key ] ) ) {
+                        echo '<span class="meta-label">' . foxiz_strip_tags( $settings[ 'p_label_' . $key ] ) . '</span>';
+                }
+                foreach ( $terms as $category ) {
 			echo '<a class="meta-separate term-i-' . strip_tags( $category->term_id ) . '" href="' . foxiz_get_term_link( $category->term_id ) . '">' . foxiz_strip_tags( $category->name ) . '</a>';
 			if ( $index >= $limit ) {
 				break;
 			}
 			$index ++;
 		}
-		if ( $s_label ) {
-			echo '<span class="meta-label">' . foxiz_strip_tags( $s_label ) . '</span>';
-		}
-		echo '</span>';
-	}
+                if ( $s_label ) {
+                        echo '<span class="meta-label">' . foxiz_strip_tags( $s_label ) . '</span>';
+                }
+                echo '</li>';
+        }
 }
 
 if ( ! function_exists( 'foxiz_entry_teaser_images' ) ) {
