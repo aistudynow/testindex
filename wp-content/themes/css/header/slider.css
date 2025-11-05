@@ -428,3 +428,13 @@ body.dark-mode {
     padding: clamp(16px, 5vw, 22px);
   }
 }
+
+/* Reserve space and optimise hover/zoom on featured images */
+img.featured-img.wp-post-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;  /* or 3 / 2 if that matches your design better */
+  object-fit: cover;
+  will-change: transform;
+}
