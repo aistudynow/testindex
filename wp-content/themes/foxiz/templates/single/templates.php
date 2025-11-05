@@ -557,15 +557,18 @@ if ( ! function_exists( 'foxiz_single_header_meta' ) ) {
 		?>
 		<div class="<?php echo join( ' ', $classes ); ?>">
 			<?php if ( $is_sponsored_post ) :
-				foxiz_single_sponsor( $post_id );
+			
+			
+					foxiz_single_sponsor( $post_id );
 			else : ?>
 				<div class="smeta-in">
-					<?php if ( ! empty( $big_avatar ) ) {
-						foxiz_entry_meta_avatar( [
-								'avatar_size'   => 120,
-								'feat_lazyload' => $settings['feat_lazyload'],
-						] );
-					} ?>
+                                        <?php if ( ! empty( $big_avatar ) ) {
+                                                foxiz_entry_meta_avatar( [
+                                                                'avatar_size'   => 120,
+                                                                'feat_lazyload' => $settings['feat_lazyload'],
+                                                                'wrap_tag'      => 'div',
+                                                ] );
+                                        } ?>
 					<div class="smeta-sec">
 						<?php if ( ! empty( $update_date ) ) :
 							$format = foxiz_get_option( $prefix . '_update_format' );
@@ -581,9 +584,9 @@ if ( ! function_exists( 'foxiz_single_header_meta' ) ) {
 									?></time>
 							</div>
 						<?php endif; ?>
-						<div class="p-meta">
-							<div class="meta-inner is-meta"><?php echo foxiz_get_single_entry_meta( $settings ); ?></div>
-						</div>
+                                                <ul class="p-meta is-meta">
+                                                        <?php echo foxiz_get_single_entry_meta( $settings ); ?>
+                                                </ul>
 					</div>
 				</div>
 			<?php endif;
@@ -594,11 +597,16 @@ if ( ! function_exists( 'foxiz_single_header_meta' ) ) {
 						$share_settings['has_read_meta'] = $min_read;
 						foxiz_single_share_top( $share_settings );
 					}
-					if ( ! empty( $min_read ) ) {
-						echo '<div class="single-right-meta single-time-read is-meta">';
-						foxiz_entry_meta_read_time( $post_id );
-						echo '</div>';
-					}
+                                        if ( ! empty( $min_read ) ) {
+                                                echo '<div class="single-right-meta single-time-read is-meta">';
+                                                foxiz_entry_meta_read_time(
+                                                        [
+                                                                'post_id' => $post_id,
+                                                                'wrap_tag' => 'div',
+                                                        ]
+                                                );
+                                                echo '</div>';
+                                        }
 					?></div>
 			<?php endif; ?>
 		</div>
