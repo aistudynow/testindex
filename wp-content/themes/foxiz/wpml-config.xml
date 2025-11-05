@@ -1,0 +1,231 @@
+<wpml-config>
+    <custom-types>
+        <custom-type translate="1" display-as-translated="1">podcast</custom-type>
+    </custom-types>
+    <taxonomies>
+        <taxonomy translate="1" display-as-translated="1">series</taxonomy>
+    </taxonomies>
+    <admin-texts>
+        <key name="foxiz_theme_options">
+             <key name="header_template"/>
+             <key name="mh_template"/>
+             <key name="mobile_height"/>
+             <key name="collapse_template"/>
+             <key name="mobile_copyright"/>
+             <key name="more_footer_copyright"/>
+             <key name="header_search_heading"/>
+             <key name="mobile_login_label"/>
+             <key name="header_notification_url"/>
+             <key name="alert_content"/>
+             <key name="alert_url"/>
+             <key name="footer_template_shortcode"/>
+             <key name="copyright"/>
+             <key name="read_speed"/>
+             <key name="meta_custom_text"/>
+             <key name="live_label"/>
+             <key name="single_post_live_label"/>
+             <key name="readmore_label"/>
+             <key name="search_placeholder"/>
+             <key name="classic_1_excerpt_length"/>
+             <key name="grid_1_excerpt_length"/>
+             <key name="grid_2_excerpt_length"/>
+             <key name="grid_small_1_excerpt_length"/>
+             <key name="grid_box_1_excerpt_length"/>
+             <key name="grid_box_2_excerpt_length"/>
+             <key name="list_1_excerpt_length"/>
+             <key name="list_2_excerpt_length"/>
+             <key name="list_box_1_excerpt_length"/>
+             <key name="list_box_2_excerpt_length"/>
+             <key name="single_post_standard_template"/>
+             <key name="single_post_video_template"/>
+             <key name="single_post_audio_template"/>
+             <key name="single_post_gallery_template"/>
+             <key name="single_post_content_spacing"/>
+             <key name="single_post_newsletter_title"/>
+             <key name="single_post_newsletter_description"/>
+             <key name="single_post_newsletter_code"/>
+             <key name="single_post_newsletter_policy"/>
+             <key name="highlight_heading"/>
+             <key name="single_post_entry_meta_keys"/>
+             <key name="single_post_update_format"/>
+             <key name="sponsor_meta_text"/>
+             <key name="disclosure_content"/>
+             <key name="single_post_related_shortcode"/>
+             <key name="single_post_related_blog_heading"/>
+             <key name="single_post_inline_related"/>
+             <key name="single_post_popular_shortcode"/>
+             <key name="single_post_header_template"/>
+             <key name="single_post_header_template_video"/>
+             <key name="single_post_header_template_audio"/>
+             <key name="single_post_header_template_gallery"/>
+             <key name="post_type_template"/>
+             <key name="category_header_template"/>
+             <key name="category_template"/>
+             <key name="category_template_global"/>
+             <key name="category_blog_heading"/>
+             <key name="category_excerpt_length"/>
+             <key name="blog_header_template"/>
+             <key name="blog_template"/>
+             <key name="blog_template_bottom"/>
+             <key name="blog_template_global"/>
+             <key name="blog_excerpt_length"/>
+             <key name="author_template_global"/>
+             <key name="author_excerpt_length"/>
+             <key name="search_header_template"/>
+             <key name="search_top_template"/>
+             <key name="search_template_global"/>
+             <key name="search_excerpt_length"/>
+             <key name="tag_template"/>
+             <key name="tag_posts_per_page"/>
+             <key name="tag_template_global"/>
+             <key name="tax_posts_per_page"/>
+             <key name="tax_template_global"/>
+             <key name="archive_template_global"/>
+             <key name="archive_excerpt_length"/>
+             <key name="page_404_heading"/>
+             <key name="page_404_description"/>
+             <key name="page_404_template"/>
+             <key name="table_contents_heading"/>
+             <key name="single_post_reaction_title"/>
+             <key name="bookmark_restrict_title"/>
+             <key name="bookmark_restrict_desc"/>
+             <key name="saved_heading"/>
+             <key name="saved_description"/>
+             <key name="saved_template"/>
+             <key name="saved_excerpt_length"/>
+             <key name="interest_url"/>
+             <key name="interest_heading"/>
+             <key name="interest_description"/>
+             <key name="interest_author_heading"/>
+             <key name="interest_author_description"/>
+             <key name="recommended_template"/>
+             <key name="recommended_blog_heading"/>
+             <key name="recommended_excerpt_length"/>
+             <key name="reading_history_title"/>
+             <key name="reading_history_desc"/>
+             <key name="facebook"/>
+             <key name="twitter"/>
+             <key name="youtube"/>
+             <key name="googlenews"/>
+             <key name="instagram"/>
+             <key name="pinterest"/>
+             <key name="tiktok"/>
+             <key name="linkedin"/>
+             <key name="medium"/>
+             <key name="flipboard"/>
+             <key name="twitch"/>
+             <key name="steam"/>
+             <key name="tumblr"/>
+             <key name="discord"/>
+             <key name="skype"/>
+             <key name="snapchat"/>
+             <key name="quora"/>
+             <key name="spotify"/>
+             <key name="apple_podcast"/>
+             <key name="google_podcast"/>
+             <key name="stitcher"/>
+             <key name="myspace"/>
+             <key name="bloglovin"/>
+             <key name="digg"/>
+             <key name="dribbble"/>
+             <key name="soundcloud"/>
+             <key name="vimeo"/>
+             <key name="reddit"/>
+             <key name="vk"/>
+             <key name="telegram"/>
+             <key name="whatsapp"/>
+             <key name="truth"/>
+             <key name="paypal"/>
+             <key name="patreon"/>
+             <key name="threads"/>
+             <key name="bluesky"/>
+             <key name="rss"/>
+             <key name="custom_social_1_url"/>
+             <key name="custom_social_1_name"/>
+             <key name="custom_social_1_icon"/>
+             <key name="custom_social_2_url"/>
+             <key name="custom_social_2_name"/>
+             <key name="custom_social_2_icon"/>
+             <key name="custom_social_3_url"/>
+             <key name="custom_social_3_name"/>
+             <key name="custom_social_3_icon"/>
+             <key name="privacy_text"/>
+             <key name="newsletter_title"/>
+             <key name="newsletter_description"/>
+             <key name="newsletter_shortcode"/>
+             <key name="newsletter_footer"/>
+             <key name="newsletter_footer_url"/>
+             <key name="site_description"/>
+             <key name="site_phone"/>
+             <key name="site_email"/>
+             <key name="site_locality"/>
+             <key name="site_street"/>
+             <key name="postal_code"/>
+             <key name="facebook_app_id"/>
+             <key name="adblock_title"/>
+             <key name="adblock_description"/>
+             <key name="ad_auto_code"/>
+             <key name="ad_top_code"/>
+             <key name="ad_top_destination"/>
+             <key name="ad_single_description"/>
+             <key name="ad_single_code"/>
+             <key name="ad_single_destination"/>
+             <key name="ad_single_2_description"/>
+             <key name="ad_single_2_code"/>
+             <key name="ad_single_2_destination"/>
+             <key name="ad_single_3_description"/>
+             <key name="ad_single_3_code"/>
+             <key name="ad_single_3_destination"/>
+             <key name="slide_up_shortcode"/>
+             <key name="header_login_heading"/>
+             <key name="header_login_description"/>
+             <key name="logo_redirect"/>
+             <key name="login_page"/>
+             <key name="login_register"/>
+             <key name="login_redirect"/>
+             <key name="logout_redirect"/>
+             <key name="wc_shop_template"/>
+             <key name="amp_ad_auto_code"/>
+             <key name="amp_header_adsense_client"/>
+             <key name="amp_header_adsense_slot"/>
+             <key name="amp_header_ad_code"/>
+             <key name="amp_footer_adsense_client"/>
+             <key name="amp_footer_adsense_slot"/>
+             <key name="amp_footer_ad_code"/>
+             <key name="amp_top_single_adsense_client"/>
+             <key name="amp_top_single_adsense_slot"/>
+             <key name="amp_top_single_ad_code"/>
+             <key name="amp_bottom_single_adsense_client"/>
+             <key name="amp_bottom_single_adsense_slot"/>
+             <key name="amp_bottom_single_ad_code"/>
+             <key name="amp_inline_single_adsense_client"/>
+             <key name="amp_inline_single_adsense_slot"/>
+             <key name="amp_inline_single_ad_code"/>
+        </key>
+    </admin-texts>
+    <custom-fields>
+         <custom-field action="copy-once">rb_global_meta</custom-field>
+         <custom-field action="copy-once">foxiz_total_word</custom-field>
+         <custom-field action="copy-once">ruby_live_blog</custom-field>
+    </custom-fields>
+    <shortcodes>
+        <shortcode>
+            <tag>ruby_reaction</tag>
+            <attributes>
+                <attribute>title</attribute>
+            </attributes>
+        </shortcode>
+         <shortcode>
+            <tag>ruby_related</tag>
+            <attributes>
+                <attribute>heading</attribute>
+            </attributes>
+        </shortcode>
+        <shortcode>
+            <tag>ruby_related</tag>
+            <attributes>
+                <attribute>heading</attribute>
+            </attributes>
+        </shortcode>
+    </shortcodes>
+</wpml-config>
