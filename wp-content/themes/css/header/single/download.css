@@ -1,3 +1,23 @@
+/* Improve contrast for download buttons */
+.wp-block-file .wp-block-file__button.wp-element-button,
+.wp-block-file .wp-block-file__button.wp-element-button:visited,
+.s-ct .wp-block-file__button,
+.s-ct .wp-block-file__button:visited {
+  background: #123262 !important;
+  border-color: #0a2347 !important;
+  color: #ffffff !important;
+}
+
+.wp-block-file .wp-block-file__button.wp-element-button:hover,
+.wp-block-file .wp-block-file__button.wp-element-button:focus-visible,
+.s-ct .wp-block-file__button:hover,
+.s-ct .wp-block-file__button:focus-visible {
+  background: #0f274f !important;
+  border-color: #071836 !important;
+  color: #ffffff !important;
+}
+
+
 /*
  * Download block styles extracted from the Foxiz theme.
  * Keeps the markup lightweight while inheriting the global theme tokens

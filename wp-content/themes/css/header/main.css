@@ -339,6 +339,391 @@ input {
 }
 
 
+/* Improve contrast for download buttons */
+.wp-block-file .wp-block-file__button.wp-element-button,
+.wp-block-file .wp-block-file__button.wp-element-button:visited,
+.s-ct .wp-block-file__button,
+.s-ct .wp-block-file__button:visited {
+  background-color: #123262;
+  border-color: #0a2347;
+  color: #ffffff;
+}
+
+.wp-block-file .wp-block-file__button.wp-element-button:hover,
+.wp-block-file .wp-block-file__button.wp-element-button:focus-visible,
+.s-ct .wp-block-file__button:hover,
+.s-ct .wp-block-file__button:focus-visible {
+  background-color: #0f274f;
+  border-color: #071836;
+  color: #ffffff;
+}
+
+
+
+
+
+/*
+/*
+Theme Name:     Foxiz child
+Theme Name:     Foxiz child
+Template:      	foxiz
+Template:      	foxiz
+Theme URI:      https://foxiz.themeruby.com
+Theme URI:      https://foxiz.themeruby.com
+Author:         Theme-Ruby
+Author:         Theme-Ruby
+Author URI:     https://themeforest.net/user/theme-ruby/portfolio/
+Author URI:     https://themeforest.net/user/theme-ruby/portfolio/
+Description:    Make your modifications to Foxiz in this child theme.
+Description:    Make your modifications to Foxiz in this child theme.
+Version:        1.0
+Version:        1.0
+Tags:           custom-background, custom-menu, featured-images, theme-options, custom-colors, translation-ready, threaded-comments, translation-ready
+Tags:           custom-background, custom-menu, featured-images, theme-options, custom-colors, translation-ready, threaded-comments, translation-ready
+License:        Themeforest Licence
+License:        Themeforest Licence
+License URI:    https://themeforest.net/licenses/standard
+License URI:    https://themeforest.net/licenses/standard
+*/
+*/
+
+
+/* Your CSS code goes here
+/* Your CSS code goes here
+-------------------------------------- */
+-------------------------------------- */
+
+/* Improve contrast for the privacy consent button */
+.privacy-bar .privacy-dismiss-btn {
+  background-color: #0053a0;
+  color: #ffffff;
+}
+
+.privacy-bar .privacy-dismiss-btn:hover,
+.privacy-bar .privacy-dismiss-btn:focus-visible {
+  background-color: #003f7d;
+  color: #ffffff;
+}
+
+/* Improve contrast for download buttons */
+.wp-block-file .wp-block-file__button.wp-element-button,
+.wp-block-file .wp-block-file__button.wp-element-button:visited,
+.s-ct .wp-block-file__button,
+.s-ct .wp-block-file__button:visited {
+  background: #123262 !important;
+  border-color: #0a2347 !important;
+  color: #ffffff !important;
+}
+
+.wp-block-file .wp-block-file__button.wp-element-button:hover,
+.wp-block-file .wp-block-file__button.wp-element-button:focus-visible,
+.s-ct .wp-block-file__button:hover,
+.s-ct .wp-block-file__button:focus-visible {
+  background: #0f274f !important;
+  border-color: #071836 !important;
+  color: #ffffff !important;
+}
+
+
+
+
+
+/* Ensure the hero title paints immediately even if custom fonts are slow */
+.single-post .s-ct {
+  --body-family: 'Oxygen', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --heading-family: 'Manrope', 'Encode Sans Condensed', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --headline-family: 'Manrope', 'Encode Sans Condensed', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --h1-family: 'Manrope', 'Encode Sans Condensed', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.single-post .s-ct .s-title {
+  font-family: var(--headline-family);
+  text-rendering: optimizeLegibility;
+}
+
+/* Compact share wrappers */
+.s-ct .t-shared-sec {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.s-ct .t-shared-sec .share-label {
+  font-weight: 600;
+}
+
+.s-ct .t-shared-sec .share-links,
+.e-shared-sec.entry-sec .share-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.e-shared-sec.entry-sec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.e-shared-sec.entry-sec .e-shared-title {
+  font-weight: 600;
+}
+
+/* Slim author card */
+.usr-holder.entry-sec {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.usr-holder.entry-sec::before {
+  display: none;
+}
+
+.usr-holder.entry-sec .author-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border: 1px solid var(--body-bcolor, rgba(4, 16, 47, 0.15));
+  border-radius: 10px;
+  background: var(--awhite, #ffffff);
+}
+
+.usr-holder.entry-sec .author-card__avatar {
+  flex: 0 0 auto;
+  display: inline-flex;
+  border-radius: 50%;
+}
+
+.usr-holder.entry-sec .author-card__avatar img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.usr-holder.entry-sec .author-card__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.author-card__name,
+.author-card__job,
+.author-card__bio,
+.author-card__links {
+  margin: 0 0 0.5rem;
+}
+
+.author-card__label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--body-mcolor, rgba(4, 16, 47, 0.6));
+}
+
+.author-card__link {
+  font-weight: 600;
+}
+
+.author-card__verified {
+  margin-left: 0.35rem;
+  color: var(--g-color, currentColor);
+}
+
+.author-card__bio {
+  color: var(--body-color, #333);
+  line-height: 1.6;
+}
+
+.author-card__website {
+  font-weight: 600;
+}
+
+/* Lazy comments */
+.has-lazy-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.has-lazy-comments .comment-toggle {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--body-bcolor, rgba(4, 16, 47, 0.2));
+  background: var(--awhite, #ffffff);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.has-lazy-comments .comment-toggle:hover,
+.has-lazy-comments .comment-toggle:focus-visible {
+  background: var(--g-color-10, rgba(4, 16, 47, 0.08));
+  border-color: var(--g-color-30, rgba(4, 16, 47, 0.3));
+}
+
+.has-lazy-comments template {
+  display: none;
+}
+
+.has-lazy-comments .comment-slot[hidden] {
+  display: none !important;
+}
+
+.simple-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--body-bcolor, rgba(4, 16, 47, 0.12));
+}
+
+.simple-meta.is-sponsored {
+  flex-direction: column;
+}
+
+.simple-meta__primary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.simple-meta__avatar {
+  display: inline-flex;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.simple-meta__avatar img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.simple-meta__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.simple-meta__updated {
+  font-size: 0.9rem;
+  color: var(--body-mcolor, rgba(4, 16, 47, 0.7));
+}
+
+.simple-meta__byline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.simple-meta__author-link,
+.simple-meta__category-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.simple-meta__author-link:hover,
+.simple-meta__author-link:focus-visible,
+.simple-meta__category-link:hover,
+.simple-meta__category-link:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.simple-meta__separator {
+  color: var(--body-mcolor, rgba(4, 16, 47, 0.5));
+}
+
+.simple-meta__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.simple-meta__share {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.simple-meta__share .share-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--g-color-5, rgba(4, 16, 47, 0.08));
+  color: var(--body-fcolor, #04102f);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.simple-meta__share .share-action span {
+  display: none;
+}
+
+.simple-meta__share .share-action:hover,
+.simple-meta__share .share-action:focus-visible {
+  background: var(--g-color-20, rgba(4, 16, 47, 0.16));
+  color: var(--g-color, #123262);
+}
+
+.simple-meta__readtime {
+  font-weight: 600;
+  color: var(--body-fcolor, #04102f);
+}
+
+/* Allow third-party embeds to manage their own positioning within the article body. */
+@media (max-width: 640px) {
+  .simple-meta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .simple-meta__primary {
+    align-items: center;
+  }
+
+  .simple-meta__avatar img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .simple-meta__share {
+    gap: 0.35rem;
+  }
+
+  .simple-meta__share .share-action {
+    width: 32px;
+    height: 32px;
+  }
+
+  .usr-holder.entry-sec .author-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .usr-holder.entry-sec .author-card__avatar img {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+
 
 
 /* Privacy banner ----------------------------------------------------- */
@@ -354,6 +739,13 @@ input {
 .privacy-bar .privacy-dismiss-btn:focus-visible {
   background-color: #003f7d;
   color: #ffffff;
+
+}
+
+
+
+
+
 
 
 
