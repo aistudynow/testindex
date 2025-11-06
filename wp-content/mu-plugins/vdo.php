@@ -77,8 +77,7 @@ add_action('wp_head', function () {
         width: 100%;
         aspect-ratio: <?php echo $ratio; ?>;
         min-height: <?php echo $minh; ?>px;
-        contain: layout paint style;
-        content-visibility: auto;
+        
         background: transparent;
         overflow: hidden;
       }

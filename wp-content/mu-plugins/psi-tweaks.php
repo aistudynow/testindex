@@ -146,8 +146,17 @@ add_filter('wp_content_img_tag', function ($html, $context, $attachment_id) {
  * 5) Avatars: keep them non-critical & smaller
  * ------------------------------------------- */
 add_filter('option_show_avatars', function($value){
-    // Disable avatars only on single post/page; keep global setting elsewhere.
-    return is_singular() ? '0' : $value;
+    if ( ! psi_is_front() ) {
+        return $value;
+    }
+
+    // Keep author avatars visible on single posts so template metadata renders.
+    if ( is_singular('post') ) {
+        return $value ?: '1';
+    }
+
+    // Still allow pages (which typically lack author cards) to skip avatar fetches.
+    return is_page() ? '0' : $value;
 }, 10, 1);
 
 add_filter('pre_get_avatar_data', function($args, $id_or_email){
