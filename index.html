@@ -15,7 +15,7 @@
 <meta property="og:description" content="Wan Vace Advanced Workflow: How to Keep Faces, Clothes &amp;a.... I&rsquo;ve been working on the new Wan Vace Advanced Workflow inside ComfyUI,..." />
 <meta name="robots" content="index,follow" />
 <script id="foxiz-core-js-extra">
-var foxizCoreParams = {"ajaxurl":"https:\/\/aistudynow.com\/wp-admin\/admin-ajax.php","security":"e84eff82b1","darkModeID":"RubyDarkMode","yesPersonalized":"","cookieDomain":"","cookiePath":"\/"};
+var foxizCoreParams = {"ajaxurl":"https:\/\/aistudynow.com\/wp-admin\/admin-ajax.php","security":"e6f0784af8","darkModeID":"RubyDarkMode","yesPersonalized":"","cookieDomain":"","cookiePath":"\/"};
 </script>
 <script id="foxiz-ui-js-extra">
 window.foxizParams = {"sliderSpeed":"5000","sliderEffect":"slide","sliderFMode":"1"};
@@ -27,8 +27,7 @@ window.foxizParams = {"sliderSpeed":"5000","sliderEffect":"slide","sliderFMode":
         width: 100%;
         aspect-ratio: 16 / 9;
         min-height: 280px;
-        contain: layout paint style;
-        content-visibility: auto;
+        
         background: transparent;
         overflow: hidden;
       }
@@ -51,7 +50,6 @@ window.foxizParams = {"sliderSpeed":"5000","sliderEffect":"slide","sliderFMode":
 <link rel='preconnect' href='https://aistudynow.com'>
 <link rel='preconnect' href='https://fonts.googleapis.com'>
 <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin='anonymous'>
-<link rel='preconnect' href='https://cloudflare.com'>
 <style id="psi-global-inline">
   .archive .p-featured .featured-img,
   .blog .p-featured .featured-img,
@@ -423,9 +421,417 @@ input {
 }
 
 
+/* Improve contrast for download buttons */
+.wp-block-file .wp-block-file__button.wp-element-button,
+.wp-block-file .wp-block-file__button.wp-element-button:visited,
+.s-ct .wp-block-file__button,
+.s-ct .wp-block-file__button:visited {
+  background-color: #123262;
+  border-color: #0a2347;
+  color: #ffffff;
+}
+
+.wp-block-file .wp-block-file__button.wp-element-button:hover,
+.wp-block-file .wp-block-file__button.wp-element-button:focus-visible,
+.s-ct .wp-block-file__button:hover,
+.s-ct .wp-block-file__button:focus-visible {
+  background-color: #0f274f;
+  border-color: #071836;
+  color: #ffffff;
+}
+
+
+
+
+
+/*
+/*
+Theme Name:     Foxiz child
+Theme Name:     Foxiz child
+Template:      	foxiz
+Template:      	foxiz
+Theme URI:      https://foxiz.themeruby.com
+Theme URI:      https://foxiz.themeruby.com
+Author:         Theme-Ruby
+Author:         Theme-Ruby
+Author URI:     https://themeforest.net/user/theme-ruby/portfolio/
+Author URI:     https://themeforest.net/user/theme-ruby/portfolio/
+Description:    Make your modifications to Foxiz in this child theme.
+Description:    Make your modifications to Foxiz in this child theme.
+Version:        1.0
+Version:        1.0
+Tags:           custom-background, custom-menu, featured-images, theme-options, custom-colors, translation-ready, threaded-comments, translation-ready
+Tags:           custom-background, custom-menu, featured-images, theme-options, custom-colors, translation-ready, threaded-comments, translation-ready
+License:        Themeforest Licence
+License:        Themeforest Licence
+License URI:    https://themeforest.net/licenses/standard
+License URI:    https://themeforest.net/licenses/standard
+*/
+*/
+
+
+/* Your CSS code goes here
+/* Your CSS code goes here
+-------------------------------------- */
+-------------------------------------- */
+
+/* Improve contrast for the privacy consent button */
+.privacy-bar .privacy-dismiss-btn {
+  background-color: #0053a0;
+  color: #ffffff;
+}
+
+.privacy-bar .privacy-dismiss-btn:hover,
+.privacy-bar .privacy-dismiss-btn:focus-visible {
+  background-color: #003f7d;
+  color: #ffffff;
+}
+
+/* Improve contrast for download buttons */
+.wp-block-file .wp-block-file__button.wp-element-button,
+.wp-block-file .wp-block-file__button.wp-element-button:visited,
+.s-ct .wp-block-file__button,
+.s-ct .wp-block-file__button:visited {
+  background: #123262 !important;
+  border-color: #0a2347 !important;
+  color: #ffffff !important;
+}
+
+.wp-block-file .wp-block-file__button.wp-element-button:hover,
+.wp-block-file .wp-block-file__button.wp-element-button:focus-visible,
+.s-ct .wp-block-file__button:hover,
+.s-ct .wp-block-file__button:focus-visible {
+  background: #0f274f !important;
+  border-color: #071836 !important;
+  color: #ffffff !important;
+}
+
+
+
+
+
+/* Ensure the hero title paints immediately even if custom fonts are slow */
+.single-post .s-ct {
+  --body-family: 'Oxygen', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --heading-family: 'Manrope', 'Encode Sans Condensed', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --headline-family: 'Manrope', 'Encode Sans Condensed', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --h1-family: 'Manrope', 'Encode Sans Condensed', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.single-post .s-ct .s-title {
+  font-family: var(--headline-family);
+  text-rendering: optimizeLegibility;
+}
+
+/* Compact share wrappers */
+.s-ct .t-shared-sec {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.s-ct .t-shared-sec .share-label {
+  font-weight: 600;
+}
+
+.s-ct .t-shared-sec .share-links,
+.e-shared-sec.entry-sec .share-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.e-shared-sec.entry-sec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.e-shared-sec.entry-sec .e-shared-title {
+  font-weight: 600;
+}
+
+/* Slim author card */
+.usr-holder.entry-sec {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.usr-holder.entry-sec::before {
+  display: none;
+}
+
+.usr-holder.entry-sec .author-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border: 1px solid var(--body-bcolor, rgba(4, 16, 47, 0.15));
+  border-radius: 10px;
+  background: var(--awhite, #ffffff);
+}
+
+.usr-holder.entry-sec .author-card__avatar {
+  flex: 0 0 auto;
+  display: inline-flex;
+  border-radius: 50%;
+}
+
+.usr-holder.entry-sec .author-card__avatar img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.usr-holder.entry-sec .author-card__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.author-card__name,
+.author-card__job,
+.author-card__bio,
+.author-card__links {
+  margin: 0 0 0.5rem;
+}
+
+.author-card__label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--body-mcolor, rgba(4, 16, 47, 0.6));
+}
+
+.author-card__link {
+  font-weight: 600;
+}
+
+.author-card__verified {
+  margin-left: 0.35rem;
+  color: var(--g-color, currentColor);
+}
+
+.author-card__bio {
+  color: var(--body-color, #333);
+  line-height: 1.6;
+}
+
+.author-card__website {
+  font-weight: 600;
+}
+
+/* Lazy comments */
+.has-lazy-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.has-lazy-comments .comment-toggle {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--body-bcolor, rgba(4, 16, 47, 0.2));
+  background: var(--awhite, #ffffff);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.has-lazy-comments .comment-toggle:hover,
+.has-lazy-comments .comment-toggle:focus-visible {
+  background: var(--g-color-10, rgba(4, 16, 47, 0.08));
+  border-color: var(--g-color-30, rgba(4, 16, 47, 0.3));
+}
+
+.has-lazy-comments template {
+  display: none;
+}
+
+.has-lazy-comments .comment-slot[hidden] {
+  display: none !important;
+}
+
+.simple-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--body-bcolor, rgba(4, 16, 47, 0.12));
+}
+
+.simple-meta.is-sponsored {
+  flex-direction: column;
+}
+
+.simple-meta__primary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.simple-meta__avatar {
+  display: inline-flex;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.simple-meta__avatar img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.simple-meta__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.simple-meta__updated {
+  font-size: 0.9rem;
+  color: var(--body-mcolor, rgba(4, 16, 47, 0.7));
+}
+
+.simple-meta__byline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.simple-meta__author-link,
+.simple-meta__category-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.simple-meta__author-link:hover,
+.simple-meta__author-link:focus-visible,
+.simple-meta__category-link:hover,
+.simple-meta__category-link:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.simple-meta__separator {
+  color: var(--body-mcolor, rgba(4, 16, 47, 0.5));
+}
+
+.simple-meta__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.simple-meta__share {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.simple-meta__share .share-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--g-color-5, rgba(4, 16, 47, 0.08));
+  color: var(--body-fcolor, #04102f);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.simple-meta__share .share-action span {
+  display: none;
+}
+
+.simple-meta__share .share-action:hover,
+.simple-meta__share .share-action:focus-visible {
+  background: var(--g-color-20, rgba(4, 16, 47, 0.16));
+  color: var(--g-color, #123262);
+}
+
+.simple-meta__readtime {
+  font-weight: 600;
+  color: var(--body-fcolor, #04102f);
+}
+
+/* Allow third-party embeds to manage their own positioning within the article body. */
+@media (max-width: 640px) {
+  .simple-meta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .simple-meta__primary {
+    align-items: center;
+  }
+
+  .simple-meta__avatar img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .simple-meta__share {
+    gap: 0.35rem;
+  }
+
+  .simple-meta__share .share-action {
+    width: 32px;
+    height: 32px;
+  }
+
+  .usr-holder.entry-sec .author-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .usr-holder.entry-sec .author-card__avatar img {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+
 
 
 /* Privacy banner ----------------------------------------------------- */
+
+
+/* Improve contrast for the privacy consent button */
+.privacy-bar .privacy-dismiss-btn {
+  background-color: #0053a0;
+  color: #ffffff;
+}
+
+.privacy-bar .privacy-dismiss-btn:hover,
+.privacy-bar .privacy-dismiss-btn:focus-visible {
+  background-color: #003f7d;
+  color: #ffffff;
+
+}
+
+
+
+
+
+
+
+
+
 .privacy-bar {
   --rb-privacy-gap: clamp(12px, 3vw, 24px);
   position: fixed;
@@ -3953,7 +4359,27 @@ body {
     transform: rotate(360deg);
   }
 }</style>
-<style id='download-inline'>/*
+<style id='download-inline'>/* Improve contrast for download buttons */
+.wp-block-file .wp-block-file__button.wp-element-button,
+.wp-block-file .wp-block-file__button.wp-element-button:visited,
+.s-ct .wp-block-file__button,
+.s-ct .wp-block-file__button:visited {
+  background: #123262 !important;
+  border-color: #0a2347 !important;
+  color: #ffffff !important;
+}
+
+.wp-block-file .wp-block-file__button.wp-element-button:hover,
+.wp-block-file .wp-block-file__button.wp-element-button:focus-visible,
+.s-ct .wp-block-file__button:hover,
+.s-ct .wp-block-file__button:focus-visible {
+  background: #0f274f !important;
+  border-color: #071836 !important;
+  color: #ffffff !important;
+}
+
+
+/*
  * Download block styles extracted from the Foxiz theme.
  * Keeps the markup lightweight while inheriting the global theme tokens
  * declared in main.css so the button matches the rest of the site.
@@ -5642,73 +6068,7 @@ body {
 </ul>
 </li>
 </ul>					</nav>
-					<div class="collapse-template">		<div data-elementor-type="wp-post" data-elementor-id="3337" class="elementor elementor-3337">
-						<section class="elementor-section elementor-top-section elementor-element elementor-element-103b38e elementor-section-full_width elementor-section-height-default elementor-section-height-default" data-id="103b38e" data-element_type="section">
-						<div class="elementor-container elementor-column-gap-custom">
-					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-c78ede3" data-id="c78ede3" data-element_type="column">
-			<div class="elementor-widget-wrap elementor-element-populated">
-						<div class="elementor-element elementor-element-09574fb elementor-widget elementor-widget-foxiz-cta" data-id="09574fb" data-element_type="widget" data-widget_type="foxiz-cta.default">
-				<div class="elementor-widget-container">
-							<div class="cta-wrap cta-img-right t-cta-img-bottom cta-btn-inline">
-					<div class="cta-featured">
-			<img loading="lazy" width="913" height="545" src="https://aistudynow.com/wp-content/uploads/2023/05/call-to-action.jpg" class="attachment-full size-full" alt="" decoding="async" srcset="https://aistudynow.com/wp-content/uploads/2023/05/call-to-action.jpg 913w, https://aistudynow.com/wp-content/uploads/2023/05/call-to-action-300x179.jpg 300w, https://aistudynow.com/wp-content/uploads/2023/05/call-to-action-768x458.jpg 768w, https://aistudynow.com/wp-content/uploads/2023/05/call-to-action-860x513.jpg 860w" sizes="(max-width: 913px) 100vw, 913px" loading="lazy" fetchpriority="low" />		</div>
-					<div class="cta-content">
-				<h2 class="cta-title">Introducing AI for customer service</h2><div class="cta-description rb-text">Powerful AI that takes care of your daily tasks. Stop manually processing your text, document, and image data. Let AI work its magic, without a single line of code.</div>		<div class="cta-buttons">
-			<a href="#" class="cta-btn cta-btn-2">Let's Talk</a>		</div>
-					</div>
-		</div>
-						</div>
-				</div>
-				<div class="elementor-element elementor-element-b5ad3af elementor-widget elementor-widget-foxiz-heading" data-id="b5ad3af" data-element_type="widget" data-widget_type="foxiz-heading.default">
-				<div class="elementor-widget-container">
-					<div id="uid_b5ad3af" class="block-h heading-layout-13"><div class="heading-inner"><h3 class="heading-title"><span>Top Stories</span></h3></div></div>				</div>
-				</div>
-				<div class="elementor-element elementor-element-bc48440 elementor-widget elementor-widget-foxiz-list-small-1" data-id="bc48440" data-element_type="widget" data-widget_type="foxiz-list-small-1.default">
-				<div class="elementor-widget-container">
-					<div id="uid_bc48440" class="block-wrap block-small block-list block-list-small-1 bottom-border is-b-border-dark no-last-bb meta-s-line"><div class="block-inner">		<div class="p-wrap p-small p-list-small-1" data-pid="5742">
-			<div class="p-content">
-			<h3 class="entry-title"><i class="rbi rbi-next" aria-hidden="true"></i>		<a class="p-url" href="https://aistudynow.com/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/" rel="bookmark">Wan Vace Advanced Workflow: How to Keep Faces, Clothes &amp; Backgrounds Consistent</a></h3>                        <ul class="p-meta is-meta">
-                                		 <li class="meta-el meta-tax meta-bold">
-                        					<a class="meta-separate term-i-212" href="https://aistudynow.com/category/comfyui-workflows/">ComfyUI Workflows</a>
-					                </li>
-                		<li class="meta-el meta-update">
-                                                <time class="updated" datetime="2025-11-05T08:27:44+00:00">November 5, 2025</time>
-                </li>
-                                        </ul>
-                		</div>
-				</div>
-			<div class="p-wrap p-small p-list-small-1" data-pid="5720">
-			<div class="p-content">
-			<h3 class="entry-title"><i class="rbi rbi-next" aria-hidden="true"></i>		<a class="p-url" href="https://aistudynow.com/chronoedit-comfyui-workflow-compare-with-qwen-image-edit-2509/" rel="bookmark">ChronoEdit ComfyUI Workflow: Compare with Qwen Image Edit 2509</a></h3>                        <ul class="p-meta is-meta">
-                                		 <li class="meta-el meta-tax meta-bold">
-                        					<a class="meta-separate term-i-212" href="https://aistudynow.com/category/comfyui-workflows/">ComfyUI Workflows</a>
-					                </li>
-                		<li class="meta-el meta-update">
-                                                <time class="updated" datetime="2025-11-03T20:22:46+00:00">November 3, 2025</time>
-                </li>
-                                        </ul>
-                		</div>
-				</div>
-			<div class="p-wrap p-small p-list-small-1" data-pid="5682">
-			<div class="p-content">
-			<h3 class="entry-title"><i class="rbi rbi-next" aria-hidden="true"></i>		<a class="p-url" href="https://aistudynow.com/comfyui-longcat-workflow-make-very-long-video-on-low-vram/" rel="bookmark">ComfyUI LongCat Workflow: Make Very Long Video on Low VRAM</a></h3>                        <ul class="p-meta is-meta">
-                                		 <li class="meta-el meta-tax meta-bold">
-                        					<a class="meta-separate term-i-212" href="https://aistudynow.com/category/comfyui-workflows/">ComfyUI Workflows</a>
-					                </li>
-                		<li class="meta-el meta-update">
-                                                <time class="updated" datetime="2025-11-01T12:55:39+00:00">November 1, 2025</time>
-                </li>
-                                        </ul>
-                		</div>
-				</div>
-	</div></div>				</div>
-				</div>
-					</div>
-		</div>
-					</div>
-		</section>
-				</div>
-		</div>					<div class="collapse-sections">
+										<div class="collapse-sections">
 													<div class="mobile-login">
 																	<span class="mobile-login-title h6">Have an existing account?</span>
 									<a href="https://aistudynow.com/login-3/?redirect_to=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F" class="login-toggle is-login is-btn" rel="nofollow">Sign In</a>
@@ -5734,38 +6094,31 @@ body {
                 <div class="s-ct">
                     <header class="single-header">
                         		<h1 class="s-title">Wan Vace Advanced Workflow: How to Keep Faces, Clothes &amp; Backgrounds Consistent</h1>
-				<div class="single-meta meta-s-line yes-0 is-meta-author-bold">
-							<div class="smeta-in">
-                                                        <div class="meta-el meta-avatar">
-                        <a href="https://aistudynow.com/author/admin/" rel="nofollow" aria-label="Visit posts by Esha"></a>
-                </div>
-                					<div class="smeta-sec">
-													<div class="smeta-bottom meta-text">
-								<time class="updated-date" datetime="2025-11-05T08:27:44+00:00">Last updated: November 5, 2025 8:27 am</time>
-							</div>
-						                                                <ul class="p-meta is-meta">
-                                                        		<div class="meta-el">
-							<span class="meta-label">By</span>
-			<a class="meta-author-url meta-author" href="https://aistudynow.com/author/admin/">Esha</a>		</div>
-		                                                </ul>
-					</div>
-				</div>
-							<div class="smeta-extra">		<div class="t-shared-sec tooltips-n has-read-meta">
-			<div class="t-shared-header is-meta">
-				<i class="rbi rbi-share" aria-hidden="true"></i><span class="share-label">Share</span>
-			</div>
-			<div class="effect-fadeout">		<a class="share-action share-trigger icon-twitter" aria-label="Share on X" href="https://twitter.com/intent/tweet?text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent&amp;url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;via=" data-title="X" rel="nofollow noopener">
+		                <div class="single-meta simple-meta">
+                                                <div class="simple-meta__primary">
+                                                                        <a class="simple-meta__avatar" href="https://aistudynow.com/author/admin/" rel="nofollow">
+                                                <img fetchpriority="low" alt='Esha' src='https://secure.gravatar.com/avatar/1dc0e887ff8385b9591c32a8ac1ee54a815e04ee63b2df711913371f7757d571?s=48&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1dc0e887ff8385b9591c32a8ac1ee54a815e04ee63b2df711913371f7757d571?s=48&#038;d=mm&#038;r=g 2x' class='avatar avatar-48 photo' height='96' width='96' loading='lazy' decoding='async'/>                                        </a>
+                                                                <div class="simple-meta__details">
+                                                                                        <time class="simple-meta__updated" datetime="2025-11-05T08:27:44+00:00">Last updated: November 5, 2025 8:27 am</time>
+                                                                                <div class="simple-meta__byline">
+                                                                                                        <span class="simple-meta__author">By <a href="https://aistudynow.com/author/admin/" class="simple-meta__author-link">Esha</a></span>
+                                                                                                                                                        <span class="simple-meta__separator" aria-hidden="true">·</span>
+                                                        <span class="simple-meta__category"><a href="https://aistudynow.com/category/comfyui-workflows/" class="simple-meta__category-link">ComfyUI Workflows</a></span>
+                                                                                        </div>
+                                </div>
+                        </div>
+                        <div class="simple-meta__actions">
+                                <nav class="simple-meta__share" aria-label="Share this article">
+                                        		<a class="share-action share-trigger icon-twitter" aria-label="Share on X" href="https://twitter.com/intent/tweet?text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent&amp;url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;via=" data-title="X" rel="nofollow noopener">
 			<i class="rbi rbi-twitter" aria-hidden="true"></i></a>
 					<a class="share-action share-trigger icon-linkedin" aria-label="Share on Linkedin" href="https://linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;title=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent" data-title="linkedIn" rel="nofollow noopener"><i class="rbi rbi-linkedin" aria-hidden="true"></i></a>
-					<a class="share-action share-trigger icon-reddit" aria-label="Share on Reddit" href="https://www.reddit.com/submit?url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;title=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent" data-title="Reddit" rel="nofollow noopener"><i class="rbi rbi-reddit" aria-hidden="true"></i></a>
+					<a class="share-action icon-email" aria-label="Email" href="mailto:?subject=Wan Vace Advanced Workflow: How to Keep Faces, Clothes &amp;amp; Backgrounds Consistent | AI Study Now&body=I found this article interesting and thought of sharing it with you. Check it out:%0A%0Ahttps%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F" data-title="Email" rel="nofollow">
+			<i class="rbi rbi-email" aria-hidden="true"></i></a>
 					<a class="share-action icon-copy copy-trigger" aria-label="Copy Link" href="#" rel="nofollow" role="button" data-copied="Copied!" data-link="https://aistudynow.com/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/" data-copy="Copy Link"><i class="rbi rbi-link-o" aria-hidden="true"></i></a>
-					<a class="share-action native-share-trigger more-icon" aria-label="More" href="#" rel="nofollow" role="button" data-link="https://aistudynow.com/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/" data-ptitle="Wan Vace Advanced Workflow: How to Keep Faces, Clothes &amp; Backgrounds Consistent" data-title="More" ><i class="rbi rbi-more" aria-hidden="true"></i></a>
-		</div>
-		</div>
-		<div class="single-right-meta single-time-read is-meta">		    <li class="meta-el meta-read">6 Min Read</li>
-                </div></div>
-					</div>
-		                    </header>
+		                                </nav>
+                                                        </div>
+                </div>
+                                    </header>
                     <div class="s-feat-outer">
                         		<div class="s-feat">			<div class="featured-lightbox-trigger"
 				 data-source="https://aistudynow.com/wp-content/uploads/2025/11/pde.avif"
@@ -5813,47 +6166,50 @@ body {
 </div>
 						</div>
 			</div>
-					<div class="e-shared-sec entry-sec">
-			<div class="e-shared-header h4">
-				<i class="rbi rbi-share" aria-hidden="true"></i><span>Share This Article</span>
-			</div>
-			<div class="rbbsl tooltips-n effect-fadeout">
-							<a class="share-action share-trigger icon-facebook" aria-label="Share on Facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F" data-title="Facebook" rel="nofollow noopener"><i class="rbi rbi-facebook" aria-hidden="true"></i><span>Facebook</span></a>
-				<a class="share-action share-trigger icon-twitter" aria-label="Share on X" href="https://twitter.com/intent/tweet?text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent&amp;url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;via=" data-title="X" rel="nofollow noopener">
+			                <nav class="e-shared-sec entry-sec" aria-label="Share This Article">
+                        <span class="e-shared-title">Share This Article</span>
+                        <div class="rbbsl tooltips-n effect-fadeout share-links" role="list">
+                                		<a class="share-action share-trigger icon-twitter" aria-label="Share on X" href="https://twitter.com/intent/tweet?text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent&amp;url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;via=" data-title="X" rel="nofollow noopener">
 			<i class="rbi rbi-twitter" aria-hidden="true"></i></a>
-					<a class="share-action share-trigger share-trigger icon-pinterest" aria-label="Share on Pinterest" rel="nofollow noopener" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;media=https://aistudynow.com/wp-content/uploads/2025/11/pde.avif&amp;description=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent" data-title="Pinterest" rel="nofollow noopener"><i class="rbi rbi-pinterest" aria-hidden="true"></i><span>Pinterest</span></a>
-					<a class="share-action icon-whatsapp is-web" aria-label="Share on Whatsapp" href="https://web.whatsapp.com/send?text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent &#9758; https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F" target="_blank" data-title="WhatsApp" rel="nofollow noopener"><i class="rbi rbi-whatsapp" aria-hidden="true"></i><span>Whatsapp</span></a>
-			<a class="share-action icon-whatsapp is-mobile" aria-label="Share on Whatsapp" href="whatsapp://send?text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent &#9758; https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F" target="_blank" data-title="WhatsApp" rel="nofollow noopener"><i class="rbi rbi-whatsapp" aria-hidden="true"></i><span>Whatsapp</span></a>
 					<a class="share-action share-trigger icon-linkedin" aria-label="Share on Linkedin" href="https://linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;title=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent" data-title="linkedIn" rel="nofollow noopener"><i class="rbi rbi-linkedin" aria-hidden="true"></i><span>LinkedIn</span></a>
-					<a class="share-action share-trigger icon-reddit" aria-label="Share on Reddit" href="https://www.reddit.com/submit?url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;title=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent" data-title="Reddit" rel="nofollow noopener"><i class="rbi rbi-reddit" aria-hidden="true"></i><span>Reddit</span></a>
-					<a class="share-action share-trigger icon-telegram" aria-label="Share on Telegram" href="https://t.me/share/?url=https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F&amp;text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent" data-title="Telegram" rel="nofollow noopener"><i class="rbi rbi-telegram" aria-hidden="true"></i><span>Telegram</span></a>
-					<a class="share-action share-trigger icon-threads" aria-label="Share on Threads" href="https://threads.net/intent/post?text=Wan+Vace+Advanced+Workflow%3A+How+to+Keep+Faces%2C+Clothes+%26+Backgrounds+Consistent https%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F" data-title="Threads" rel="nofollow noopener">
-				<i class="rbi rbi-threads" aria-hidden="true"></i>
-				<span>Threads</span></a>
 					<a class="share-action icon-email" aria-label="Email" href="mailto:?subject=Wan Vace Advanced Workflow: How to Keep Faces, Clothes &amp;amp; Backgrounds Consistent | AI Study Now&body=I found this article interesting and thought of sharing it with you. Check it out:%0A%0Ahttps%3A%2F%2Faistudynow.com%2Fwan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent%2F" data-title="Email" rel="nofollow">
 			<i class="rbi rbi-email" aria-hidden="true"></i><span>Email</span></a>
 					<a class="share-action icon-copy copy-trigger" aria-label="Copy Link" href="#" rel="nofollow" role="button" data-copied="Copied!" data-link="https://aistudynow.com/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/" data-copy="Copy Link"><i class="rbi rbi-link-o" aria-hidden="true"></i><span>Copy Link</span></a>
-					<a class="share-action native-share-trigger more-icon" aria-label="More" href="#" rel="nofollow" role="button" data-link="https://aistudynow.com/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/" data-ptitle="Wan Vace Advanced Workflow: How to Keep Faces, Clothes &amp; Backgrounds Consistent" data-title="More" ><i class="rbi rbi-more" aria-hidden="true"></i></a>
-					</div>
-		</div>
+		                        </div>
+                </nav>
 				</div>
-	<div class="usr-holder entry-sec"><div class="ubox"><div class="ubox-header"><div class="author-info-wrap"><a class="author-avatar" href="https://aistudynow.com/author/admin/" rel="nofollow" aria-label="Visit posts by Esha"></a><div class="is-meta"><div class="nname-info meta-author"><span class="meta-label">By</span><a class="nice-name" href="https://aistudynow.com/author/admin/">Esha</a><i class="verified-tick rbi rbi-wavy"></i></div></div></div><div class="usocials tooltips-n meta-text"><span class="ef-label">Follow: </span><a class="social-link-website" aria-label="Website" data-title="Website" href="https://aistudynow.com" target="_blank" rel="noopener nofollow"><i class="rbi rbi-link" aria-hidden="true"></i></a></div></div><div class="bio-description rb-text">Studied Computer Science. Passionate about AI, ComfyUI workflows, and hands-on learning through trial and error. Creator of AIStudyNow — sharing tested workflows, tutorials, and real-world experiments.</div></div></div>		<div class="comment-box-wrap entry-sec"><div class="comment-box-header">
+	<div class="usr-holder entry-sec"><section class="author-card" aria-labelledby="author-card-1"><a class="author-card__avatar" href="https://aistudynow.com/author/admin/" rel="nofollow" aria-label="Visit posts by Esha"><img fetchpriority="low" alt='' src='https://secure.gravatar.com/avatar/1dc0e887ff8385b9591c32a8ac1ee54a815e04ee63b2df711913371f7757d571?s=48&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1dc0e887ff8385b9591c32a8ac1ee54a815e04ee63b2df711913371f7757d571?s=48&#038;d=mm&#038;r=g 2x' class='avatar avatar-48 photo' height='96' width='96' loading='lazy' decoding='async'/></a><div class="author-card__body"><p class="author-card__name" id="author-card-1"><span class="author-card__label">By</span> <a class="author-card__link" href="https://aistudynow.com/author/admin/">Esha</a><span class="author-card__verified rbi rbi-wavy" aria-hidden="true"></span></p><p class="author-card__bio">Studied Computer Science. Passionate about AI, ComfyUI workflows, and hands-on learning through trial and error. Creator of AIStudyNow — sharing tested workflows, tutorials, and real-world experiments.</p><p class="author-card__links"><a class="author-card__website" href="https://aistudynow.com" rel="noopener nofollow" target="_blank">Website</a></p></div></section></div>                <div class="comment-box-wrap entry-sec has-lazy-comments">
+                        <button type="button" class="comment-toggle" data-comment-target="comments-slot-5742" aria-expanded="false">
+                                Load comments                        </button>
+                        <div id="comments-slot-5742" class="comment-slot" hidden></div>
+                        <template id="comments-slot-5742-tpl"><div class="comment-box-header">
 			<span class="h3"><i class="rbi rbi-comment" aria-hidden="true"></i>Leave a Comment</span>
 	</div>
 <div class="comment-holder no-comment">
 	<div id="comments" class="comments-area">
 					<div id="respond" class="comment-respond">
-		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://aistudynow.com/wp-comments-post.php" method="post" id="commentform" class="comment-form"><p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> <span class="required-field-message">Required fields are marked <span class="required">*</span></span></p><p class="comment-form-comment"><label for="comment">Comment <span class="required">*</span></label> <textarea placeholder="Leave a Comment" id="comment" name="comment" cols="45" rows="8" maxlength="65525" required></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input placeholder="Your name" id="author" name="author" type="text" value="" size="30" maxlength="245" autocomplete="name" required /></p>
-<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input placeholder="Your email" id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" autocomplete="email" required /></p>
-<p class="comment-form-url"><label for="url">Website</label> <input placeholder="Your website" id="url" name="url" type="url" value="" size="30" maxlength="200" autocomplete="url" /></p>
-<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes" /> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://aistudynow.com/wp-comments-post.php" method="post" id="commentform" class="comment-form"><p class="comment-form-comment"><label for="comment">Comment <span class="required">*</span></label> <textarea placeholder="Leave a Comment" id="comment" name="comment" cols="45" rows="8" maxlength="65525" required></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input placeholder="Your name" id="author" name="author" type="text" value="" size="30" maxlength="245" autocomplete="name" required /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input placeholder="Your email" id="email" name="email" type="email" value="" size="30" maxlength="100" autocomplete="email" required /></p>
 <p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='5742' id='comment_post_ID' />
 <input type='hidden' name='comment_parent' id='comment_parent' value='0' />
-</p><p style="display: none !important;" class="akismet-fields-container" data-prefix="ak_"><label>&#916;<textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100"></textarea></label><input type="hidden" id="ak_js_1" name="ak_js" value="196"/><script>document.getElementById( "ak_js_1" ).setAttribute( "value", ( new Date() ).getTime() );</script></p></form>	</div><!-- #respond -->
+</p><p style="display: none !important;" class="akismet-fields-container" data-prefix="ak_"><label>&#916;<textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100"></textarea></label><input type="hidden" id="ak_js_1" name="ak_js" value="162"/><script>document.getElementById( "ak_js_1" ).setAttribute( "value", ( new Date() ).getTime() );</script></p></form>	</div><!-- #respond -->
 		</div>
-</div>
-</div>
-		                </div>
+</div></template>
+                        <noscript><div class="comment-box-header">
+			<span class="h3"><i class="rbi rbi-comment" aria-hidden="true"></i>Leave a Comment</span>
+	</div>
+<div class="comment-holder no-comment">
+	<div id="comments" class="comments-area">
+					<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/wan-vace-advanced-workflow-how-to-keep-faces-clothes-backgrounds-consistent/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://aistudynow.com/wp-comments-post.php" method="post" id="commentform" class="comment-form"><p class="comment-form-comment"><label for="comment">Comment <span class="required">*</span></label> <textarea placeholder="Leave a Comment" id="comment" name="comment" cols="45" rows="8" maxlength="65525" required></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input placeholder="Your name" id="author" name="author" type="text" value="" size="30" maxlength="245" autocomplete="name" required /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input placeholder="Your email" id="email" name="email" type="email" value="" size="30" maxlength="100" autocomplete="email" required /></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='5742' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none !important;" class="akismet-fields-container" data-prefix="ak_"><label>&#916;<textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100"></textarea></label><input type="hidden" id="ak_js_1" name="ak_js" value="162"/><script>document.getElementById( "ak_js_1" ).setAttribute( "value", ( new Date() ).getTime() );</script></p></form>	</div><!-- #respond -->
+		</div>
+</div></noscript>
+                </div>
+                                </div>
                             </div>
             </article>        </main>
     </div>
@@ -5934,7 +6290,6 @@ body {
 <script defer src="https://aistudynow.com/wp-content/themes/js/lazy.js?ver=9918.0.0" id="lazy-js"></script>
 <script defer src="https://aistudynow.com/wp-content/themes/js/pagination.js?ver=5.0.1" id="pagination-js"></script>
 <script defer src="https://aistudynow.com/wp-content/plugins/newsletter-11/assets/js/download-form-validation.js?ver=000.0.0" id="download-js"></script>
-<script src="https://aistudynow.com/wp-content/themes/js/defer-css.js?ver=2.0.0" id="wd-defer-css-js" defer data-wp-strategy="defer"></script>
 <script defer src="https://aistudynow.com/wp-content/themes/js/tw-facade.js?ver=188609.0.0" id="tw-facade-js"></script>
 <script defer id="foxiz-core-js" src="https://aistudynow.com/wp-content/themes/js/core.js?ver=4.0.0"></script>
 <script>
