@@ -21,6 +21,279 @@ define( 'WD4_INLINE_CSS_ENABLED', true );
 
 
 
+// Master switch for deferred styles (off by default to prevent late HTML
+// mutations that trigger style recalculation bursts).
+if ( ! defined( 'WD4_DEFER_STYLES_ENABLED' ) ) {
+    define( 'WD4_DEFER_STYLES_ENABLED', false );
+}
+
+// Flag to opt into the verbose performance debugging helpers.
+if ( ! defined( 'WD4_PERF_DEBUG_ENABLED' ) ) {
+    define( 'WD4_PERF_DEBUG_ENABLED', false );
+}
+
+
+
+
+
+/**
+ * Determine whether we should adjust front-end only performance helpers.
+ */
+function wd4_is_front_context(): bool {
+    if ( is_admin() ) {
+        return false;
+    }
+    if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+        return false;
+    }
+    if ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() ) {
+        return false;
+    }
+
+    return true;
+}
+
+
+
+
+
+
+
+
+/**
+ * Trim the Foxiz share option map so only a compact list of networks render.
+ */
+function wd4_filter_share_option_matrix( array $options ): array {
+    $all_networks = array(
+        'facebook',
+        'twitter',
+        'flipboard',
+        'pinterest',
+        'whatsapp',
+        'linkedin',
+        'tumblr',
+        'reddit',
+        'vk',
+        'telegram',
+        'threads',
+        'bsky',
+        'email',
+        'copy',
+        'print',
+        'native',
+    );
+
+    $allowed_networks = array( 'twitter', 'linkedin', 'copy', 'email' );
+    $share_groups      = array( 'top', 'left', 'bottom', 'sticky' );
+
+    $options['share_top']    = 0;
+    $options['share_left']   = 0;
+    $options['share_sticky'] = 0;
+    $options['share_bottom'] = 1;
+
+    foreach ( $share_groups as $group ) {
+        foreach ( $all_networks as $network ) {
+            $key = 'share_' . $group . '_' . $network;
+
+            if ( isset( $options[ $key ] ) ) {
+                $options[ $key ] = in_array( $network, $allowed_networks, true ) ? 1 : 0;
+            }
+        }
+    }
+
+    return $options;
+}
+
+/**
+ * Override the in-memory option store before Foxiz renders the share templates.
+ */
+function wd4_optimize_theme_share_options(): void {
+    if ( ! wd4_is_front_context() ) {
+        return;
+    }
+
+    if ( ! defined( 'FOXIZ_TOS_ID' ) ) {
+        return;
+    }
+
+    $options = get_option( FOXIZ_TOS_ID, array() );
+    if ( ! is_array( $options ) ) {
+        return;
+    }
+
+    $trimmed = wd4_filter_share_option_matrix( $options );
+
+    add_filter(
+        'pre_option_' . FOXIZ_TOS_ID,
+        static function () use ( $trimmed ) {
+            return $trimmed;
+        }
+    );
+
+    $GLOBALS[ FOXIZ_TOS_ID ] = $trimmed;
+}
+add_action( 'init', 'wd4_optimize_theme_share_options', 8 );
+
+if ( ! function_exists( 'foxiz_render_share_list' ) ) {
+    /**
+     * Render a compact share list that keeps the DOM footprint tiny while
+     * preserving the theme class hooks for existing JavaScript behaviours.
+     */
+    function foxiz_render_share_list( array $settings ) {
+        if ( empty( $settings ) ) {
+            return;
+        }
+
+        $post_id = ! empty( $settings['post_id'] ) ? (int) $settings['post_id'] : get_the_ID();
+        if ( ! $post_id ) {
+            return;
+        }
+
+        $permalink = get_permalink( $post_id );
+        if ( ! $permalink ) {
+            return;
+        }
+
+        $title       = get_the_title( $post_id );
+        $encoded_url = rawurlencode( $permalink );
+        $encoded_txt = rawurlencode( html_entity_decode( $title, ENT_QUOTES, get_bloginfo( 'charset' ) ) );
+
+        $show_labels = ! empty( $settings['social_name'] );
+
+        $networks = array(
+            'twitter'  => array(
+                'class' => 'icon-twitter share-trigger',
+                'icon'  => 'rbi-twitter',
+                'label' => esc_html__( 'X', 'foxiz-child' ),
+                'url'   => sprintf( 'https://twitter.com/intent/tweet?text=%s&url=%s', $encoded_txt, $encoded_url ),
+                'attrs' => array( 'data-bound-share' => '1' ),
+            ),
+            'linkedin' => array(
+                'class' => 'icon-linkedin share-trigger',
+                'icon'  => 'rbi-linkedin',
+                'label' => esc_html__( 'LinkedIn', 'foxiz-child' ),
+                'url'   => sprintf( 'https://linkedin.com/shareArticle?mini=true&url=%s&title=%s', $encoded_url, $encoded_txt ),
+                'attrs' => array( 'data-bound-share' => '1' ),
+            ),
+            'email'    => array(
+                'class' => 'icon-email share-trigger',
+                'icon'  => 'rbi-email',
+                'label' => esc_html__( 'Email', 'foxiz-child' ),
+                'url'   => sprintf( 'mailto:?subject=%s&body=%s', $encoded_txt, rawurlencode( $permalink ) ),
+            ),
+            'copy'     => array(
+                'class' => 'icon-copy',
+                'icon'  => 'rbi-link-o',
+                'label' => esc_html__( 'Copy Link', 'foxiz-child' ),
+                'url'   => '#',
+                'attrs' => array(
+                    'rel'        => 'nofollow',
+                    'role'       => 'button',
+                    'data-copy'  => esc_url( $permalink ),
+                    'data-link'  => esc_url( $permalink ),
+                    'data-copied'=> esc_attr__( 'Copied!', 'foxiz-child' ),
+                    'data-bound-copy' => '1',
+                ),
+            ),
+        );
+
+        $output = array();
+
+        foreach ( $networks as $key => $config ) {
+            if ( empty( $settings[ $key ] ) ) {
+                continue;
+            }
+
+            $classes = array( 'share-action', $config['class'], 'share-' . $key );
+
+            if ( 'copy' === $key ) {
+                $classes[] = 'copy-trigger';
+            }
+
+            $attr = array(
+                'class'      => implode( ' ', array_map( 'sanitize_html_class', $classes ) ),
+                'href'       => 'copy' === $key ? '#' : esc_url( $config['url'] ),
+                'target'     => 'copy' === $key ? '' : '_blank',
+                'rel'        => 'copy' === $key ? 'nofollow' : 'nofollow noopener',
+                'role'       => 'listitem',
+                'aria-label' => 'copy' === $key
+                    ? esc_html__( 'Copy article link', 'foxiz-child' )
+                    : sprintf( esc_html__( 'Share on %s', 'foxiz-child' ), $config['label'] ),
+                'data-title' => $config['label'],
+            );
+
+            if ( ! empty( $config['attrs'] ) && is_array( $config['attrs'] ) ) {
+                foreach ( $config['attrs'] as $name => $value ) {
+                    $attr[ $name ] = $value;
+                }
+            }
+
+            if ( 'copy' === $key ) {
+                $attr['data-copy']  = esc_url( $permalink );
+                $attr['data-link']  = esc_url( $permalink );
+                $attr['data-title'] = $title ? esc_attr( $title ) : '';
+            }
+
+            $attr_string = '';
+            foreach ( $attr as $name => $value ) {
+                if ( '' === $value ) {
+                    continue;
+                }
+
+                $attr_string .= sprintf( ' %s="%s"', esc_attr( $name ), esc_attr( $value ) );
+            }
+
+            $icon  = sprintf( '<i class="rbi %s" aria-hidden="true"></i>', esc_attr( $config['icon'] ) );
+            $label = $show_labels ? sprintf( '<span>%s</span>', esc_html( $config['label'] ) ) : '';
+
+            $output[] = sprintf( '<a%s>%s%s</a>', $attr_string, $icon, $label );
+        }
+
+        echo implode( '', $output );
+    }
+}
+
+/**
+ * Slim down the default comment form to remove rarely used fields.
+ */
+function wd4_slim_comment_form_fields( array $fields ): array {
+    unset( $fields['url'], $fields['cookies'] );
+    return $fields;
+}
+add_filter( 'comment_form_default_fields', 'wd4_slim_comment_form_fields' );
+
+add_filter( 'comment_form_defaults', function ( array $defaults ): array {
+    $defaults['comment_notes_before'] = '';
+    return $defaults;
+} );
+
+add_action( 'wp_enqueue_scripts', function () {
+    if ( ! wd4_is_front_context() || ! is_singular() ) {
+        return;
+    }
+
+    if ( ! comments_open() && 0 === get_comments_number() ) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'wd-comment-toggle',
+        get_stylesheet_directory_uri() . '/js/comment-toggle.js',
+        [],
+        '20241128',
+        true
+    );
+} );
+
+
+
+
+
+
+
+
+
+
 add_filter( 'show_admin_bar', function( $show ) {
     if ( ! is_admin() ) {
         return false; // no admin bar on the front-end
@@ -29,7 +302,7 @@ add_filter( 'show_admin_bar', function( $show ) {
 });
 
 
-
+if ( WD4_PERF_DEBUG_ENABLED ) {
 add_action( 'wp_footer', function () {
     // Only for admins to avoid spamming real users
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -370,7 +643,7 @@ add_action( 'wp_head', function () {
     <?php
 }, 0);
 
-
+}
 
 
 
@@ -511,6 +784,9 @@ add_filter('wp_calculate_image_sizes', function ($sizes, $size, $image_src, $ima
  * -------------------------------------------------------------------------
  */
 function wd4_should_defer_styles(): bool {
+    if ( defined( 'WD4_DEFER_STYLES_ENABLED' ) && ! WD4_DEFER_STYLES_ENABLED ) {
+        return false;
+    }
     $is_ajax = function_exists( 'wp_doing_ajax' ) && wp_doing_ajax();
 
     if ( is_admin() || $is_ajax || is_customize_preview() ) {
@@ -520,6 +796,18 @@ function wd4_should_defer_styles(): bool {
         return false;
     }
     if ( is_search() ) {
+        return false;
+    }
+
+    // PSI highlights long recalculation bursts on single posts when the
+    // stylesheet promotion script batches large chunks of CSS at once.
+    // Let those templates load their styles synchronously so the browser can
+    // calculate layout incrementally during parse instead of after idle.
+    if ( is_singular( 'post' ) ) {
+        return false;
+    }
+
+    if ( function_exists( 'wp_is_mobile' ) && wp_is_mobile() ) {
         return false;
     }
     return (bool) apply_filters( 'wd4_enable_deferred_styles', true );
@@ -720,7 +1008,7 @@ function wd4_enqueue_defer_css_script(): void {
     $script_handle = 'wd-defer-css';
     $script_src    = get_stylesheet_directory_uri() . '/js/defer-css.js';
 
-    wp_enqueue_script( $script_handle, $script_src, array(), '1.0.0', true );
+    wp_enqueue_script( $script_handle, $script_src, array(), '1.1.0', true );
 
     if ( function_exists( 'wp_script_add_data' ) ) {
         wp_script_add_data( $script_handle, 'strategy', 'defer' );
@@ -974,8 +1262,8 @@ function wd4_enqueue_styles(): void {
     $is_account = function_exists( 'is_account_page' ) && is_account_page();
 
     if ( is_front_page() || is_home() ) {
-        wp_enqueue_style( 'main',    'https://aistudynow.com/wp-content/themes/css/header/main.css',   array(), '8580591100565677766876655777999980.0' );
-        wp_enqueue_style( 'slider',  'https://aistudynow.com/wp-content/themes/css/header/slider.css', array(), '856678576655777999980.0' );
+        wp_enqueue_style( 'main',    'https://aistudynow.com/wp-content/themes/css/header/main.css',   array(), '998580591100565677766876655777999980.0' );
+        wp_enqueue_style( 'slider',  'https://aistudynow.com/wp-content/themes/css/header/slider.css', array(), '9856678576655777999980.0' );
         wp_enqueue_style( 'divider', 'https://aistudynow.com/wp-content/themes/css/header/divider.css', array(), '66997876655777999980.0' );
         wp_enqueue_style( 'grid',    'https://aistudynow.com/wp-content/themes/css/header/grid.css',   array(), '85667876655777999980.0' );
         wp_enqueue_style( 'footer',  'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '667876655777999980.0' );
@@ -989,13 +1277,13 @@ function wd4_enqueue_styles(): void {
     }
 
     if ( is_singular( 'post' ) ) {
-        wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '8885909999880.0' );
-        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '7119107999980.0' );
+        wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '3399966976444448885909999880.0' );
+        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '447119107999980.0' );
         wp_enqueue_style( 'sidebar',     'https://aistudynow.com/wp-content/themes/css/header/single/sidebar.css',     array(), '667876655777999980.0' );
         wp_enqueue_style( 'email',       'https://aistudynow.com/wp-content/themes/css/header/single/email.css',       array(), '667876655777999980.0' );
-        wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '667876655777999980.0' );
+        wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '97667876655777999980.0' );
         wp_enqueue_style( 'sharesingle', 'https://aistudynow.com/wp-content/themes/css/header/single/sharesingle.css', array(), '5667876655777999980.0' );
-        wp_enqueue_style( 'related',     'https://aistudynow.com/wp-content/themes/css/header/single/related.css',     array(), '667876655777999980.0' );
+
         wp_enqueue_style( 'author',      'https://aistudynow.com/wp-content/themes/css/header/single/author.css',      array(), '667876655777999980.0' );
         wp_enqueue_style( 'comment',     'https://aistudynow.com/wp-content/themes/css/header/single/comment.css',     array(), '99667876655777999980.0' );
         wp_enqueue_style( 'footer',      'https://aistudynow.com/wp-content/themes/css/header/footer.css',             array(), '667876655777999980.0' );
@@ -1099,13 +1387,18 @@ function my_detect_view_context(): string {
 }
 
 function my_get_allowed_js_handles_by_context( string $context ): array {
+
+
+
+    $defer_handle = wd4_should_defer_styles() ? 'wd-defer-css' : '';
+
     $allowed = array(
-        'home'     => array( 'main', 'pagination', 'lazy', 'wd-defer-css' ),
-        'category' => array( 'main', 'pagination', 'lazy', 'wd-defer-css' ),
+        'home'     => array( 'main', 'pagination', 'lazy', $defer_handle ),
+        'category' => array( 'main', 'pagination', 'lazy', $defer_handle ),
         'search'   => array(),
         'author'   => array(),
-        'post'     => array('comment','download','main','lazy','pagination','foxiz-core','wd-defer-css','tw-facade'),
-        'page'     => array('comment','download','main','lazy','pagination','foxiz-core','wd-defer-css','tw-facade'),
+        'post'     => array('comment','download','main','lazy','pagination','foxiz-core', $defer_handle, 'tw-facade'),
+        'page'     => array('comment','download','main','lazy','pagination','foxiz-core', $defer_handle, 'tw-facade'),
         'other'    => array(),
    );
     $list = $allowed[ $context ] ?? array();
@@ -1124,11 +1417,12 @@ function my_register_context_only_scripts(): void {
     $core_js       = 'https://aistudynow.com/wp-content/themes/js/core.js';
     $defer_js      = 'https://aistudynow.com/wp-content/themes/js/defer-css.js';
     $tw_facade_js  = 'https://aistudynow.com/wp-content/themes/js/tw-facade.js';
-
     if ( 'home' === $context ) {
         wp_enqueue_script( 'main', $main, array(), '2.0.0', true );
         wp_enqueue_script( 'pagination', $pagination_js, array(), '1.0.1', true );
-        wp_enqueue_script( 'wd-defer-css', $defer_js, array(), '2.0.0', true );
+        if ( wd4_should_defer_styles() ) {
+            wp_enqueue_script( 'wd-defer-css', $defer_js, array(), '2.0.0', true );
+        }
 
         $home_block_globals = <<<'JS'
 var uid_cfc8f6c = {"uuid":"uid_cfc8f6c","category":"208","name":"grid_flex_2","order":"date_post","posts_per_page":"12","pagination":"load_more","unique":"1","crop_size":"foxiz_crop_g1","entry_category":"bg-4","title_tag":"h2","entry_meta":["author","category"],"review_meta":"-1","excerpt_source":"tagline","readmore":"Read More","block_structure":"thumbnail, meta, title","divider_style":"solid","post_not_in":"5403,5400,5395,5392","paged":"1","page_max":"1"};
@@ -1143,7 +1437,9 @@ JS;
     if ( 'category' === $context ) {
         wp_enqueue_script( 'main', $main, array(), '4.0.0', true );
         wp_enqueue_script( 'pagination', $pagination_js, array(), '1.0.1', true );
-        wp_enqueue_script( 'wd-defer-css', $defer_js, array(), '2.0.0', true );
+        if ( wd4_should_defer_styles() ) {
+            wp_enqueue_script( 'wd-defer-css', $defer_js, array(), '2.0.0', true );
+        }
 
         global $wp_query;
         $qo             = get_queried_object();
@@ -1220,11 +1516,72 @@ JS,
         wp_enqueue_script( 'pagination', $pagination_js, array(), '5.0.1', true );
         wp_enqueue_script( 'download', $download, array(), '000.0.0', true );
         wp_enqueue_script( 'foxiz-core', $core_js, array(), '7.0.0', true );
-        wp_enqueue_script( 'wd-defer-css', $defer_js, array(), '2.0.0', true );
+        if ( wd4_should_defer_styles() ) {
+            wp_enqueue_script( 'wd-defer-css', $defer_js, array(), '2.0.0', true );
+        }
         wp_enqueue_script( 'tw-facade', $tw_facade_js, array(), '188609.0.0', true );
     }
+    
+    
+    
+    
+    
 }
 add_action( 'wp_enqueue_scripts', 'my_register_context_only_scripts', 20 );
+
+
+
+
+function wd4_bootstrap_nav_measure_inline(): void {
+    static $added = false;
+
+    if ( $added ) {
+        return;
+    }
+
+    if ( is_admin() ) {
+        return;
+    }
+
+    if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+        return;
+    }
+
+    $context = my_detect_view_context();
+    if ( ! in_array( $context, array( 'home', 'category', 'post', 'page' ), true ) ) {
+        return;
+    }
+
+    if ( ! wp_script_is( 'main', 'enqueued' ) ) {
+        return;
+    }
+
+    $path = trailingslashit( get_stylesheet_directory() ) . 'js/nav-measure-lite.js';
+    if ( ! file_exists( $path ) || ! is_readable( $path ) ) {
+        return;
+    }
+
+    $script = file_get_contents( $path );
+    if ( false === $script ) {
+        return;
+    }
+
+    $script = trim( $script );
+    if ( '' === $script ) {
+        return;
+    }
+
+    wp_add_inline_script( 'main', $script, 'after' );
+    $added = true;
+}
+add_action( 'wp_enqueue_scripts', 'wd4_bootstrap_nav_measure_inline', 99 );
+
+
+
+
+
+
+
 
 function wd4_mark_core_script_deferred(): void {
     if ( is_admin() ) return;
@@ -1353,3 +1710,7 @@ add_action( 'shutdown', function (): void {
         @ob_end_flush();
     }
 }, PHP_INT_MAX );
+
+
+
+
