@@ -868,23 +868,31 @@ if ( ! function_exists( 'foxiz_entry_meta_read_time' ) ) {
 		}
 
 		$classes[] = 'meta-el meta-read';
-		if ( ! empty( $settings['tablet_hide_meta'] ) && is_array( $settings['tablet_hide_meta'] ) && in_array( 'read', $settings['tablet_hide_meta'] ) ) {
-			$classes[] = 'tablet-hide';
-		}
-		if ( ! empty( $settings['mobile_hide_meta'] ) && is_array( $settings['mobile_hide_meta'] ) && in_array( 'read', $settings['mobile_hide_meta'] ) ) {
-			$classes[] = 'mobile-hide';
-		}
-		if ( ! empty( $settings['mobile_last'] ) && 'read' === $settings['mobile_last'] ) {
-			$classes[] = 'mobile-last-meta';
-		}
-		if ( ! empty( $settings['tablet_last'] ) && 'read' === $settings['tablet_last'] ) {
-			$classes[] = 'tablet-last-meta';
-		}
-		?>
-		    <li class="<?php echo join( ' ', $classes ); ?>"><?php if ( foxiz_get_option( 'meta_read_icon', false ) ) {
+                if ( ! empty( $settings['tablet_hide_meta'] ) && is_array( $settings['tablet_hide_meta'] ) && in_array( 'read', $settings['tablet_hide_meta'] ) ) {
+                        $classes[] = 'tablet-hide';
+                }
+                if ( ! empty( $settings['mobile_hide_meta'] ) && is_array( $settings['mobile_hide_meta'] ) && in_array( 'read', $settings['mobile_hide_meta'] ) ) {
+                        $classes[] = 'mobile-hide';
+                }
+                if ( ! empty( $settings['mobile_last'] ) && 'read' === $settings['mobile_last'] ) {
+                        $classes[] = 'mobile-last-meta';
+                }
+                if ( ! empty( $settings['tablet_last'] ) && 'read' === $settings['tablet_last'] ) {
+                        $classes[] = 'tablet-last-meta';
+                }
+
+                $wrap_tag = 'li';
+                if ( ! empty( $settings['wrap_tag'] ) && is_string( $settings['wrap_tag'] ) ) {
+                        $candidate = strtolower( $settings['wrap_tag'] );
+                        if ( in_array( $candidate, [ 'div', 'li', 'span' ], true ) ) {
+                                $wrap_tag = $candidate;
+                        }
+                }
+                ?>
+                    <<?php echo $wrap_tag; ?> class="<?php echo join( ' ', $classes ); ?>"><?php if ( foxiz_get_option( 'meta_read_icon', false ) ) {
                                 echo '<i class="rbi rbi-watch" aria-hidden="true"></i>';
                         }
-                        foxiz_render_inline_html( $p_label . $read_string . $s_label ); ?></li>
+                        foxiz_render_inline_html( $p_label . $read_string . $s_label ); ?></<?php echo $wrap_tag; ?>>
                 <?php
         }
 }
@@ -1534,66 +1542,71 @@ if ( ! function_exists( 'foxiz_get_review_stars' ) ) {
 	}
 }
 
+
+
+
+
+
+
 if ( ! function_exists( 'foxiz_get_author_info' ) ) {
-	function foxiz_get_author_info( $author_id = '' ) {
+        function foxiz_get_author_info( $author_id = '' ) {
 
-		if ( ! $author_id ) {
-			return false;
-		}
+                if ( ! $author_id ) {
+                        return false;
+                }
 
-		$author_description = get_the_author_meta( 'description', $author_id );
+                $author_description = get_the_author_meta( 'description', $author_id );
 
-		if ( empty( $author_description ) ) {
-			return false;
-		}
+                if ( empty( $author_description ) ) {
+                        return false;
+                }
 
-		$output          = '';
-		$author_url      = get_author_posts_url( $author_id );
-		$author_name     = get_the_author_meta( 'display_name', $author_id );
-		$author_job      = get_the_author_meta( 'job', $author_id );
-		$author_image_id = (int) get_the_author_meta( 'author_image_id', $author_id );
-		$social_list     = foxiz_get_social_list( foxiz_get_user_socials( $author_id ), true, false );
+                $author_url      = get_author_posts_url( $author_id );
+                $author_name     = get_the_author_meta( 'display_name', $author_id );
+                $author_job      = get_the_author_meta( 'job', $author_id );
+                $author_image_id = (int) get_the_author_meta( 'author_image_id', $author_id );
+                $author_site     = get_the_author_meta( 'user_url', $author_id );
 
-		$output .= '<div class="ubox">';
-		$output .= '<div class="ubox-header">';
-		$output .= '<div class="author-info-wrap">';
-		$output .= '<a class="author-avatar" href="' . $author_url . '" rel="nofollow" aria-label="' . sprintf( foxiz_html__( 'Visit posts by %s', 'foxiz' ), $author_name ) . '">';
-		if ( $author_image_id !== 0 ) {
-			$output .= foxiz_get_avatar_by_attachment( $author_image_id );
-		} else {
-			$output .= get_avatar( $author_id, 100 );
-		}
-		$output .= '</a>';
-		$output .= '<div class="is-meta">';
-		$output .= '<div class="nname-info meta-author">';
-		$output .= '<span class="meta-label">' . foxiz_html__( 'By', 'foxiz' ) . '</span>';
-		if ( ! is_author() ) {
-			$output .= '<a class="nice-name" href="' . $author_url . '">' . $author_name . '</a>';
-		} else {
-			$output .= '<span class="nice-name">' . $author_name . '</span>';
-		}
-		if ( foxiz_is_author_tick( $author_id ) ) {
-			$output .= '<i class="verified-tick rbi rbi-wavy"></i>';
-		}
-		$output .= '</div>';
-		if ( ! empty( $author_job ) ) {
-			$output .= '<span class="author-job">' . $author_job . '</span>';
-		}
-		$output .= '</div>';
-		$output .= '</div>';
+                if ( $author_image_id !== 0 ) {
+                        $avatar = foxiz_get_avatar_by_attachment( $author_image_id );
+                } else {
+                        $avatar = get_avatar( $author_id, 96 );
+                }
 
-		if ( ! empty( $social_list ) ) {
-			$output .= '<div class="usocials tooltips-n meta-text">';
-			$output .= '<span class="ef-label">' . foxiz_html__( 'Follow: ', 'foxiz' ) . '</span>';
-			$output .= $social_list;
-			$output .= '</div>';
-		}
-		$output .= '</div>';
-		$output .= '<div class="bio-description rb-text">' . foxiz_strip_tags( $author_description ) . '</div>';
-		$output .= '</div>';
+                $card_id = 'author-card-' . $author_id;
 
-		return $output;
-	}
+                $output  = '<section class="author-card" aria-labelledby="' . esc_attr( $card_id ) . '">';
+                $output .= '<a class="author-card__avatar" href="' . esc_url( $author_url ) . '" rel="nofollow" aria-label="' . esc_attr( sprintf( foxiz_html__( 'Visit posts by %s', 'foxiz' ), $author_name ) ) . '">';
+                $output .= $avatar;
+                $output .= '</a>';
+                $output .= '<div class="author-card__body">';
+                $output .= '<p class="author-card__name" id="' . esc_attr( $card_id ) . '">';
+                $output .= '<span class="author-card__label">' . foxiz_html__( 'By', 'foxiz' ) . '</span> ';
+                if ( ! is_author() ) {
+                        $output .= '<a class="author-card__link" href="' . esc_url( $author_url ) . '">' . esc_html( $author_name ) . '</a>';
+                } else {
+                        $output .= '<span class="author-card__link">' . esc_html( $author_name ) . '</span>';
+                }
+                if ( foxiz_is_author_tick( $author_id ) ) {
+                        $output .= '<span class="author-card__verified rbi rbi-wavy" aria-hidden="true"></span>';
+                }
+                $output .= '</p>';
+
+                if ( ! empty( $author_job ) ) {
+                        $output .= '<p class="author-card__job">' . foxiz_strip_tags( $author_job ) . '</p>';
+                }
+
+                $output .= '<p class="author-card__bio">' . foxiz_strip_tags( $author_description ) . '</p>';
+
+                if ( ! empty( $author_site ) ) {
+                        $output .= '<p class="author-card__links"><a class="author-card__website" href="' . esc_url( $author_site ) . '" rel="noopener nofollow" target="_blank">' . foxiz_html__( 'Website', 'foxiz' ) . '</a></p>';
+                }
+
+                $output .= '</div>';
+                $output .= '</section>';
+
+                return $output;
+        }
 }
 
 if ( ! function_exists( 'foxiz_get_entry_sponsored' ) ) {

@@ -481,6 +481,15 @@ if ( ! function_exists( 'foxiz_is_single_share_top' ) ) {
 	}
 }
 
+
+
+
+
+
+
+
+
+
 if ( ! function_exists( 'foxiz_single_share_top' ) ) {
 	function foxiz_single_share_top( $settings = [] ) {
 
@@ -496,123 +505,143 @@ if ( ! function_exists( 'foxiz_single_share_top' ) ) {
 		if ( foxiz_get_option( 'share_top_color' ) ) {
 			$classes .= ' is-color';
 		} ?>
-		<div class="<?php echo strip_tags( $classes ); ?>">
-			<div class="t-shared-header is-meta">
-				<i class="rbi rbi-share" aria-hidden="true"></i><span class="share-label"><?php foxiz_html_e( 'Share', 'foxiz' ); ?></span>
-			</div>
-			<div class="effect-fadeout"><?php foxiz_render_share_list( $settings ); ?></div>
-		</div>
+		
+		
+		
+                <nav class="<?php echo strip_tags( $classes ); ?>" aria-label="<?php echo esc_attr_x( 'Share this article', 'single post share label', 'foxiz' ); ?>">
+                        <span class="share-label"><?php foxiz_html_e( 'Share', 'foxiz' ); ?></span>
+                        <div class="share-links" role="list"><?php foxiz_render_share_list( $settings ); ?></div>
+                </nav>
 		<?php
 	}
 }
+
+
+
+
+
+
+
+
+
+
 
 if ( ! function_exists( 'foxiz_single_header_meta' ) ) {
-	function foxiz_single_header_meta( $prefix = 'single_post', $settings = [] ) {
+        function foxiz_single_header_meta( $prefix = 'single_post', $settings = [] ) {
 
-		$post_id                   = get_the_ID();
-		$classes                   = [];
-		$classes[]                 = 'single-meta';
-		$settings['prefix_id']     = $prefix;
-		$settings['feat_lazyload'] = 'none';
-		$post_type                 = get_post_type();
+                $post_id = get_the_ID();
+                if ( empty( $post_id ) ) {
+                        return;
+                }
 
-		if ( 'single_post' === $prefix && 'post' !== $post_type && empty( $settings['entry_meta'] ) ) {
-			$settings['entry_meta'] = foxiz_get_option( 'single_post_entry_meta_keys_' . $post_type );
-		}
+                $post_type                 = get_post_type( $post_id );
+                $settings['prefix_id']     = $prefix;
+                $settings['feat_lazyload'] = 'none';
 
-		$meta_layout = ! empty( $settings['meta_layout'] ) ? $settings['meta_layout'] : foxiz_get_option( $prefix . '_meta_layout', '0' );
-		$divider     = ! empty( $settings['meta_divider'] ) ? $settings['meta_divider'] : (
-		! empty( $prefix_divider = foxiz_get_option( $prefix . '_meta_divider' ) ) ? $prefix_divider : foxiz_get_option( 'meta_divider' )
-		);
+                if ( 'single_post' === $prefix && 'post' !== $post_type && empty( $settings['entry_meta'] ) ) {
+                        $settings['entry_meta'] = foxiz_get_option( 'single_post_entry_meta_keys_' . $post_type );
+                }
 
-		$big_avatar          = empty( $settings['avatar'] ) ? foxiz_get_option( $prefix . '_avatar' ) : '-1' !== (string) $settings['avatar'];
-		$update_date         = empty( $settings['updated_meta'] ) ? foxiz_get_option( $prefix . '_updated_meta' ) : '-1' !== (string) $settings['updated_meta'];
-		$min_read            = empty( $settings['min_read'] ) ? foxiz_get_option( $prefix . '_min_read' ) : '-1' !== (string) $settings['min_read'];
-		$meta_border         = empty( $settings['meta_border'] ) ? foxiz_get_option( $prefix . '_meta_border' ) : '-1' !== (string) $settings['meta_border'];
-		$meta_centered       = empty( $settings['meta_centered'] ) ? foxiz_get_option( $prefix . '_meta_centered' ) : '-1' !== (string) $settings['meta_centered'];
-		$meta_author_style   = ! empty( $settings['meta_author_style'] ) ? $settings['meta_author_style'] : foxiz_get_option( $prefix . '_meta_author_style' );
-		$meta_bookmark_style = ! empty( $settings['meta_bookmark_style'] ) ? $settings['meta_bookmark_style'] : foxiz_get_option( $prefix . '_meta_bookmark_style' );
-		$is_sponsored_post   = foxiz_is_sponsored_post( $post_id );
+                $show_avatar  = empty( $settings['avatar'] ) ? foxiz_get_option( $prefix . '_avatar' ) : '-1' !== (string) $settings['avatar'];
+                $show_updated = empty( $settings['updated_meta'] ) ? foxiz_get_option( $prefix . '_updated_meta' ) : '-1' !== (string) $settings['updated_meta'];
+                $show_read    = empty( $settings['min_read'] ) ? foxiz_get_option( $prefix . '_min_read' ) : '-1' !== (string) $settings['min_read'];
 
-		if ( ! empty( $divider ) ) {
-			$classes[] = 'meta-s-' . $divider;
-		}
-		$classes[] = 'yes-' . $meta_layout;
+                $author_id   = (int) get_post_field( 'post_author', $post_id );
+                $author_name = $author_id ? get_the_author_meta( 'display_name', $author_id ) : '';
+                $author_url  = $author_id ? get_author_posts_url( $author_id ) : '';
 
-		if ( $meta_author_style ) {
-			$classes[] = 'is-meta-author-' . $meta_author_style;
-		}
-		if ( $meta_bookmark_style ) {
-			$classes[] = 'is-bookmark-' . $meta_bookmark_style;
-		}
-		if ( ! empty( $meta_border ) ) {
-			$classes[] = 'yes-border';
-		}
-		if ( ! empty( $meta_centered ) ) {
-			$classes[] = 'yes-center';
-		}
-		if ( $is_sponsored_post ) {
-			$classes[] = 'is-sponsored';
-		}
-		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( $is_sponsored_post ) :
-			
-			
-					foxiz_single_sponsor( $post_id );
-			else : ?>
-				<div class="smeta-in">
-                                        <?php if ( ! empty( $big_avatar ) ) {
-                                                foxiz_entry_meta_avatar( [
-                                                                'avatar_size'   => 120,
-                                                                'feat_lazyload' => $settings['feat_lazyload'],
-                                                                'wrap_tag'      => 'div',
-                                                ] );
-                                        } ?>
-					<div class="smeta-sec">
-						<?php if ( ! empty( $update_date ) ) :
-							$format = foxiz_get_option( $prefix . '_update_format' );
-							if ( empty( $format ) ) {
-								$format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
-							} ?>
-							<div class="smeta-bottom meta-text">
-								<time class="updated-date" datetime="<?php echo get_the_modified_date( DATE_W3C ); ?>"><?php
-									if ( foxiz_get_option( 'single_post_updated_label' ) ) {
-										echo foxiz_html__( 'Last updated:', 'foxiz' ) . ' ';
-									}
-									echo get_the_modified_date( $format, $post_id );
-									?></time>
-							</div>
-						<?php endif; ?>
-                                                <ul class="p-meta is-meta">
-                                                        <?php echo foxiz_get_single_entry_meta( $settings ); ?>
-                                                </ul>
-					</div>
-				</div>
-			<?php endif;
-			$share_settings = foxiz_is_single_share_top( $post_id );
-			if ( ! empty( $share_settings ) || ! empty( $min_read ) ) : ?>
-				<div class="smeta-extra"><?php
-					if ( ! empty( $share_settings ) ) {
-						$share_settings['has_read_meta'] = $min_read;
-						foxiz_single_share_top( $share_settings );
-					}
-                                        if ( ! empty( $min_read ) ) {
-                                                echo '<div class="single-right-meta single-time-read is-meta">';
-                                                foxiz_entry_meta_read_time(
-                                                        [
-                                                                'post_id' => $post_id,
-                                                                'wrap_tag' => 'div',
-                                                        ]
-                                                );
-                                                echo '</div>';
-                                        }
-					?></div>
-			<?php endif; ?>
-		</div>
-		<?php
-	}
+                $format = foxiz_get_option( $prefix . '_update_format' );
+                if ( empty( $format ) ) {
+                        $format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+                }
+                $updated_prefix = foxiz_get_option( 'single_post_updated_label' ) ? foxiz_html__( 'Last updated:', 'foxiz' ) . ' ' : '';
+                $updated_text   = $show_updated ? get_the_modified_date( $format, $post_id ) : '';
+
+                $taxonomy = 'category';
+                if ( 'post' !== $post_type ) {
+                        $maybe_tax = foxiz_get_option( 'post_type_tax_' . $post_type );
+                        if ( ! empty( $maybe_tax ) ) {
+                                $taxonomy = $maybe_tax;
+                        }
+                }
+
+                $primary_category = '';
+                $primary_link     = '';
+                $terms            = get_the_terms( $post_id, $taxonomy );
+                if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+                        $main_term = array_shift( $terms );
+                        if ( $main_term instanceof WP_Term ) {
+                                $primary_category = $main_term->name;
+                                if ( function_exists( 'foxiz_get_term_link' ) ) {
+                                        $primary_link = foxiz_get_term_link( $main_term->term_id );
+                                } else {
+                                        $primary_link = get_term_link( $main_term );
+                                }
+                        }
+                }
+
+                $share_settings = [
+                        'post_id' => $post_id,
+                        'twitter' => 1,
+                        'linkedin' => 1,
+                        'email' => 1,
+                        'copy' => 1,
+                ];
+
+                $read_time = '';
+                if ( $show_read && function_exists( 'wd4_get_compact_read_time' ) ) {
+                        $read_time = wd4_get_compact_read_time( $post_id );
+                }
+
+                $container_classes = [ 'single-meta', 'simple-meta' ];
+                if ( foxiz_is_sponsored_post( $post_id ) ) {
+                        $container_classes[] = 'is-sponsored';
+                }
+                ?>
+                <div class="<?php echo esc_attr( implode( ' ', $container_classes ) ); ?>">
+                        <?php if ( foxiz_is_sponsored_post( $post_id ) ) : ?>
+                                <?php foxiz_single_sponsor( $post_id ); ?>
+                        <?php endif; ?>
+                        <div class="simple-meta__primary">
+                                <?php if ( ! empty( $show_avatar ) && $author_id ) : ?>
+                                        <a class="simple-meta__avatar" href="<?php echo esc_url( $author_url ); ?>" rel="nofollow">
+                                                <?php echo get_avatar( $author_id, 96, '', $author_name ?: get_the_title( $post_id ), [ 'loading' => 'lazy' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                        </a>
+                                <?php endif; ?>
+                                <div class="simple-meta__details">
+                                        <?php if ( $show_updated && $updated_text ) : ?>
+                                                <time class="simple-meta__updated" datetime="<?php echo esc_attr( get_the_modified_date( DATE_W3C, $post_id ) ); ?>"><?php echo esc_html( $updated_prefix . $updated_text ); ?></time>
+                                        <?php endif; ?>
+                                        <div class="simple-meta__byline">
+                                                <?php if ( $author_name && $author_url ) : ?>
+                                                        <span class="simple-meta__author"><?php echo esc_html__( 'By', 'foxiz' ); ?> <a href="<?php echo esc_url( $author_url ); ?>" class="simple-meta__author-link"><?php echo esc_html( $author_name ); ?></a></span>
+                                                <?php endif; ?>
+                                                <?php if ( $primary_category && $primary_link ) : ?>
+                                                        <span class="simple-meta__separator" aria-hidden="true">·</span>
+                                                        <span class="simple-meta__category"><a href="<?php echo esc_url( $primary_link ); ?>" class="simple-meta__category-link"><?php echo esc_html( $primary_category ); ?></a></span>
+                                                <?php endif; ?>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="simple-meta__actions">
+                                <nav class="simple-meta__share" aria-label="<?php echo esc_attr_x( 'Share this article', 'single post share label', 'foxiz' ); ?>">
+                                        <?php foxiz_render_share_list( $share_settings ); ?>
+                                </nav>
+                                <?php if ( $read_time ) : ?>
+                                        <span class="simple-meta__readtime"><?php echo esc_html( $read_time ); ?></span>
+                                <?php endif; ?>
+                        </div>
+                </div>
+                <?php
+        }
 }
+
+
+
+
+
+
+
 
 if ( ! function_exists( 'foxiz_get_single_entry_meta' ) ) {
 	function foxiz_get_single_entry_meta( $settings = [] ) {
@@ -999,17 +1028,16 @@ if ( ! function_exists( 'foxiz_single_share_bottom' ) ) {
 		if ( foxiz_get_option( 'share_bottom_color' ) ) {
 			$class_name .= ' is-bg';
 		}
-		$post_type = get_post_type();
-		$label     = ( 'podcast' === $post_type ) ? foxiz_html__( 'Share This Episode', 'foxiz' ) : foxiz_html__( 'Share This Article', 'foxiz' );
-		?>
-		<div class="e-shared-sec entry-sec">
-			<div class="e-shared-header h4">
-				<i class="rbi rbi-share" aria-hidden="true"></i><span><?php echo apply_filters( 'rb_share_label', $label, $post_type ) ?></span>
-			</div>
-			<div class="<?php echo strip_tags( $class_name ); ?>">
-				<?php foxiz_render_share_list( $settings ); ?>
-			</div>
-		</div>
+		 $post_type   = get_post_type();
+                $label       = ( 'podcast' === $post_type ) ? foxiz_html__( 'Share This Episode', 'foxiz' ) : foxiz_html__( 'Share This Article', 'foxiz' );
+                $share_label = apply_filters( 'rb_share_label', $label, $post_type );
+                ?>
+                <nav class="e-shared-sec entry-sec" aria-label="<?php echo esc_attr( $share_label ); ?>">
+                        <span class="e-shared-title"><?php echo $share_label; ?></span>
+                        <div class="<?php echo strip_tags( $class_name ); ?> share-links" role="list">
+                                <?php foxiz_render_share_list( $settings ); ?>
+                        </div>
+                </nav>
 		<?php
 	}
 }
@@ -1029,12 +1057,27 @@ if ( ! function_exists( 'foxiz_single_comment' ) ) {
 			return;
 		}
 
-		?>
-		<div class="comment-box-wrap entry-sec"><?php comments_template(); ?></div>
-		<?php
-	}
-}
+                ob_start();
+                comments_template();
+                $comment_markup = trim( ob_get_clean() );
 
+                if ( empty( $comment_markup ) ) {
+                        return;
+                }
+
+                $comment_slot_id = 'comments-slot-' . get_the_ID();
+                ?>
+                <div class="comment-box-wrap entry-sec has-lazy-comments">
+                        <button type="button" class="comment-toggle" data-comment-target="<?php echo esc_attr( $comment_slot_id ); ?>" aria-expanded="false">
+                                <?php foxiz_html_e( 'Load comments', 'foxiz' ); ?>
+                        </button>
+                        <div id="<?php echo esc_attr( $comment_slot_id ); ?>" class="comment-slot" hidden></div>
+                        <template id="<?php echo esc_attr( $comment_slot_id ); ?>-tpl"><?php echo $comment_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></template>
+                        <noscript><?php echo $comment_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></noscript>
+                </div>
+                <?php
+        }
+}
 if ( ! function_exists( 'foxiz_get_review_heading' ) ) {
 	/**
 	 * @param string $post_id
@@ -2127,7 +2170,7 @@ if ( ! function_exists( 'foxiz_entry_meta_author_single' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 		?>
-		 <li class="<?php echo join( ' ', $classes ); ?>">
+		  <li class="<?php echo join( ' ', $classes ); ?>">
                         <?php if ( $p_label ) : ?>
                                 <span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
                         <?php endif; ?>
@@ -2184,43 +2227,54 @@ if ( ! function_exists( 'foxiz_entry_meta_authors_single' ) ) {
 			$classes[] = 'tablet-last-meta';
 		}
 
-		if ( $s_label ) {
-			$classes[] = 'has-suffix';
-		}
-		?>
-		<div class="<?php echo join( ' ', $classes ); ?>">
-			<?php if ( $p_label ): ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
-			<?php endif;
 
-			foreach ( $author_data as $author ) :
-				$author_id = $author->ID;
 
-				$bio_lightbox = get_the_author_meta( 'author_bio_lightbox', $author_id );
-				if ( empty( $bio_lightbox ) ) {
-					$bio_lightbox = foxiz_get_option( 'author_bio_lightbox' );
-				}
-				$bio_lightbox = ! empty( $bio_lightbox ) && ( '-1' !== (string) $bio_lightbox );
-				$author_job   = ( ! empty( $settings['has_author_job'] ) && $is_show_job ) ? get_the_author_meta( 'job', $author_id ) : '';
-				?>
-				<div class="meta-separate">
-					<?php if ( $bio_lightbox ) {
-						echo '<div class="ulightbox-holder">';
-						echo '<a class="meta-author-url meta-author" href="' . get_author_posts_url( $author_id ) . '">' . get_the_author_meta( 'display_name', $author_id ) . '</a>';
-						echo foxiz_get_author_lightbox( $author_id );
-						echo '</div>';
-					} else {
-						echo '<a class="meta-author-url meta-author" href="' . get_author_posts_url( $author_id ) . '">' . get_the_author_meta( 'display_name', $author_id ) . '</a>';
-					}
-					if ( $author_job ) : ?>
-						<span class="meta-label meta-job">- <?php echo esc_html( $author_job ); ?></span>
-					<?php endif; ?>
-				</div>
-			<?php endforeach;
-			if ( $s_label ) : ?>
-				<span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
-			<?php endif; ?>
-		</div>
-		<?php
-	}
+
+
+
+
+
+
+
+
+
+		  if ( $s_label ) {
+                        $classes[] = 'has-suffix';
+                }
+                ?>
+                <li class="<?php echo join( ' ', $classes ); ?>">
+                        <?php if ( $p_label ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $p_label ); ?></span>
+                        <?php endif; ?>
+
+                        <?php foreach ( $author_data as $author ) :
+                                $author_id = $author->ID;
+
+                                $bio_lightbox = get_the_author_meta( 'author_bio_lightbox', $author_id );
+                                if ( empty( $bio_lightbox ) ) {
+                                        $bio_lightbox = foxiz_get_option( 'author_bio_lightbox' );
+                                }
+                                $bio_lightbox = ! empty( $bio_lightbox ) && ( '-1' !== (string) $bio_lightbox );
+                                $author_job   = ( ! empty( $settings['has_author_job'] ) && $is_show_job ) ? get_the_author_meta( 'job', $author_id ) : '';
+                                ?>
+                                <div class="meta-separate">
+                                        <?php if ( $bio_lightbox ) : ?>
+                                                <div class="ulightbox-holder">
+                                                        <a class="meta-author-url meta-author" href="<?php echo esc_url( get_author_posts_url( $author_id ) ); ?>"><?php echo get_the_author_meta( 'display_name', $author_id ); ?></a>
+                                                        <?php echo foxiz_get_author_lightbox( $author_id ); ?>
+                                                </div>
+                                        <?php else : ?>
+                                                <a class="meta-author-url meta-author" href="<?php echo esc_url( get_author_posts_url( $author_id ) ); ?>"><?php echo get_the_author_meta( 'display_name', $author_id ); ?></a>
+                                        <?php endif; ?>
+                                        <?php if ( $author_job ) : ?>
+                                                <span class="meta-label meta-job">- <?php echo esc_html( $author_job ); ?></span>
+                                        <?php endif; ?>
+                                </div>
+                        <?php endforeach; ?>
+                        <?php if ( $s_label ) : ?>
+                                <span class="meta-label"><?php foxiz_render_inline_html( $s_label ); ?></span>
+                        <?php endif; ?>
+                </li>
+                <?php
+        }
 }
