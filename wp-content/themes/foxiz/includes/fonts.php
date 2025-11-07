@@ -196,36 +196,40 @@ if ( ! class_exists( 'Foxiz_Font' ) ) {
 					$link .= "%7C";
 				}
 				$link .= $family;
+				
+				
+				
+				
 
 				if ( ! empty( $font['font-style'] ) && is_array( $font['font-style'] ) ) {
-					$link               .= ':';
-					$font['font-style'] = array_unique( array_filter( $font['font-style'] ) );
-					$link               .= implode( ',', $font['font-style'] );
-				}
+		$link               .= ':';
+		$font['font-style'] = array_unique( array_filter( $font['font-style'] ) );
+		$link               .= implode( ',', $font['font-style'] );
+	}
 
-				if ( ! empty( $font['subset'] ) ) {
-					foreach ( $font['subset'] as $subset ) {
-						if ( ! in_array( $subset, $subsets ) ) {
-							array_push( $subsets, $subset );
-						}
-					}
-				}
+	if ( ! empty( $font['subset'] ) ) {
+		foreach ( $font['subset'] as $subset ) {
+			if ( ! in_array( $subset, $subsets ) ) {
+				array_push( $subsets, $subset );
 			}
+		}
+	}
+}
 
-			if ( ! empty( $subsets ) ) {
-				$link .= "&subset=" . implode( ',', $subsets );
-			}
+if ( ! empty( $subsets ) ) {
+	$link .= "&subset=" . implode( ',', $subsets );
+}
 
-			if ( ! empty( $link ) ) {
+if ( ! empty( $link ) ) {
 
-				$remote_link = 'https://fonts.googleapis.com/css?family=' . str_replace( '|', '%7C', $link );
+	$remote_link = 'https://fonts.googleapis.com/css?family=' . str_replace( '|', '%7C', $link ) . '&display=swap';
 				update_option( self::$cache_key, $remote_link );
-			} else {
-				update_option( self::$cache_key, 'unset' );
-			}
+} else {
+	update_option( self::$cache_key, 'unset' );
+}
 
-			if ( ! empty( $remote_link ) ) {
-				return $remote_link;
+if ( ! empty( $remote_link ) ) {
+	return $remote_link;
 			}
 
 			return false;
