@@ -678,18 +678,19 @@ add_action('wp_enqueue_scripts', function () {
   margin-right: 0 !important;
   margin-left:  0 !important;
 }
-.single-standard-8.without-sidebar .grid-container > * {
+.single-standard-8.without-sidebar .grid-container > .s-ct,
+.single-standard-8.without-sidebar .grid-container > .sidebar-wrap {
   width: 100% !important;
   max-width: 100%;
   padding-right: 0 !important;
   padding-left:  0 !important;
 }
 @media (min-width: 992px) {
-  .single-standard-8.without-sidebar .grid-container > :nth-child(1) {
+  .single-standard-8.without-sidebar .grid-container > .s-ct {
     flex: 0 0 100% !important;
     width: 100% !important;
   }
-  .single-standard-8.without-sidebar .grid-container > :nth-child(2) {
+  .single-standard-8.without-sidebar .grid-container > .sidebar-wrap {
     display: none !important;
   }
 }
@@ -1266,27 +1267,27 @@ function wd4_enqueue_styles(): void {
         wp_enqueue_style( 'slider',  'https://aistudynow.com/wp-content/themes/css/header/slider.css', array(), '9856678576655777999980.0' );
         wp_enqueue_style( 'divider', 'https://aistudynow.com/wp-content/themes/css/header/divider.css', array(), '66997876655777999980.0' );
         wp_enqueue_style( 'grid',    'https://aistudynow.com/wp-content/themes/css/header/grid.css',   array(), '85667876655777999980.0' );
-        wp_enqueue_style( 'footer',  'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '667876655777999980.0' );
+        wp_enqueue_style( 'footer',  'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '8667876655777999980.0' );
     }
 
     if ( is_category() ) {
         wp_enqueue_style( 'main',      'https://aistudynow.com/wp-content/themes/css/header/main.css',      array(), '8591117667876655777999980.0' );
         wp_enqueue_style( 'catheader', 'https://aistudynow.com/wp-content/themes/css/header/catheader.css', array(), '91661667876655777999980.0' );
         wp_enqueue_style( 'grid',      'https://aistudynow.com/wp-content/themes/css/header/grid.css',      array(), '6678766557779799980.0' );
-        wp_enqueue_style( 'footer',    'https://aistudynow.com/wp-content/themes/css/header/footer.css',    array(), '667876655777999980.0' );
+        wp_enqueue_style( 'footer',    'https://aistudynow.com/wp-content/themes/css/header/footer.css',    array(), '8667876655777999980.0' );
     }
 
     if ( is_singular( 'post' ) ) {
-        wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '3399966976444448885909999880.0' );
-        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '447119107999980.0' );
-        wp_enqueue_style( 'sidebar',     'https://aistudynow.com/wp-content/themes/css/header/single/sidebar.css',     array(), '667876655777999980.0' );
+        wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '0833990966976444448885909999880.0' );
+        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '579079999980.00' );
+
         wp_enqueue_style( 'email',       'https://aistudynow.com/wp-content/themes/css/header/single/email.css',       array(), '667876655777999980.0' );
-        wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '97667876655777999980.0' );
+        wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '497667876655777999980.0' );
         wp_enqueue_style( 'sharesingle', 'https://aistudynow.com/wp-content/themes/css/header/single/sharesingle.css', array(), '5667876655777999980.0' );
 
-        wp_enqueue_style( 'author',      'https://aistudynow.com/wp-content/themes/css/header/single/author.css',      array(), '667876655777999980.0' );
+        wp_enqueue_style( 'author',      'https://aistudynow.com/wp-content/themes/css/header/single/author.css',      array(), '8667876655777999980.0' );
         wp_enqueue_style( 'comment',     'https://aistudynow.com/wp-content/themes/css/header/single/comment.css',     array(), '99667876655777999980.0' );
-        wp_enqueue_style( 'footer',      'https://aistudynow.com/wp-content/themes/css/header/footer.css',             array(), '667876655777999980.0' );
+        wp_enqueue_style( 'footer',      'https://aistudynow.com/wp-content/themes/css/header/footer.css',             array(), '8667876655777999980.0' );
     }
 
     if ( $is_login ) {
@@ -1511,7 +1512,7 @@ JS,
 
     if ( in_array( $context, array( 'post', 'page' ), true ) ) {
         wp_enqueue_script( 'comment', $comment, array(), '1.0.0', true );
-        wp_enqueue_script( 'main', $main, array(), '554999898866899.0.0', true );
+        wp_enqueue_script( 'main', $main, array(), '408999898866899.0.0', true );
         wp_enqueue_script( 'lazy', $lazy, array(), '9918.0.0', true );
         wp_enqueue_script( 'pagination', $pagination_js, array(), '5.0.1', true );
         wp_enqueue_script( 'download', $download, array(), '000.0.0', true );
@@ -1593,6 +1594,156 @@ function wd4_mark_core_script_deferred(): void {
 }
 add_action( 'wp_enqueue_scripts', 'wd4_mark_core_script_deferred', 40 );
 
+
+
+
+
+
+
+
+
+
+
+
+
+function wd4_get_core_script_inline_payload(): string {
+    static $cached = null;
+
+    if ( null !== $cached ) {
+        return $cached;
+    }
+
+    $paths = array(
+        trailingslashit( get_stylesheet_directory() ) . 'js/core.js',
+        trailingslashit( get_template_directory() ) . 'js/core.js',
+        trailingslashit( WP_CONTENT_DIR ) . 'themes/js/core.js',
+    );
+
+    foreach ( $paths as $path ) {
+        if ( ! is_readable( $path ) ) {
+            continue;
+        }
+
+        $contents = file_get_contents( $path );
+        if ( false === $contents ) {
+            continue;
+        }
+
+        $contents = trim( $contents );
+        if ( '' === $contents ) {
+            continue;
+        }
+
+        $cached = $contents;
+        return $cached;
+    }
+
+    $cached = '';
+    return $cached;
+}
+
+function wd4_generate_inline_core_script_tag(): string {
+    $payload = wd4_get_core_script_inline_payload();
+    if ( '' === $payload ) {
+        return '';
+    }
+
+    if ( function_exists( 'wp_print_inline_script_tag' ) ) {
+        return wp_print_inline_script_tag( $payload, array( 'id' => 'foxiz-core-js' ) );
+    }
+
+    return sprintf( '<script id="foxiz-core-js">%s</script>', $payload );
+}
+
+function wd4_preload_core_script_hint(): void {
+    if ( is_admin() ) {
+        return;
+    }
+
+    if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+        return;
+    }
+
+    if ( '' !== wd4_get_core_script_inline_payload() ) {
+        return;
+    }
+
+    $context = my_detect_view_context();
+    if ( ! in_array( $context, array( 'post', 'page' ), true ) ) {
+        return;
+    }
+
+    static $printed = false;
+    if ( $printed ) {
+        return;
+    }
+
+    $printed = true;
+
+    $src = '';
+    $handle = 'foxiz-core';
+    $wp_scripts = wp_scripts();
+
+    if ( $wp_scripts instanceof WP_Scripts && isset( $wp_scripts->registered[ $handle ] ) ) {
+        $registered = $wp_scripts->registered[ $handle ];
+        $src        = $registered->src;
+
+        if ( $src && 0 === strpos( $src, '//' ) ) {
+            $src = ( is_ssl() ? 'https:' : 'http:' ) . $src;
+        } elseif ( $src && false === strpos( $src, '://' ) ) {
+            $src = trailingslashit( $wp_scripts->base_url ) . ltrim( $src, '/' );
+        }
+
+        $ver = $registered->ver;
+        if ( $ver && false === strpos( $src, '?ver=' ) ) {
+            $src = add_query_arg( 'ver', $ver, $src );
+        }
+    }
+
+    if ( empty( $src ) ) {
+        $src = 'https://aistudynow.com/wp-content/themes/js/core.js?ver=4.0.0';
+    }
+
+    printf(
+        '<link rel="preload" as="script" href="%s" fetchpriority="high" />' . "\n",
+        esc_url( $src )
+    );
+}
+add_action( 'wp_head', 'wd4_preload_core_script_hint', 6 );
+
+function wd4_enforce_core_script_priorities( string $tag ): string {
+    if ( false === stripos( $tag, ' defer' ) ) {
+        $updated = preg_replace( '/<script\s+/i', '<script defer ', $tag, 1 );
+        if ( null !== $updated ) {
+            $tag = $updated;
+        } else {
+            $tag = str_replace( '<script', '<script defer', $tag );
+        }
+    }
+
+    if ( false === stripos( $tag, 'fetchpriority' ) ) {
+        $updated = preg_replace( '/<script\s+/i', '<script fetchpriority="high" ', $tag, 1 );
+        if ( null !== $updated ) {
+            $tag = $updated;
+        } else {
+            $tag = str_replace( '<script', '<script fetchpriority="high"', $tag );
+        }
+    }
+
+    return $tag;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 function my_disable_all_js_except_whitelisted(): void {
     $doing_ajax = function_exists('wp_doing_ajax') && wp_doing_ajax();
     if ( is_admin() || $doing_ajax ) return;
@@ -1637,38 +1788,35 @@ function my_disable_all_js_except_whitelisted(): void {
 }
 add_action( 'wp_enqueue_scripts', 'my_disable_all_js_except_whitelisted', PHP_INT_MAX );
 
-add_filter( 'script_loader_tag', function ( string $tag, string $handle, string $src ) {
-    $doing_ajax = function_exists('wp_doing_ajax') && wp_doing_ajax();
-    if ( is_admin() || $doing_ajax ) return $tag;
 
-    $context = my_detect_view_context();
-    $targets = array( 'home', 'category', 'search', 'author', 'post', 'page' );
-    if ( ! in_array( $context, $targets, true ) ) return $tag;
 
-    $allowed = my_get_allowed_js_handles_by_context( $context );
-    if ( ! in_array( $handle, $allowed, true ) ) return '';
 
-    if ( 'foxiz-core' === $handle && false === stripos( $tag, ' defer' ) ) {
-        $updated = preg_replace( '/<script\s+/i', '<script defer ', $tag, 1 );
-        if ( null !== $updated ) {
-            $tag = $updated;
-        } else {
-            $tag = str_replace( '<script', '<script defer', $tag );
-        }
-    }
-    return $tag;
-}, PHP_INT_MAX, 3 );
 
-add_action( 'wp_print_footer_scripts', function (): void {
-    $context = my_detect_view_context();
-    if ( ! in_array( $context, array( 'post', 'page' ), true ) ) return;
 
-    global $wp_scripts;
-    $printed = ( $wp_scripts && ! empty( $wp_scripts->done ) && in_array( 'foxiz-core', (array) $wp_scripts->done, true ) );
-    if ( ! $printed ) {
-        echo '<script defer id="foxiz-core-js" src="https://aistudynow.com/wp-content/themes/js/core.js?ver=4.0.0"></script>' . "\n";
-    }
-}, PHP_INT_MAX );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
