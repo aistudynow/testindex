@@ -5,10 +5,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 </div>
 
-
-
-
-
+</main>
 
 <?php foxiz_render_footer();  ?>
 </div>

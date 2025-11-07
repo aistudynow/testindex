@@ -21,5 +21,6 @@ if ( foxiz_is_amp() ) {
 wp_body_open();
 foxiz_top_ad();
 ?><div class="site-outer">
-	<?php foxiz_render_header(); ?>
-    <div class="site-wrap">
+        <?php foxiz_render_header(); ?>
+        <main id="main-content" class="site-main" role="main" tabindex="-1">
+                <div class="site-wrap">
