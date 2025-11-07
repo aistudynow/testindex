@@ -942,16 +942,10 @@ if ( ! function_exists( 'foxiz_header_notification' ) ) {
 }
 
 if ( ! function_exists( 'foxiz_header_font_resizer' ) ) {
-	function foxiz_header_font_resizer() {
-
-		if ( ! is_single() || foxiz_is_amp() ) {
-			return;
-		} ?>
-		<div class="wnav-holder font-resizer">
-			<a href="#" role="button" class="font-resizer-trigger" data-title="<?php foxiz_html_e( 'Font Resizer', 'foxiz' ) ?>"><span class="screen-reader-text"><?php foxiz_html_e( 'Font Resizer', 'foxiz' ) ?></span><strong><?php echo foxiz_html__( 'Aa', 'foxiz' ) ?></strong></a>
-		</div>
-		<?php
-	}
+	  function foxiz_header_font_resizer() {
+                // The header font resizer has been removed to simplify the layout and avoid extra scripts.
+                return;
+        }
 }
 
 if ( ! function_exists( 'foxiz_header_alert' ) ) {

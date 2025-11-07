@@ -508,13 +508,14 @@ if ( ! function_exists( 'foxiz_single_share_top' ) ) {
 		
 		
 		
-                <nav class="<?php echo strip_tags( $classes ); ?>" aria-label="<?php echo esc_attr_x( 'Share this article', 'single post share label', 'foxiz' ); ?>">
+                   <nav class="<?php echo strip_tags( $classes ); ?>" aria-label="<?php echo esc_attr_x( 'Share this article', 'single post share label', 'foxiz' ); ?>">
                         <span class="share-label"><?php foxiz_html_e( 'Share', 'foxiz' ); ?></span>
-                        <div class="share-links" role="list"><?php foxiz_render_share_list( $settings ); ?></div>
+                        <div class="share-links"><?php foxiz_render_share_list( $settings ); ?></div>
                 </nav>
 		<?php
 	}
 }
+
 
 
 
@@ -1032,15 +1033,18 @@ if ( ! function_exists( 'foxiz_single_share_bottom' ) ) {
                 $label       = ( 'podcast' === $post_type ) ? foxiz_html__( 'Share This Episode', 'foxiz' ) : foxiz_html__( 'Share This Article', 'foxiz' );
                 $share_label = apply_filters( 'rb_share_label', $label, $post_type );
                 ?>
-                <nav class="e-shared-sec entry-sec" aria-label="<?php echo esc_attr( $share_label ); ?>">
+                    <nav class="e-shared-sec entry-sec" aria-label="<?php echo esc_attr( $share_label ); ?>">
                         <span class="e-shared-title"><?php echo $share_label; ?></span>
-                        <div class="<?php echo strip_tags( $class_name ); ?> share-links" role="list">
+                        <div class="<?php echo strip_tags( $class_name ); ?> share-links">
                                 <?php foxiz_render_share_list( $settings ); ?>
                         </div>
                 </nav>
 		<?php
 	}
 }
+
+
+
 
 if ( ! function_exists( 'foxiz_single_comment' ) ) {
 	function foxiz_single_comment( $is_page = false, $override = false ) {
