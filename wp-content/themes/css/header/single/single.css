@@ -258,7 +258,8 @@ body {
     margin-left: -30px !important;
   }
 
-  .grid-container > * {
+  .grid-container > .s-ct,
+  .grid-container > .sidebar-wrap {
     padding-right: 30px !important;
     padding-left: 30px !important;
   }

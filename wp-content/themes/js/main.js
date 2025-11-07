@@ -81,6 +81,38 @@ const on = (el, ev, fn, opts) => {
   const htmlEl = document.documentElement;
   const bodyEl = document.body;
   const smoothScrollTo = (y) => window.scrollTo({ top: y, behavior: 'smooth' });
+  
+  
+  
+  
+  
+
+
+ const scheduleIdle = (cb, opts) => {
+    if (typeof window.requestIdleCallback === 'function') {
+      return window.requestIdleCallback(cb, opts || { timeout: 160 });
+    }
+
+    const timeout = opts && typeof opts.timeout === 'number' ? opts.timeout : 0;
+
+    return window.setTimeout(() => {
+      cb({
+        didTimeout: true,
+        timeRemaining: () => 0,
+      });
+    }, timeout);
+  };
+
+  const now = () => (
+    typeof window.performance !== 'undefined' &&
+    typeof window.performance.now === 'function'
+      ? window.performance.now()
+      : Date.now()
+  );
+
+
+
+
 
 
 
@@ -253,6 +285,7 @@ const nativeDocumentWrite = document.write;
   Module.deferHeavyEmbeds = function () {};
 
   const GRID_CHILD_SELECTOR = /\.grid-container\s*>\s*\*/g;
+  const GRID_CHILD_RAW = '.grid-container > *';
 
   Module.normalizeInlineGridSelectors = function () {
     const styleEl = document.getElementById('single-inline');
@@ -261,71 +294,57 @@ const nativeDocumentWrite = document.write;
     const scopedSelector = '.grid-container > .s-ct, .grid-container > .sidebar-wrap';
     let mutated = false;
 
-    const rewriteRuleList = (ruleList) => {
-      if (!ruleList) return;
-
-      const pending = [];
-      for (let i = ruleList.length - 1; i >= 0; i -= 1) {
-        const rule = ruleList[i];
+    const tryRuleList = (list) => {
+      if (!list || typeof list.length !== 'number') return;
+      for (let i = 0; i < list.length; i += 1) {
+        const rule = list[i];
         if (!rule) continue;
 
-        const ruleType = rule.type;
-        if (typeof CSSRule !== 'undefined' && ruleType === CSSRule.STYLE_RULE) {
-          const selectorText = rule.selectorText || '';
-          if (!GRID_CHILD_SELECTOR.test(selectorText)) {
-            GRID_CHILD_SELECTOR.lastIndex = 0;
-            continue;
-          }
-
+        if (
+          typeof CSSRule !== 'undefined' &&
+          rule.type === CSSRule.STYLE_RULE &&
+          rule.selectorText &&
+          GRID_CHILD_SELECTOR.test(rule.selectorText)
+        ) {
           GRID_CHILD_SELECTOR.lastIndex = 0;
-          const updated = rule.cssText.replace(GRID_CHILD_SELECTOR, scopedSelector);
+          const updatedSelector = rule.selectorText.replace(GRID_CHILD_SELECTOR, scopedSelector);
           GRID_CHILD_SELECTOR.lastIndex = 0;
-          if (updated && updated !== rule.cssText) {
-            pending.push({ list: ruleList, index: i, cssText: updated });
+          if (updatedSelector !== rule.selectorText) {
+            try {
+              rule.selectorText = updatedSelector;
+              mutated = true;
+            } catch (err) {}
           }
         } else if (
           typeof CSSRule !== 'undefined' &&
-          (ruleType === CSSRule.MEDIA_RULE || ruleType === CSSRule.SUPPORTS_RULE)
+          (rule.type === CSSRule.MEDIA_RULE || rule.type === CSSRule.SUPPORTS_RULE)
         ) {
-          rewriteRuleList(rule.cssRules || rule.rules || null);
+          tryRuleList(rule.cssRules || rule.rules || null);
+          if (mutated) return;
         }
-      }
 
-      pending.forEach((item) => {
-        try {
-          item.list.deleteRule(item.index);
-          item.list.insertRule(item.cssText, item.index);
-          mutated = true;
-        } catch (err) {}
-      });
+        if (mutated) return;
+      }
     };
 
     try {
       const sheet = styleEl.sheet || styleEl.styleSheet || null;
       if (sheet && (sheet.cssRules || sheet.rules)) {
-        rewriteRuleList(sheet.cssRules || sheet.rules);
+        tryRuleList(sheet.cssRules || sheet.rules || null);
       }
-    } catch (err) {
-      // Accessing cssRules can throw if the stylesheet is disabled; ignore and use fallback.
+    } catch (err) {}
+
+    const source = styleEl.textContent || styleEl.innerHTML || '';
+    if (mutated || source.indexOf(GRID_CHILD_RAW) === -1) {
+      styleEl.setAttribute('data-grid-scope', '1');
     }
-
-    if (!mutated) {
-      const cssText = styleEl.textContent || styleEl.innerHTML || '';
-      if (!cssText || cssText.indexOf('.grid-container > *') === -1) return;
-      const updated = cssText.replace(GRID_CHILD_SELECTOR, scopedSelector);
-      GRID_CHILD_SELECTOR.lastIndex = 0;
-      if (updated === cssText) return;
-
-      if ('textContent' in styleEl) {
-        styleEl.textContent = updated;
-      } else {
-        styleEl.innerHTML = updated;
-      }
-    }
-
-    styleEl.setAttribute('data-grid-scope', '1');
   };
-
+    
+    
+    
+    
+    
+    
 
   
   
@@ -409,6 +428,50 @@ const nativeDocumentWrite = document.write;
     try { return JSON.parse(raw); } catch { return raw; }
   };
   Module.deleteStorage = function (key) { if (this.yesStorage) localStorage.removeItem(key); };
+  
+  
+  
+  
+  
+  
+  
+  
+  Module.runDeferredTasks = function (tasks, budget = 12) {
+    if (!Array.isArray(tasks) || !tasks.length) return;
+
+    const queue = tasks.filter((task) => typeof task === 'function');
+    if (!queue.length) return;
+
+    const timeout = Math.max(32, budget * 8);
+
+    const runBatch = (deadline) => {
+      const start = now();
+      while (queue.length) {
+        if (
+          deadline &&
+          typeof deadline.timeRemaining === 'function' &&
+          deadline.timeRemaining() <= 0 &&
+          !deadline.didTimeout
+        ) {
+          break;
+        }
+        const task = queue.shift();
+        try { task(); } catch (err) {}
+        if (now() - start >= budget) {
+          break;
+        }
+      }
+
+      if (queue.length) {
+        scheduleIdle(runBatch, { timeout });
+      }
+    };
+
+    scheduleIdle(runBatch, { timeout });
+  };
+  
+  
+  
 
   /* ===========================
    * INIT PARAMS
@@ -966,25 +1029,29 @@ Module.calcSubMenuPos = function () {
   /* ===========================
    * MASTER INIT (NO PAGINATION)
    * =========================== */
-  Module.init = function () {
-    this.normalizeInlineGridSelectors();
-    this.tocToggle();
+    Module.init = function () {
     this.initParams();
-    this.deferHeavyEmbeds();
-    this.ensureSearchAutocomplete();
-    this.fontResizer();
-    // this.hoverTipsy();  // disabled to avoid big style recalculation
-    this.hoverEffects();
-    this.videoPreview();
-    this.headerDropdown();
-    this.initSubMenuPos();
-    this.documentClick();
-    this.mobileCollapse();
-    this.privacyTrigger();
-    this.loginPopup();
-    this.loadYoutubeIframe();
-    this.showPostComment();
-    this.scrollToComment();
+
+    const deferredTasks = [
+      () => this.normalizeInlineGridSelectors(),
+      () => this.tocToggle(),
+      () => this.deferHeavyEmbeds(),
+      () => this.ensureSearchAutocomplete(),
+      // this.hoverTipsy();  // disabled to avoid big style recalculation
+      () => this.hoverEffects(),
+      () => this.videoPreview(),
+      () => this.headerDropdown(),
+      () => this.initSubMenuPos(),
+      () => this.documentClick(),
+      () => this.mobileCollapse(),
+      () => this.privacyTrigger(),
+      () => this.loginPopup(),
+      () => this.loadYoutubeIframe(),
+      () => this.showPostComment(),
+      () => this.scrollToComment(),
+    ];
+
+    this.runDeferredTasks(deferredTasks, 14);
   };
 
 }(FOXIZ_MAIN_SCRIPT));
@@ -995,7 +1062,15 @@ Module.calcSubMenuPos = function () {
     if (window.__FOXIZ_BOOTED__) return;
     if (window.FOXIZ_MAIN_SCRIPT && typeof FOXIZ_MAIN_SCRIPT.init === 'function') {
       window.__FOXIZ_BOOTED__ = true;
-      try { FOXIZ_MAIN_SCRIPT.init(); } catch (e) {}
+      const startInit = () => {
+        try { FOXIZ_MAIN_SCRIPT.init(); } catch (e) {}
+      };
+
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(startInit, { timeout: 200 });
+      } else {
+        window.setTimeout(startInit, 0);
+      }
     }
   }
   if (document.readyState === 'loading') {
