@@ -1027,19 +1027,7 @@ body {
     contain: layout paint style;
     contain-intrinsic-size: 1080px;
   }
-
-  @supports selector(:has(*)) {
-    /*
-     * VDO.ai floating slots need to escape the article flow to dock against
-     * the viewport. Disable the containment shortcuts when an entry includes
-     * one of their wrappers so the vendor script can reposition the unit.
-     */
-    .s-ct .entry-content:has(.vdo-wrap, vdo) {
-      content-visibility: visible;
-      contain: none;
-      contain-intrinsic-size: auto;
-    }
-  }
+}
 
 
 

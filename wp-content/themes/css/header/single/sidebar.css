@@ -1,10 +1,7 @@
 /*
- * Slider sidebar styling for AI Study Now demo.
- * Focused rules scoped to the sidebar widget markup extracted
- * from the Foxiz theme so we don't duplicate the global styles
- * that already live in main.css and footer.css.
+ * Single sidebar refinements mirroring the Foxiz layout while
+ * lowering selector specificity so recalculation costs remain low.
  */
-
 
 .sidebar-wrap.single-sidebar {
   --sidebar-text: #04102f;
@@ -19,9 +16,13 @@
   color: var(--sidebar-text);
 }
 
+.sidebar-wrap.single-sidebar :where(a) {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease, background-size 0.25s ease;
+}
 
-
-.cta-buttons {
+.sidebar-wrap.single-sidebar :where(.cta-buttons) {
   position: relative;
   z-index: 5;
   display: flex;
@@ -32,35 +33,26 @@
   gap: var(--cta-btn-gap, 5px);
 }
 
-.elementor-3307 .elementor-element.elementor-element-452eb29 .cta-btn-2 {
-    font-size: 18px;
-    padding: 15px 50px 15px 50px;
-    transition-duration: 250ms;
-}
-
-
-
-/* Sticky sidebar functionality ------------------------------------ */
 @media (min-width: 1025px) {
   .sticky-last-w {
     --sidebar-sticky-offset: calc(var(--nav-height, 60px) + 12px);
   }
 
-  .grid-container .sidebar-inner {
+  .grid-container :where(.sidebar-inner) {
     padding-right: 0;
     padding-left: var(--s-sidebar-padding, 0);
   }
 
-  .sticky-last-w .sidebar-wrap.single-sidebar {
+  .sticky-last-w :where(.sidebar-wrap.single-sidebar) {
     position: relative;
   }
 
-  .sticky-last-w .sidebar-inner {
+  .sticky-last-w :where(.sidebar-inner) {
     height: 100%;
   }
 
-  .sticky-last-w .sidebar-inner > *:last-child:not([data-elementor-type='wp-post']:first-child),
-  .sticky-last-w .sidebar-inner > #custom_html-2 {
+  .sticky-last-w :where(.sidebar-inner > *:last-child:not([data-elementor-type='wp-post']:first-child)),
+  .sticky-last-w :where(.sidebar-inner > #custom_html-2) {
     position: sticky;
     top: var(--sidebar-sticky-offset, calc(var(--nav-height, 60px) + 12px));
     padding-bottom: 12px;
@@ -68,41 +60,33 @@
     will-change: top;
   }
 
-  .sticky-last-w .elementor-section:last-child > * {
+  .sticky-last-w :where(.elementor-section:last-child > *) {
     height: 100%;
   }
 }
 
 @media (max-width: 767px) {
-  .sidebar-wrap.single-sidebar .sidebar-inner {
+  .sidebar-wrap.single-sidebar :where(.sidebar-inner) {
     gap: clamp(24px, 6vw, 32px);
     padding: clamp(18px, 6vw, 24px);
   }
 
-  .sidebar-wrap.single-sidebar .cta-wrap {
+  .sidebar-wrap.single-sidebar :where(.cta-wrap) {
     align-items: center;
     text-align: center;
   }
 
-  .sidebar-wrap.single-sidebar .cta-buttons {
+  .sidebar-wrap.single-sidebar :where(.cta-buttons) {
     flex-direction: column;
     gap: 15px;
   }
 
-  .sidebar-wrap.single-sidebar .cta-btn {
+  .sidebar-wrap.single-sidebar :where(.cta-btn) {
     width: 100%;
   }
 }
 
-.sidebar-wrap.single-sidebar a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.25s ease, background-size 0.25s ease;
-}
-
-/* CTA card ----------------------------------------------------------- */
-
-.sidebar-wrap.single-sidebar .elementor-element-452eb29 .elementor-widget-container {
+.sidebar-wrap.single-sidebar :where(.elementor-element-452eb29 .elementor-widget-container) {
   width: 100%;
   max-width: 100%;
   padding: clamp(28px, 6vw, 40px) clamp(22px, 6vw, 32px);
@@ -112,60 +96,58 @@
   box-sizing: border-box;
 }
 
-.sidebar-wrap.single-sidebar .cta-wrap {
+.sidebar-wrap.single-sidebar :where(.cta-wrap) {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: clamp(20px, 3vw, 28px);
-
-
   text-align: left;
 }
 
-.sidebar-wrap.single-sidebar .cta-featured,
-.sidebar-wrap.single-sidebar .cta-content,
-.sidebar-wrap.single-sidebar .cta-buttons {
+.sidebar-wrap.single-sidebar :where(.cta-featured,
+.cta-content,
+.cta-buttons) {
   width: 100%;
   max-width: 100%;
 }
 
-.sidebar-wrap.single-sidebar .cta-featured {
+.sidebar-wrap.single-sidebar :where(.cta-featured) {
   flex-shrink: 0;
   display: block;
 }
 
-.sidebar-wrap.single-sidebar .cta-featured img {
+.sidebar-wrap.single-sidebar :where(.cta-featured img) {
   width: 100%;
   height: auto;
 }
 
-.sidebar-wrap.single-sidebar .cta-content {
+.sidebar-wrap.single-sidebar :where(.cta-content) {
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 3vw, 22px);
 }
 
-.sidebar-wrap.single-sidebar .cta-title {
+.sidebar-wrap.single-sidebar :where(.cta-title) {
   font-size: clamp(2rem, 2.2vw + 1rem, 2.5rem);
   line-height: 1.1;
   font-weight: 700;
   color: var(--sidebar-text);
 }
 
-.sidebar-wrap.single-sidebar .cta-description {
+.sidebar-wrap.single-sidebar :where(.cta-description) {
   font-size: 1rem;
   line-height: 1.7;
   color: var(--sidebar-muted);
 }
 
-.sidebar-wrap.single-sidebar .cta-buttons {
+.sidebar-wrap.single-sidebar :where(.cta-buttons) {
   display: flex;
   flex-wrap: wrap;
   gap: var(--cta-btn-gap, 15px);
 }
 
-.sidebar-wrap.single-sidebar .cta-btn {
+.sidebar-wrap.single-sidebar :where(.cta-btn) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -179,32 +161,28 @@
   box-shadow: none;
 }
 
-.sidebar-wrap.single-sidebar .cta-btn:hover,
-.sidebar-wrap.single-sidebar .cta-btn:focus {
+.sidebar-wrap.single-sidebar :where(.cta-btn:hover,
+.cta-btn:focus) {
   background: var(--sidebar-accent-strong);
   color: #ffffff;
   box-shadow: 5px 5px 0 0 var(--sidebar-border);
 }
 
 @media (min-width: 640px) {
-  .sidebar-wrap.single-sidebar .cta-buttons {
+  .sidebar-wrap.single-sidebar :where(.cta-buttons) {
     justify-content: flex-start;
   }
-
-  
 }
 
-
-/* Section heading ---------------------------------------------------- */
-.sidebar-wrap.single-sidebar .elementor-element-6982730 .elementor-widget-container {
+.sidebar-wrap.single-sidebar :where(.elementor-element-6982730 .elementor-widget-container) {
   margin-top: 32px;
 }
 
-.sidebar-wrap.single-sidebar .heading-inner {
+.sidebar-wrap.single-sidebar :where(.heading-inner) {
   display: flex;
 }
 
-.sidebar-wrap.single-sidebar .heading-title span {
+.sidebar-wrap.single-sidebar :where(.heading-title span) {
   display: inline-block;
   padding: 6px 20px;
   font-size: 1rem;
@@ -215,29 +193,28 @@
   color: #ffffff;
 }
 
-/* Story list --------------------------------------------------------- */
-.sidebar-wrap.single-sidebar .block-wrap {
+.sidebar-wrap.single-sidebar :where(.block-wrap) {
   margin-top: 24px;
   background: #ffffff;
 }
 
-.sidebar-wrap.single-sidebar .block-inner {
+.sidebar-wrap.single-sidebar :where(.block-inner) {
   display: flex;
   flex-flow: row wrap;
   gap: 24px;
 }
 
-.sidebar-wrap.single-sidebar .p-wrap {
+.sidebar-wrap.single-sidebar :where(.p-wrap) {
   position: relative;
   padding-bottom: 24px;
 }
 
-.sidebar-wrap.single-sidebar .p-wrap:last-child {
+.sidebar-wrap.single-sidebar :where(.p-wrap:last-child) {
   padding-bottom: 0;
 }
 
-.sidebar-wrap.single-sidebar .p-wrap:not(:last-child)::after {
-  content: "";
+.sidebar-wrap.single-sidebar :where(.p-wrap:not(:last-child)::after) {
+  content: '';
   position: absolute;
   left: 0;
   right: 0;
@@ -246,7 +223,7 @@
   background: var(--sidebar-divider);
 }
 
-.sidebar-wrap.single-sidebar .entry-title {
+.sidebar-wrap.single-sidebar :where(.entry-title) {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -256,7 +233,7 @@
   color: var(--sidebar-text);
 }
 
-.sidebar-wrap.single-sidebar .entry-title .rbi {
+.sidebar-wrap.single-sidebar :where(.entry-title .rbi) {
   flex-shrink: 0;
   width: 1.1em;
   height: 1.1em;
@@ -267,65 +244,63 @@
   mask: var(--sidebar-icon) center/contain no-repeat;
 }
 
-.sidebar-wrap.single-sidebar .entry-title .rbi-next {
-  --sidebar-icon: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpolyline%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20points%3D%229%206%2015%2012%209%2018%22/%3E%3C/svg%3E");
+.sidebar-wrap.single-sidebar :where(.entry-title .rbi-next) {
+  --sidebar-icon: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpolyline%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20points%3D%229%206%2015%2012%209%2018%22/%3E%3C/svg%3E');
 }
 
-.sidebar-wrap.single-sidebar .p-url {
+.sidebar-wrap.single-sidebar :where(.p-url) {
   background-image: linear-gradient(var(--sidebar-accent), var(--sidebar-accent));
   background-repeat: no-repeat;
   background-size: 0% 20%;
   background-position: 0 95%;
 }
 
-.sidebar-wrap.single-sidebar .p-url:hover,
-.sidebar-wrap.single-sidebar .p-url:focus {
+.sidebar-wrap.single-sidebar :where(.p-url:hover,
+.p-url:focus) {
   color: var(--sidebar-accent);
   background-size: 100% 20%;
 }
 
-.sidebar-wrap.single-sidebar .p-meta {
+.sidebar-wrap.single-sidebar :where(.p-meta) {
   margin-top: 12px;
   font-size: 0.8125rem;
   color: var(--sidebar-muted);
-
   display: flex;
   flex-wrap: wrap;
   gap: 0.35em 0.75em;
   align-items: center;
 }
 
-.sidebar-wrap.single-sidebar .meta-el {
+.sidebar-wrap.single-sidebar :where(.meta-el) {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
 }
 
-.sidebar-wrap.single-sidebar .meta-tax {
+.sidebar-wrap.single-sidebar :where(.meta-tax) {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--sidebar-meta-bold);
 }
 
-.sidebar-wrap.single-sidebar .meta-tax a:hover,
-.sidebar-wrap.single-sidebar .meta-tax a:focus {
+.sidebar-wrap.single-sidebar :where(.meta-tax a:hover,
+.meta-tax a:focus) {
   color: var(--sidebar-accent);
 }
 
-.sidebar-wrap.single-sidebar .meta-el.meta-update {
+.sidebar-wrap.single-sidebar :where(.meta-el.meta-update) {
   font-weight: 500;
 }
 
-.sidebar-wrap.single-sidebar .meta-el.meta-update time {
+.sidebar-wrap.single-sidebar :where(.meta-el.meta-update time) {
   color: var(--sidebar-muted);
 }
 
-/* Ensure subsequent widgets keep spacing ----------------------------- */
-.sidebar-wrap.single-sidebar .widget {
+.sidebar-wrap.single-sidebar :where(.widget) {
   margin-bottom: 48px;
 }
 
-.sidebar-wrap.single-sidebar .widget:last-child {
+.sidebar-wrap.single-sidebar :where(.widget:last-child) {
   margin-bottom: 0;
 }

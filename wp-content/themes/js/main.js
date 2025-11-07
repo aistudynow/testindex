@@ -86,6 +86,116 @@ const on = (el, ev, fn, opts) => {
 
 const nativeDocumentWrite = document.write;
   const nativeDocumentWriteln = document.writeln;
+  
+  
+  
+  
+  const docWriteQueue = [];
+  let docWriteFlushScheduled = false;
+
+  const scheduleDocWriteFlush = () => {
+    if (docWriteFlushScheduled) return;
+    docWriteFlushScheduled = true;
+
+    const runOnce = (cb) => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        cb();
+      };
+
+      if (typeof window.requestAnimationFrame === 'function') {
+        window.requestAnimationFrame(finish);
+      }
+
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(finish, { timeout: 72 });
+      }
+
+      window.setTimeout(finish, 48);
+    };
+
+    const getFragment = (html, contextNode) => {
+      if (!html) return null;
+
+      if (document.createRange) {
+        const range = document.createRange();
+        const context = contextNode && contextNode.nodeType === 1
+          ? contextNode
+          : document.body || document.documentElement;
+
+        if (context) {
+          range.selectNodeContents(context);
+          const frag = range.createContextualFragment(html);
+          if (typeof range.detach === 'function') {
+            range.detach();
+          }
+          return frag;
+        }
+      }
+
+      const template = document.createElement('template');
+      template.innerHTML = html;
+      return template.content;
+    };
+
+    runOnce(() => {
+      docWriteFlushScheduled = false;
+      if (!docWriteQueue.length) return;
+
+      const tasks = docWriteQueue.splice(0);
+
+      const scriptBuckets = new Map();
+      const targetBuckets = new Map();
+
+      tasks.forEach(({ html, ref, target }) => {
+        if (!html) return;
+
+        if (ref && ref.parentNode) {
+          const existing = scriptBuckets.get(ref);
+          if (existing) {
+            existing.html += html;
+          } else {
+            scriptBuckets.set(ref, { ref, html });
+          }
+          return;
+        }
+
+        const destination = (target && target.isConnected) ? target : (document.body || document.documentElement);
+        if (!destination) return;
+
+        const existing = targetBuckets.get(destination);
+        if (existing) {
+          existing.html += html;
+        } else {
+          targetBuckets.set(destination, { target: destination, html });
+        }
+      });
+
+      scriptBuckets.forEach(({ ref, html }) => {
+        const parent = ref.parentNode;
+        if (!parent) return;
+        const fragment = getFragment(html, parent);
+        if (fragment) {
+          parent.insertBefore(fragment, ref.nextSibling);
+        }
+      });
+
+      targetBuckets.forEach(({ target, html }) => {
+        const fragment = getFragment(html, target);
+        if (fragment) {
+          target.appendChild(fragment);
+        }
+      });
+    });
+  };
+  
+  
+  
+  
+  
+  
 
   const safeDocumentWriter = (chunks, addNewLine) => {
     const normalized = Array.isArray(chunks) && chunks.length ? chunks : [''];
@@ -109,17 +219,15 @@ const nativeDocumentWrite = document.write;
     if (!html) return;
 
     const script = document.currentScript;
-    if (script && typeof script.insertAdjacentHTML === 'function') {
-      try {
-        script.insertAdjacentHTML('afterend', html);
-        return;
-      } catch (err) {
-        /* fall back to body append */
-      }
+    if (script && script.parentNode) {
+      docWriteQueue.push({ html, ref: script });
+      scheduleDocWriteFlush();
+      return;
     }
 
-    if (document.body && typeof document.body.insertAdjacentHTML === 'function') {
-      document.body.insertAdjacentHTML('beforeend', html);
+    if (document.body || document.documentElement) {
+      docWriteQueue.push({ html, target: document.body || document.documentElement });
+      scheduleDocWriteFlush();
     } else if (addNewLine && typeof nativeDocumentWriteln === 'function') {
       nativeDocumentWriteln.call(document, markup);
     } else if (typeof nativeDocumentWrite === 'function') {
@@ -137,6 +245,90 @@ const nativeDocumentWrite = document.write;
 
 
 
+  
+  
+  
+// Heavy embeds (such as ad units) need to render immediately to keep vendor
+  // scripts functional, so this hook intentionally does nothing.
+  Module.deferHeavyEmbeds = function () {};
+
+  const GRID_CHILD_SELECTOR = /\.grid-container\s*>\s*\*/g;
+
+  Module.normalizeInlineGridSelectors = function () {
+    const styleEl = document.getElementById('single-inline');
+    if (!styleEl || styleEl.getAttribute('data-grid-scope') === '1') return;
+
+    const scopedSelector = '.grid-container > .s-ct, .grid-container > .sidebar-wrap';
+    let mutated = false;
+
+    const rewriteRuleList = (ruleList) => {
+      if (!ruleList) return;
+
+      const pending = [];
+      for (let i = ruleList.length - 1; i >= 0; i -= 1) {
+        const rule = ruleList[i];
+        if (!rule) continue;
+
+        const ruleType = rule.type;
+        if (typeof CSSRule !== 'undefined' && ruleType === CSSRule.STYLE_RULE) {
+          const selectorText = rule.selectorText || '';
+          if (!GRID_CHILD_SELECTOR.test(selectorText)) {
+            GRID_CHILD_SELECTOR.lastIndex = 0;
+            continue;
+          }
+
+          GRID_CHILD_SELECTOR.lastIndex = 0;
+          const updated = rule.cssText.replace(GRID_CHILD_SELECTOR, scopedSelector);
+          GRID_CHILD_SELECTOR.lastIndex = 0;
+          if (updated && updated !== rule.cssText) {
+            pending.push({ list: ruleList, index: i, cssText: updated });
+          }
+        } else if (
+          typeof CSSRule !== 'undefined' &&
+          (ruleType === CSSRule.MEDIA_RULE || ruleType === CSSRule.SUPPORTS_RULE)
+        ) {
+          rewriteRuleList(rule.cssRules || rule.rules || null);
+        }
+      }
+
+      pending.forEach((item) => {
+        try {
+          item.list.deleteRule(item.index);
+          item.list.insertRule(item.cssText, item.index);
+          mutated = true;
+        } catch (err) {}
+      });
+    };
+
+    try {
+      const sheet = styleEl.sheet || styleEl.styleSheet || null;
+      if (sheet && (sheet.cssRules || sheet.rules)) {
+        rewriteRuleList(sheet.cssRules || sheet.rules);
+      }
+    } catch (err) {
+      // Accessing cssRules can throw if the stylesheet is disabled; ignore and use fallback.
+    }
+
+    if (!mutated) {
+      const cssText = styleEl.textContent || styleEl.innerHTML || '';
+      if (!cssText || cssText.indexOf('.grid-container > *') === -1) return;
+      const updated = cssText.replace(GRID_CHILD_SELECTOR, scopedSelector);
+      GRID_CHILD_SELECTOR.lastIndex = 0;
+      if (updated === cssText) return;
+
+      if ('textContent' in styleEl) {
+        styleEl.textContent = updated;
+      } else {
+        styleEl.innerHTML = updated;
+      }
+    }
+
+    styleEl.setAttribute('data-grid-scope', '1');
+  };
+
+
+  
+  
   
 
   /* =================
@@ -775,23 +967,25 @@ Module.calcSubMenuPos = function () {
    * MASTER INIT (NO PAGINATION)
    * =========================== */
   Module.init = function () {
-  this.tocToggle();
-  this.initParams();
-  this.ensureSearchAutocomplete();
-  this.fontResizer();
-  // this.hoverTipsy();  // disabled to avoid big style recalculation
-  this.hoverEffects();
-  this.videoPreview();
-  this.headerDropdown();
-  this.initSubMenuPos();
-  this.documentClick();
-  this.mobileCollapse();
-  this.privacyTrigger();
-  this.loginPopup();
-  this.loadYoutubeIframe();
-  this.showPostComment();
-  this.scrollToComment();
-};
+    this.normalizeInlineGridSelectors();
+    this.tocToggle();
+    this.initParams();
+    this.deferHeavyEmbeds();
+    this.ensureSearchAutocomplete();
+    this.fontResizer();
+    // this.hoverTipsy();  // disabled to avoid big style recalculation
+    this.hoverEffects();
+    this.videoPreview();
+    this.headerDropdown();
+    this.initSubMenuPos();
+    this.documentClick();
+    this.mobileCollapse();
+    this.privacyTrigger();
+    this.loginPopup();
+    this.loadYoutubeIframe();
+    this.showPostComment();
+    this.scrollToComment();
+  };
 
 }(FOXIZ_MAIN_SCRIPT));
 

@@ -87,15 +87,15 @@
   --subnav-bg-to: #191c20;
 }
 
-body:not([data-theme='dark']) [data-mode='dark'],
-body[data-theme='dark'] [data-mode='default'],
-body .light-scheme [data-mode='default'],
-.mfp-hide,
-.is-hidden {
+body:not([data-theme='dark']) :where([data-mode='dark']),
+body[data-theme='dark'] :where([data-mode='default']),
+body :where(.light-scheme [data-mode='default']),
+:where(.mfp-hide),
+:where(.is-hidden) {
   display: none !important;
 }
 
-body .light-scheme [data-mode='dark'] {
+body :where(.light-scheme [data-mode='dark']) {
   display: inherit !important;
 }
 
@@ -471,76 +471,10 @@ License URI:    https://themeforest.net/licenses/standard
   font-weight: 600;
 }
 
-/* Slim author card */
-.usr-holder.entry-sec {
-  padding: 0;
-  border: 0;
-  background: none;
-}
 
-.usr-holder.entry-sec::before {
-  display: none;
-}
 
-.usr-holder.entry-sec .author-card {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  padding: 1.5rem;
-  border: 1px solid var(--body-bcolor, rgba(4, 16, 47, 0.15));
-  border-radius: 10px;
-  background: var(--awhite, #ffffff);
-}
 
-.usr-holder.entry-sec .author-card__avatar {
-  flex: 0 0 auto;
-  display: inline-flex;
-  border-radius: 50%;
-}
 
-.usr-holder.entry-sec .author-card__avatar img {
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-}
-
-.usr-holder.entry-sec .author-card__body {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.author-card__name,
-.author-card__job,
-.author-card__bio,
-.author-card__links {
-  margin: 0 0 0.5rem;
-}
-
-.author-card__label {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--body-mcolor, rgba(4, 16, 47, 0.6));
-}
-
-.author-card__link {
-  font-weight: 600;
-}
-
-.author-card__verified {
-  margin-left: 0.35rem;
-  color: var(--g-color, currentColor);
-}
-
-.author-card__bio {
-  color: var(--body-color, #333);
-  line-height: 1.6;
-}
-
-.author-card__website {
-  font-weight: 600;
-}
 
 /* Lazy comments */
 .has-lazy-comments {
@@ -712,15 +646,7 @@ License URI:    https://themeforest.net/licenses/standard
     height: 32px;
   }
 
-  .usr-holder.entry-sec .author-card {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .usr-holder.entry-sec .author-card__avatar img {
-    width: 72px;
-    height: 72px;
-  }
+ 
 }
 
 

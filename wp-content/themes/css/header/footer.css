@@ -1,12 +1,11 @@
 /*
- * Lightweight footer styling inspired by the Foxiz layout.
- * Works without the original WordPress bundle while keeping
- * the same spacing, typography, and responsive behaviour.
+ * Lightweight footer styling inspired by the Foxiz layout with
+ * lower selector specificity to cut style recalculation overhead.
  */
 
 :root {
-  --footer-font: "Manrope", system-ui, sans-serif;
-  --footer-heading-font: "Encode Sans Condensed", "Manrope", sans-serif;
+  --footer-font: 'Manrope', system-ui, sans-serif;
+  --footer-heading-font: 'Encode Sans Condensed', 'Manrope', sans-serif;
   --footer-bg: #ffffff;
   --footer-surface: #0000000a;
   --footer-border: rgba(4, 16, 47, 0.08);
@@ -27,8 +26,7 @@
   background: var(--footer-bg);
 }
 
-.footer-wrap strong,
-.footer-wrap b {
+.footer-wrap :where(strong, b) {
   color: #000000;
   font-weight: 700;
 }
@@ -50,53 +48,53 @@
   padding: clamp(36px, 6vw, 60px) clamp(20px, 6vw, 40px);
 }
 
-.footer-columns .block-inner {
+.footer-columns :where(.block-inner) {
   display: grid;
   gap: var(--footer-gap);
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.footer-columns .footer-col {
+.footer-columns :where(.footer-col) {
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 3vw, 20px);
 }
 
 @media (min-width: 1025px) {
-  .footer-columns .block-inner {
+  .footer-columns :where(.block-inner) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-.the-logo img {
+.footer-wrap :where(.the-logo img) {
   width: 100%;
   max-width: 240px;
   height: auto;
   display: block;
 }
 
-.footer-col p {
+.footer-wrap :where(.footer-col p) {
   margin: 0;
   line-height: 1.6;
 }
 
-.footer-col .textwidget p + p {
+.footer-wrap :where(.footer-col .textwidget p + p) {
   margin-top: 0.75rem;
 }
 
-.widget {
+.footer-wrap :where(.widget) {
   display: flex;
   flex-direction: column;
   gap: clamp(14px, 3vw, 22px);
 }
 
-.widget .heading-inner {
+.footer-wrap :where(.widget .heading-inner) {
   display: flex;
   align-items: center;
   column-gap: 10px;
 }
 
-.widget .heading-title {
+.footer-wrap :where(.widget .heading-title) {
   margin: 0;
   font-family: var(--footer-heading-font);
   font-size: clamp(1rem, 0.9rem + 0.3vw, 1.2rem);
@@ -105,14 +103,14 @@
   line-height: 1.2;
 }
 
-.widget .heading-title span {
+.footer-wrap :where(.widget .heading-title span) {
   display: inline-block;
   padding: 6px 18px;
   border-radius: 12px;
   background: rgba(4, 16, 47, 0.08);
 }
 
-.widget_nav_menu .menu {
+.footer-wrap :where(.widget_nav_menu .menu) {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -121,7 +119,7 @@
   gap: 10px;
 }
 
-.widget_nav_menu .menu-item a {
+.footer-wrap :where(.widget_nav_menu .menu-item a) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -131,18 +129,18 @@
   transition: color 160ms ease;
 }
 
-.widget_nav_menu .menu-item a:hover,
-.widget_nav_menu .menu-item a:focus-visible {
+.footer-wrap :where(.widget_nav_menu .menu-item a:hover,
+.widget_nav_menu .menu-item a:focus-visible) {
   color: var(--footer-link-hover);
 }
 
-.about-content-wrap .social-icon-wrap {
+.footer-wrap :where(.about-content-wrap .social-icon-wrap) {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.about-content-wrap .social-icon-wrap a {
+.footer-wrap :where(.about-content-wrap .social-icon-wrap a) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -154,39 +152,39 @@
   transition: background 160ms ease, transform 160ms ease;
 }
 
-.about-content-wrap .social-icon-wrap a:hover,
-.about-content-wrap .social-icon-wrap a:focus-visible {
+.footer-wrap :where(.about-content-wrap .social-icon-wrap a:hover,
+.about-content-wrap .social-icon-wrap a:focus-visible) {
   background: var(--footer-link-hover);
   color: #ffffff;
-  transform: translateY(-2px) scale(1.05);
 }
 
-.textwidget a:not(.p-url) {
-  font-weight: 700;
-  color: var(--footer-link-hover);
-  text-decoration: underline;
-  text-decoration-color: var(--footer-link-hover);
-  text-underline-offset: 0.175em;
+.footer-wrap :where(.about-content-wrap .social-icon-wrap a:hover) {
+  transform: translateY(-2px);
 }
 
-.footer-wrap .footer-credits,
-.footer-wrap .collapse-copyright {
-  padding: clamp(18px, 4vw, 28px) clamp(16px, 5vw, 32px);
-  border-top: 1px solid var(--footer-divider);
+.footer-wrap :where(.widget p:last-child) {
+  margin-bottom: 0;
+}
+
+.footer-wrap :where(.footer-credits) {
+  width: var(--footer-width);
+  margin: 0 auto;
+  padding: clamp(18px, 5vw, 28px) clamp(20px, 6vw, 40px);
   font-size: var(--footer-small);
-  color: rgba(4, 16, 47, 0.7);
-  text-align: center;
+  border-top: 1px solid var(--footer-divider);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
 }
 
-@media (max-width: 991px) {
-  .footer-columns {
-    padding-block: clamp(28px, 8vw, 48px);
-  }
+.footer-wrap :where(.footer-credits a) {
+  color: var(--footer-link);
+  font-weight: 600;
 }
 
-@media (max-width: 767px) {
-  .footer-wrap .footer-credits,
-  .footer-wrap .collapse-copyright {
-    text-align: left;
-  }
+.footer-wrap :where(.footer-credits a:hover,
+.footer-credits a:focus-visible) {
+  color: var(--footer-link-hover);
 }
