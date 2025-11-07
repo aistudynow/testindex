@@ -1,12 +1,11 @@
 /*
- * Hero slider and daily feed layout styling for AI Study Now
- * Lightweight recreation of the Elementor section so the demo
- * matches the Foxiz presentation on desktop and mobile.
+ * Hero slider + Daily Feed layout (AI Study Now)
+ * Mobile-first with reserved heights to avoid CLS, especially on phones.
  */
 
 :root {
   --slider-max-width: max(100vw, var(--rb-width, 1260px));
-  --slider-gap: clamp(20px, 3vw, 32px);
+  --slider-gap: clamp(18px, 3.4vw, 28px);
   --slider-surface: #ffffff;
   --slider-soft: #f4f6ff;
   --slider-border: rgba(4, 16, 47, 0.08);
@@ -15,6 +14,12 @@
   --slider-radius-sm: 22px;
   --slider-text: #04102f;
   --slider-muted: rgba(4, 16, 47, 0.58);
+
+  /* Shared spacing */
+  --hero-stack-gap: clamp(16px, 5vw, 24px);
+  --daily-feed-header-min: clamp(44px, 11vw, 68px);
+  --daily-feed-card-min: clamp(126px, calc(30vw + 92px), 198px);
+  --daily-feed-stack-gap: clamp(10px, 4vw, 16px);
 }
 
 body[data-theme='dark'],
@@ -27,18 +32,21 @@ body.dark-mode {
   --slider-muted: rgba(226, 232, 240, 0.72);
 }
 
+/* ===========================
+   SECTION CONTAINER
+   =========================== */
+
 .elementor-element-95b6669 {
   padding: clamp(24px, 5vw, 56px) 10px;
 }
-
 
 .elementor-element-95b6669 > .e-con-inner {
   width: min(100%, var(--slider-max-width));
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(280px, 0.95fr);
+  grid-template-columns: minmax(0, 1fr); /* mobile: single column */
   gap: var(--slider-gap);
-  align-items: stretch;
+  align-items: flex-start;
 }
 
 .elementor-element-95b6669 > .e-con-inner > * {
@@ -49,25 +57,27 @@ body.dark-mode {
 .elementor-element-00190a7.e-con {
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 3vw, 28px);
 }
 
+.elementor-element-ee596fb.e-con {
+  gap: var(--hero-stack-gap);
+}
+
+.elementor-element-00190a7.e-con {
+  gap: var(--daily-feed-stack-gap);
+  align-items: stretch;
+  padding-block: clamp(4px, 1.6vw, 12px);
+}
+
+/* Remove Elementor widget extra margins inside the two columns */
 .elementor-element-ee596fb.e-con > .elementor-widget,
 .elementor-element-00190a7.e-con > .elementor-widget {
   margin-block: 0;
 }
 
-@media (max-width: 1024px) {
-  .elementor-element-95b6669 > .e-con-inner {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (min-width: 1400px) {
-  .elementor-element-95b6669 > .e-con-inner {
-    grid-template-columns: minmax(0, 1.9fr) minmax(300px, 1fr);
-  }
-}
+/* ===========================
+   HERO BLOCK – #uid_d1a5d75
+   =========================== */
 
 #uid_d1a5d75 .block-inner {
   margin: 0;
@@ -85,9 +95,9 @@ body.dark-mode {
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: clamp(18px, 2.8vw, 28px);
+  gap: clamp(16px, 5vw, 26px);
   padding: 0;
-  padding-bottom: clamp(12px, 3vw, 20px);
+  padding-bottom: clamp(10px, 4vw, 18px);
   border: 0;
   background: transparent;
 }
@@ -107,15 +117,18 @@ body.dark-mode {
   padding-bottom: 0;
   border-radius: 24px;
   overflow: hidden;
-  background: transparent;
+  background: var(--slider-soft);
 }
 
 #uid_d1a5d75 .p-featured img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  aspect-ratio: auto; /* container controls ratio */
   transition: transform 0.35s var(--timing, cubic-bezier(0.32, 0.74, 0.57, 1));
-  will-change: transform; /* ← add */
+  transform-origin: center center;
+  will-change: transform;
 }
 
 #uid_d1a5d75 .p-wrap:hover .p-featured img,
@@ -127,9 +140,9 @@ body.dark-mode {
   margin: 0;
   padding-top: clamp(18px, 3vw, 26px);
   font-family: var(--heading-family, 'Encode Sans Condensed', sans-serif);
-  font-size: clamp(2.1rem, 1.8rem + 1.6vw, 3.2rem);
+  font-size: clamp(1.9rem, 1.7rem + 1.6vw, 2.9rem);
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.12;
   letter-spacing: -0.01em;
   color: var(--slider-text);
 }
@@ -139,7 +152,7 @@ body.dark-mode {
   font-size: clamp(1rem, 0.95rem + 0.4vw, 1.22rem);
   line-height: 1.65;
   color: var(--slider-muted);
-  display: none;
+  display: none; /* shown on desktop only */
 }
 
 #uid_d1a5d75 .p-meta {
@@ -149,10 +162,8 @@ body.dark-mode {
   gap: 12px 18px;
   font-size: 0.95rem;
   color: var(--slider-muted);
-  display: none;
+  display: none; /* shown on desktop only */
 }
-
-
 
 #uid_d1a5d75 .p-meta .meta-el + .meta-el {
   position: relative;
@@ -172,32 +183,46 @@ body.dark-mode {
   opacity: 0.4;
 }
 
+/* ===========================
+   DAILY FEED HEADING PILL
+   =========================== */
+
 #uid_5bc1a71 .heading-inner {
-  display: flex;
+  display: inline-flex;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  padding: clamp(8px, 3vw, 14px) clamp(16px, 5vw, 22px);
+  border-radius: 999px;
+  background: var(--slider-soft);
+  text-align: center;
+  margin: 0 auto;
+  max-width: min(100%, 280px);
+  min-height: var(--daily-feed-header-min);
 }
 
 #uid_5bc1a71 .heading-title {
   margin: 0;
-  flex: 1 1 auto;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 8px;
   font-family: var(--heading-family, 'Encode Sans Condensed', sans-serif);
-  font-size: 0.95rem;
+  font-size: clamp(0.82rem, 0.78rem + 0.28vw, 1.02rem);
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--slider-muted);
 }
 
 #uid_5bc1a71 .heading-title::after {
   content: '';
-  flex: 1 1 auto;
-  height: 1px;
-  background: var(--slider-border);
+  display: none;
 }
+
+/* ===========================
+   DAILY FEED SECTION TITLE BAR
+   =========================== */
 
 #uid_b5ad3af {
   margin-block: clamp(12px, 3vw, 24px) clamp(18px, 4vw, 28px);
@@ -222,8 +247,6 @@ body.dark-mode {
   margin: 0;
   font-family: var(--heading-family, 'Encode Sans Condensed', sans-serif);
   font-size: clamp(0.88rem, 0.82rem + 0.3vw, 1.05rem);
-  font-weight: 700;
-  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--g-color, #ff184e);
 }
@@ -237,6 +260,10 @@ body.dark-mode {
   background: var(--slider-soft);
 }
 
+/* ===========================
+   DAILY FEED LIST – #uid_8c476fa
+   =========================== */
+
 #uid_8c476fa {
   border-radius: 0;
   background: transparent;
@@ -249,20 +276,22 @@ body.dark-mode {
   flex-direction: column;
   margin: 0;
   padding: 0;
-  border-radius: 22px;
+  border-radius: 20px;
   background: var(--slider-surface);
   box-shadow: var(--slider-shadow);
   border: 1px solid var(--slider-border);
   overflow: hidden;
-  contain: layout paint; /* ← add this */
+  contain: layout paint;
 }
 
 #uid_8c476fa .p-wrap {
   display: flex;
-  align-items: center;
-  gap: clamp(14px, 3vw, 22px);
+  flex-direction: column;
+  align-items: stretch;
+  gap: clamp(12px, 2.8vw, 18px);
   padding: clamp(16px, 2.8vw, 22px);
   transition: background-color 0.2s ease;
+  min-height: var(--daily-feed-card-min);
 }
 
 #uid_8c476fa .p-wrap + .p-wrap {
@@ -275,12 +304,11 @@ body.dark-mode {
 }
 
 #uid_8c476fa.is-feat-right .p-wrap {
-  flex-direction: row-reverse;
   text-align: left;
 }
 
 #uid_8c476fa .feat-holder {
-  flex: 0 0 clamp(110px, 18vw, 140px);
+  flex: 0 0 clamp(112px, 18vw, 148px);
 }
 
 #uid_8c476fa .p-featured {
@@ -288,17 +316,20 @@ body.dark-mode {
   width: 100%;
   aspect-ratio: 3 / 2;
   padding-bottom: 0;
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
   background: var(--slider-soft);
 }
 
 #uid_8c476fa .p-featured img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  aspect-ratio: auto;
   transition: transform 0.3s var(--timing, cubic-bezier(0.32, 0.74, 0.57, 1));
-  will-change: transform; /* ← add */
+  transform-origin: center center;
+  will-change: transform;
 }
 
 #uid_8c476fa .p-wrap:hover .p-featured img,
@@ -314,17 +345,15 @@ body.dark-mode {
 }
 
 #uid_8c476fa .p-categories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  color: var(--slider-muted);
+  letter-spacing: 0.08em;
 }
 
-#uid_8c476fa .p-category {
-  padding: 0.25em 0.75em;
+#uid_8c476fa .p-categories a {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid currentColor;
   color: var(--g-color, #ff184e);
@@ -343,51 +372,128 @@ body.dark-mode {
   margin-top: auto;
   font-size: 0.82rem;
   color: var(--slider-muted);
-
   display: flex;
   align-items: center;
   gap: 0.6em;
   flex-wrap: wrap;
 }
 
+/* ===========================
+   GLOBAL FEATURED IMAGE SAFETY
+   (for any .featured-img elsewhere)
+   =========================== */
+
+img.featured-img.wp-post-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* ===========================
+   RESPONSIVE – TABLET & DESKTOP
+   =========================== */
+
+@media (min-width: 640px) {
+  #uid_8c476fa .p-wrap {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(12px, 2.6vw, 20px);
+  }
+
+  #uid_8c476fa.is-feat-right .p-wrap {
+    flex-direction: row-reverse;
+  }
+}
+
+@media (min-width: 768px) {
+  /* on larger screens we don't force hero height */
+  #uid_d1a5d75 .p-wrap {
+    min-height: 0;
+  }
+}
+
+@media (min-width: 1025px) {
+  .elementor-element-95b6669 > .e-con-inner {
+    grid-template-columns: minmax(0, 1.75fr) minmax(280px, 0.95fr);
+  }
+
+  .elementor-element-ee596fb.e-con,
+  .elementor-element-00190a7.e-con {
+    min-height: auto;
+  }
+
+  #uid_d1a5d75 .entry-summary,
+  #uid_d1a5d75 .p-meta {
+    display: block;
+  }
+}
+
+@media (min-width: 1400px) {
+  .elementor-element-95b6669 > .e-con-inner {
+    grid-template-columns: minmax(0, 1.9fr) minmax(300px, 1fr);
+  }
+}
+
+/* ===========================
+   MOBILE-ONLY STABILITY (<= 767px)
+   =========================== */
+
 @media (max-width: 767px) {
+  :root {
+    --daily-feed-card-min: clamp(140px, 56vw, 208px);
+    /* also force heading font to a system font to avoid webfont swap reflow */
+    --heading-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
   .elementor-element-95b6669 {
-    padding-block: clamp(20px, 7vw, 36px);
+    padding-block: 24px;
     padding-inline: 0;
   }
 
   .elementor-element-95b6669 > .e-con-inner {
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    margin-inline: calc(50% - 50vw);
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
   }
 
+  /* Hero wrapper: fixed min-height so content changes can't push Daily Feed */
   #uid_d1a5d75 .p-wrap {
-    padding: clamp(10px, 7vw, 10px);
-    gap: clamp(18px, 6vw, 26px);
+    padding: 16px;
+    gap: 20px;
+    box-sizing: border-box;
+    min-height: 560px; /* adjust slightly if you want a shorter/taller hero */
+    overflow: hidden;
   }
 
-#uid_d1a5d75 .entry-summary,
-  #uid_d1a5d75 .p-meta {
-    display: none;
-  }
-
-
-
+  /* HERO H2: lock everything + reserve fixed height */
   #uid_d1a5d75 h2.entry-title {
-    font-size: clamp(1.8rem, 1.6rem + 1.4vw, 2.4rem);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    font-size: 22px !important;
+    line-height: 1.3 !important;
+    color: var(--slider-text) !important;
+
+    margin: 0 !important;
+    padding-top: 16px !important;
+    box-sizing: border-box;
+
+    min-height: 120px !important;
+    max-height: 120px !important;
+    overflow: hidden;
+  }
+
+  #uid_d1a5d75 .entry-summary,
+  #uid_d1a5d75 .p-meta {
+    display: none !important;
   }
 
   #uid_5bc1a71 .heading-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  #uid_5bc1a71 .heading-title::after {
-    display: none;
+    padding: clamp(8px, 5vw, 14px) clamp(16px, 8vw, 24px);
+    max-width: min(100%, 240px);
   }
 
   #uid_b5ad3af {
@@ -409,27 +515,22 @@ body.dark-mode {
   }
 
   #uid_8c476fa .p-wrap {
-    align-items: flex-start;
+    align-items: stretch;
+    min-height: 160px; /* stable height for list items */
   }
 
   #uid_8c476fa .feat-holder {
-    flex-basis: clamp(90px, 30vw, 130px);
+    width: 100%;
+  }
+
+  #uid_8c476fa .p-featured {
+    aspect-ratio: 16 / 9;
   }
 }
 
 @media (max-width: 540px) {
   #uid_8c476fa .p-wrap {
-    gap: clamp(12px, 5vw, 18px);
-    padding: clamp(16px, 5vw, 22px);
+    gap: clamp(10px, 4.5vw, 16px);
+    padding: clamp(14px, 4.5vw, 20px);
   }
-}
-
-/* Reserve space and optimise hover/zoom on featured images */
-img.featured-img.wp-post-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;  /* or 3 / 2 if that matches your design better */
-  object-fit: cover;
-  will-change: transform;
 }
