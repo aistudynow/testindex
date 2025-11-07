@@ -5,6 +5,27 @@
  */
 if (!defined('ABSPATH')) exit;
 
+
+
+
+
+if (!function_exists('mu_reflow_tracker_is_enabled')) {
+    function mu_reflow_tracker_is_enabled() {
+        $enabled = defined('WD4_PERF_DEBUG_ENABLED') && WD4_PERF_DEBUG_ENABLED;
+
+        return (bool) apply_filters('mu_reflow_tracker_enabled', $enabled);
+    }
+}
+
+if (!mu_reflow_tracker_is_enabled()) {
+    return;
+}
+
+
+
+
+
+
 add_action('wp_head', function () {
   // frontend only, admins only
   if (is_admin()) return;
