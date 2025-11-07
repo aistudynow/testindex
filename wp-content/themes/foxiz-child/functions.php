@@ -127,7 +127,7 @@ function wd4_filter_share_option_matrix( array $options ): array {
         'native',
     );
 
-    $allowed_networks = array( 'twitter', 'linkedin', 'copy', 'email' );
+    $allowed_networks = array( 'twitter', 'linkedin', 'copy', 'whatsapp' );
     $share_groups      = array( 'top', 'left', 'bottom', 'sticky' );
 
     $options['share_top']    = 0;
@@ -244,11 +244,14 @@ if ( ! function_exists( 'foxiz_render_share_list' ) ) {
                 'url'   => sprintf( 'https://linkedin.com/shareArticle?mini=true&url=%s&title=%s', $encoded_url, $encoded_txt ),
                 'attrs' => array( 'data-bound-share' => '1' ),
             ),
-            'email'    => array(
-                'class' => 'icon-email share-trigger',
-                'icon'  => 'rbi-email',
-                'label' => esc_html__( 'Email', 'foxiz-child' ),
-                'url'   => sprintf( 'mailto:?subject=%s&body=%s', $encoded_txt, rawurlencode( $permalink ) ),
+            'whatsapp' => array(
+                'class' => 'icon-whatsapp share-trigger',
+                'icon'  => 'rbi-whatsapp',
+                'label' => esc_html__( 'WhatsApp', 'foxiz-child' ),
+                'url'   => sprintf( 'https://api.whatsapp.com/send?text=%s%%20%s', $encoded_txt, $encoded_url ),
+                'attrs' => array(
+                    'data-bound-share' => '1',
+                ),
             ),
             'copy'     => array(
                 'class' => 'icon-copy',
