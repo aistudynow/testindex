@@ -85,6 +85,12 @@ if ( ! function_exists( 'foxiz_entry_readmore' ) ) {
 			return;
 		}
 
+
+    if ( is_search() ) {
+			return;
+		}
+
+
 		$link         = get_permalink();
 		$is_sponsored = false;
 		if ( foxiz_is_sponsored_post() && foxiz_get_single_setting( 'sponsor_redirect' ) ) {
@@ -167,16 +173,26 @@ if ( ! function_exists( 'foxiz_entry_excerpt' ) ) {
 if ( ! function_exists( 'foxiz_get_entry_meta' ) ) {
 	function foxiz_get_entry_meta( $settings = [] ) {
 
-		if ( empty( $settings['entry_meta'] ) || ! is_array( $settings['entry_meta'] ) || ! array_filter( $settings['entry_meta'] ) ) {
-			return false;
+		$entry_meta = [];
+
+		if ( ! empty( $settings['entry_meta'] ) && is_array( $settings['entry_meta'] ) ) {
+			$entry_meta = array_values( array_filter( $settings['entry_meta'] ) );
 		}
 
-		if ( $settings['entry_meta'][0] === '_disabled' ) {
+		if ( is_search() && $entry_meta ) {
+			$allowed    = apply_filters( 'foxiz_search_entry_meta_fields', [ 'date', 'author' ] );
+			$entry_meta = array_values( array_intersect( $entry_meta, (array) $allowed ) );
+		}
+
+		if ( empty( $entry_meta ) ) {
 			return false;
 		}
+		
+		$settings['entry_meta'] = $entry_meta;
+
 
 		ob_start();
-		foreach ( $settings['entry_meta'] as $key ) {
+		foreach ( $entry_meta as $key ) {
 			switch ( $key ) {
 				case 'avatar' :
 					foxiz_entry_meta_avatar( $settings );
@@ -255,6 +271,13 @@ if ( ! function_exists( 'foxiz_entry_meta' ) ) {
 			echo foxiz_get_entry_review( $settings );
 
 			return;
+		}
+ 
+
+
+
+ if ( is_search() ) {
+			$settings['bookmark'] = false;
 		}
 
 		$settings = foxiz_extra_meta_labels( $settings );
