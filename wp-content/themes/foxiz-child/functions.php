@@ -9,6 +9,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 
+/**
+ * Ensure remote Google Fonts fall back to system fonts immediately while the
+ * custom font files are still downloading. Without this parameter the browser
+ * blocks text rendering until the remote CSS arrives, which hurts the Largest
+ * Contentful Paint score on slower connections. Appending `display=swap` keeps
+ * the typography identical once the fonts finish loading but lets the initial
+ * paint happen using safe fallbacks.
+ */
+function wd4_append_font_display_param( string $src, string $handle ): string {
+    unset( $handle );
+
+    if ( false === strpos( $src, 'fonts.googleapis.com' ) ) {
+        return $src;
+    }
+
+    if ( false !== strpos( $src, 'display=' ) ) {
+        return $src;
+    }
+
+    $augmented = add_query_arg( 'display', 'swap', $src );
+
+    return is_string( $augmented ) ? $augmented : $src;
+}
+add_filter( 'style_loader_src', 'wd4_append_font_display_param', 10, 2 );
+
+
+
+
+
+
+
+
 
 
 
@@ -18,6 +50,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Enable or disable inline CSS loading (true = ON, false = OFF)
 define( 'WD4_INLINE_CSS_ENABLED', true );
+
+
+if ( ! function_exists( 'wd4_should_load_remote_fonts' ) ) {
+    /**
+     * Gatekeeper that lets us short-circuit any Google Fonts requests. The
+     * default returns false so headings fall back to fast system fonts, but a
+     * filter can re-enable the remote styles if we ever need them again.
+     */
+    function wd4_should_load_remote_fonts(): bool {
+        return (bool) apply_filters( 'wd4_should_load_remote_fonts', false );
+    }
+}
 
 
 
@@ -133,6 +177,31 @@ function wd4_optimize_theme_share_options(): void {
     $GLOBALS[ FOXIZ_TOS_ID ] = $trimmed;
 }
 add_action( 'init', 'wd4_optimize_theme_share_options', 8 );
+
+
+
+/**
+ * Stop the parent theme from requesting remote Google Fonts so the hero title
+ * can render with local system fonts immediately.
+ */
+function wd4_disable_remote_google_fonts(): void {
+    if ( ! wd4_is_front_context() ) {
+        return;
+    }
+
+    if ( wd4_should_load_remote_fonts() ) {
+        return;
+    }
+
+    wp_dequeue_style( 'foxiz-font' );
+    wp_deregister_style( 'foxiz-font' );
+}
+add_action( 'wp_enqueue_scripts', 'wd4_disable_remote_google_fonts', 20 );
+
+
+
+
+
 
 if ( ! function_exists( 'foxiz_render_share_list' ) ) {
     /**
@@ -1197,6 +1266,16 @@ function wd4_collect_preconnect_origins(): array {
     // Fonts
     $origins[] = 'https://fonts.googleapis.com';
     $origins[] = array('href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous');
+    
+    
+    
+  // Fonts
+    if ( wd4_should_load_remote_fonts() ) {
+        $origins[] = 'https://fonts.googleapis.com';
+        $origins[] = array('href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous');
+    }
+  
+    
 
     // Defer CSS helper (e.g., Cloudflare)
     if ( wd4_should_defer_styles() ) $origins[] = 'https://cloudflare.com';
@@ -1279,7 +1358,7 @@ function wd4_enqueue_styles(): void {
 
     if ( is_singular( 'post' ) ) {
         wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '0833990966976444448885909999880.0' );
-        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '579079999980.00' );
+        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '9957907999099980.00' );
 
         wp_enqueue_style( 'email',       'https://aistudynow.com/wp-content/themes/css/header/single/email.css',       array(), '667876655777999980.0' );
         wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '497667876655777999980.0' );
