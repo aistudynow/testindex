@@ -79,10 +79,14 @@ body.dark-mode {
    HERO BLOCK – #uid_d1a5d75
    =========================== */
 
+#uid_d1a5d75 {
+  --grid-columns: 1;
+}
+
 #uid_d1a5d75 .block-inner {
   margin: 0;
   padding: 0;
-  display: block;
+  display: block !important;
   border: 0;
   background: transparent;
 }
@@ -350,13 +354,25 @@ body.dark-mode {
   letter-spacing: 0.08em;
 }
 
+
+
 #uid_8c476fa .p-categories a {
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid currentColor;
-  color: var(--g-color, #ff184e);
+  border: 1px solid rgba(4, 16, 47, 0.2);
+  border: 1px solid color-mix(in srgb, var(--slider-text) 24%, transparent);
+  background: rgba(4, 16, 47, 0.08);
+  background: color-mix(in srgb, var(--slider-text) 12%, transparent);
+  color: var(--slider-text);
+  font-weight: 700;
+}
+
+#uid_8c476fa .p-categories a:hover,
+#uid_8c476fa .p-categories a:focus-visible {
+  background: rgba(4, 16, 47, 0.14);
+  background: color-mix(in srgb, var(--slider-text) 18%, transparent);
 }
 
 #uid_8c476fa h3.entry-title {
@@ -459,12 +475,11 @@ img.featured-img.wp-post-image {
     margin-inline: 0;
   }
 
-  /* Hero wrapper: fixed min-height so content changes can't push Daily Feed */
+ /* Hero wrapper: maintain consistent padding without forcing a fixed height */
   #uid_d1a5d75 .p-wrap {
     padding: 16px;
     gap: 20px;
     box-sizing: border-box;
-    min-height: 560px; /* adjust slightly if you want a shorter/taller hero */
     overflow: hidden;
   }
 

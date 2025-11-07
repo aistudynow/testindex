@@ -1,3 +1,4 @@
+
 /*
  * Lightweight grid styling for AI Study Now
  * Mirrors the Foxiz-inspired cards with modern, self-contained CSS.
@@ -13,7 +14,8 @@
   --grid-muted: rgba(4, 16, 47, 0.64);
   --grid-meta-strong: rgba(4, 16, 47, 0.78);
   --grid-accent: var(--header-accent, #ff184e);
-  --grid-gap: clamp(18px, 3.4vw, 28px);
+  --grid-accent-strong: #d10c3c;
+  --grid-accent-strong: color-mix(in srgb, var(--grid-accent) 80%, #430010 20%);
   --grid-radius: 18px;
   --grid-image-radius: 14px;
   --grid-shadow: 0 20px 44px rgba(15, 23, 42, 0.12);
@@ -35,12 +37,13 @@ body.dark-mode {
 .block-grid {
   color: var(--grid-text);
   font-family: var(--font-body, "Manrope", system-ui, sans-serif);
+  --grid-columns: 4;
 }
 
 .block-grid .block-inner {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: grid !important;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
   gap: 0;
   margin: 0;
   padding: 0;
@@ -57,6 +60,7 @@ body.dark-mode {
   flex-direction: column;
   gap: clamp(12px, 2vw, 18px);
   min-height: 100%;
+  min-width: 0;
   padding: clamp(18px, 3vw, 26px);
   border-right: 1px dashed var(--grid-line);
   border-bottom: none;
@@ -72,9 +76,10 @@ body.dark-mode {
 .block-grid .p-wrap:hover,
 .block-grid .p-wrap:focus-within {
   background: var(--grid-card-hover);
-  border-right-color: var(--grid-line-strong);
-  border-bottom-color: var(--grid-line-strong);
   box-shadow: var(--grid-shadow);
+  box-shadow:
+    var(--grid-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--grid-line-strong) 65%, transparent);
   transform: translateY(-2px);
 }
 
@@ -122,6 +127,27 @@ body.dark-mode {
   color: var(--grid-muted);
 }
 
+.block-grid .p-categories a {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(4, 16, 47, 0.22);
+  background: rgba(4, 16, 47, 0.1);
+  border: 1px solid color-mix(in srgb, var(--grid-text) 22%, transparent);
+  background: color-mix(in srgb, var(--grid-text) 10%, transparent);
+  color: var(--grid-text);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.block-grid .p-categories a:focus-visible,
+.block-grid .p-categories a:hover {
+  background: rgba(4, 16, 47, 0.16);
+  background: color-mix(in srgb, var(--grid-text) 16%, transparent);
+}
+
 .block-grid .meta-label {
   font-weight: 700;
   color: var(--grid-meta-strong);
@@ -142,46 +168,57 @@ body.dark-mode {
   color: var(--grid-accent);
 }
 
+
+
+
+
+
+
+
+
+/* For the "AI News | Date | etc." separator pill */
+.block-grid .meta-separate {
+  position: relative;
+  padding-inline-end: clamp(6px, 0.8vw, 10px);
+}
+
+/* Draw the vertical divider without taking up layout space */
 .block-grid .meta-separate::after {
   content: "";
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0;
   width: 1px;
   height: 0.85em;
-  margin-inline: clamp(6px, 0.8vw, 10px) 0;
   background: currentColor;
   opacity: 0.28;
-  transform: skewX(-12deg);
+  transform: translateY(-50%) skewX(-12deg);
+}
+
+/* No separator after the last item */
+.block-grid .meta-separate:last-child {
+  padding-inline-end: 0;
 }
 
 .block-grid .meta-separate:last-child::after {
   display: none;
 }
 
-.block-grid h2.entry-title {
-  margin: 0;
-  font-family: var(--font-heading, "Encode Sans Condensed", "Manrope", sans-serif);
-  font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.55rem);
-  line-height: 1.3;
-  color: var(--grid-text);
-}
 
-.block-grid .p-url {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  color: inherit;
-  transition: color 160ms ease;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0% 2px;
-}
 
-.block-grid .p-url:hover,
-.block-grid .p-url:focus-visible {
-  color: var(--grid-accent);
-  background-size: 100% 2px;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .block-grid .p-url i {
   font-size: 0.9em;
@@ -208,8 +245,8 @@ body.dark-mode {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #fff;
-  background: var(--grid-accent);
-  box-shadow: 0 16px 30px rgba(255, 24, 78, 0.3);
+  background: var(--grid-accent-strong);
+  box-shadow: 0 16px 30px rgba(209, 12, 60, 0.32);
   transition: transform 160ms ease, background 160ms ease;
 }
 
@@ -222,9 +259,10 @@ body.dark-mode {
 
 .block-grid .loadmore-trigger:hover,
 .block-grid .loadmore-trigger:focus-visible {
-  background: color-mix(in srgb, var(--grid-accent) 85%, #ffffff 15%);
+  background: var(--grid-accent-strong);
+  background: color-mix(in srgb, var(--grid-accent-strong) 88%, #ffffff 12%);
   transform: translateY(-2px);
-  box-shadow: 0 20px 38px rgba(255, 24, 78, 0.32);
+  box-shadow: 0 20px 38px rgba(209, 12, 60, 0.36);
 }
 
 .block-grid .rb-loader {
@@ -240,8 +278,8 @@ body.dark-mode {
 }
 
 @media (max-width: 1280px) {
-  .block-grid .block-inner {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .block-grid {
+    --grid-columns: 3;
   }
 
   .block-grid .p-wrap:nth-child(4n) {
@@ -258,8 +296,8 @@ body.dark-mode {
 }
 
 @media (max-width: 1024px) {
-  .block-grid .block-inner {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .block-grid {
+    --grid-columns: 2;
   }
 
   .block-grid .p-wrap:nth-child(3n) {
@@ -275,9 +313,13 @@ body.dark-mode {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
+  .block-grid {
+    --grid-columns: 1;
+  }
+
   .block-grid .block-inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
     gap: clamp(16px, 5vw, 24px);
   }
 
@@ -301,6 +343,8 @@ body.dark-mode {
     grid-column: 1;
     grid-row: 1 / span 2;
   }
+
+ 
 
   .block-grid .p-meta {
     grid-column: 2;

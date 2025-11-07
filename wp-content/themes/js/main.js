@@ -147,6 +147,14 @@ const nativeDocumentWrite = document.write;
 
       window.setTimeout(finish, 48);
     };
+    
+    
+    
+    
+    
+    
+    
+    
 
     const getFragment = (html, contextNode) => {
       if (!html) return null;
