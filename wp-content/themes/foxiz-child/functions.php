@@ -1361,7 +1361,7 @@ function wd4_enqueue_styles(): void {
 
     if ( is_singular( 'post' ) ) {
         wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '0833990966976444448885909999880.0' );
-        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '9957907999099980.00' );
+        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '49957907999099980.00' );
 
         wp_enqueue_style( 'email',       'https://aistudynow.com/wp-content/themes/css/header/single/email.css',       array(), '667876655777999980.0' );
         wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '497667876655777999980.0' );
@@ -1594,7 +1594,7 @@ JS,
 
     if ( in_array( $context, array( 'post', 'page' ), true ) ) {
         wp_enqueue_script( 'comment', $comment, array(), '1.0.0', true );
-        wp_enqueue_script( 'main', $main, array(), '408999898866899.0.0', true );
+        wp_enqueue_script( 'main', $main, array(), '9900899.0.0', true );
         wp_enqueue_script( 'lazy', $lazy, array(), '9918.0.0', true );
         wp_enqueue_script( 'pagination', $pagination_js, array(), '5.0.1', true );
         wp_enqueue_script( 'download', $download, array(), '000.0.0', true );
