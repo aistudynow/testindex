@@ -84,7 +84,7 @@ body {
 .s-ct {
   --g-color: #8224e3;
   --g-color-90: #8224e3e6;
-  --body-family: Manrope, Arial, Helvetica, sans-serif;
+  --body-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --body-fweight: 400;
   --body-fcolor: #04102f;
   --body-fsize: 18px;
@@ -93,39 +93,39 @@ body {
   --body-fheight: 1.7;
   --body-transform: none;
   --solid-white: #ffffff;
-  --heading-family: Manrope;
+  --heading-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --heading-fweight: 700;
   --heading-fcolor: #04102f;
   --heading-fspace: -0.025em;
   --heading-transform: none;
-  --headline-family: Manrope;
+  --headline-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --headline-fweight: 700;
   --headline-fsize: 60px;
   --headline-fspace: -0.025em;
-  --h1-family: Manrope;
+  --h1-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --h1-fweight: 700;
   --h1-fsize: 50px;
   --h1-fspace: -0.025em;
   --h1-transform: none;
-  --h2-family: Manrope;
+  --h2-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --h2-fweight: 700;
   --h2-fsize: 40px;
   --h2-fspace: -0.025em;
-  --h3-family: Manrope;
+  --h3-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --h3-fweight: 700;
   --h3-fsize: 25px;
   --h3-fspace: -0.04em;
-  --h4-family: Manrope;
+  --h4-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --h4-fweight: 700;
   --h4-fsize: 20px;
   --h4-fspace: -0.05em;
-  --meta-family: Manrope;
+  --meta-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --meta-fweight: 400;
   --meta-fsize: 13px;
   --meta-fspace: normal;
   --meta-transform: none;
   --meta-fcolor: #666666;
-  --meta-b-family: Manrope;
+  --meta-b-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --meta-b-fweight: 700;
   --meta-b-fcolor: #333333;
   --meta-b-transform: uppercase;
@@ -133,13 +133,13 @@ body {
   --meta-style-w: 1.5em;
   --meta-style-h: 1px;
   --meta-style-o: 1;
-  --btn-family: Manrope;
+  --btn-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --btn-fweight: 700;
   --btn-fsize: 12px;
   --btn-fspace: normal;
   --btn-transform: none;
   --btn-fstyle: normal;
-  --input-family: Manrope;
+  --input-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --input-fweight: 400;
   --input-fsize: 14px;
   --input-fspace: normal;
@@ -165,6 +165,8 @@ body {
   --el-spacing: 12px;
   --bottom-spacing: 35px;
   --cp-spacing: 1.5rem;
+  
+  
   color: var(--body-fcolor);
   font-family: var(--body-family);
   font-size: var(--body-fsize);
@@ -516,6 +518,23 @@ body {
   color: var(--heading-fcolor);
   margin-bottom: 20px;
 }
+
+
+
+
+@supports (content-visibility: auto) {
+  /*
+   * Defer deep layout work for the article body until after the hero area
+   * paints. This keeps the post title (our LCP element) from waiting on
+   * thousands of descendants below the fold.
+   */
+  .single-post .entry-content {
+    content-visibility: auto;
+    contain-intrinsic-size: 1200px;
+  }
+}
+
+
 
 @media (min-width: 768px) {
   .s-ct {
