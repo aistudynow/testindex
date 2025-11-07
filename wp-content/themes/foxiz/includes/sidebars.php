@@ -17,8 +17,8 @@ if ( ! function_exists( 'foxiz_get_start_widget_heading' ) ) {
 
 		$class_name = 'block-h widget-heading';
 		$class_name .= ' heading-layout-' . $settings['layout'];
-		if ( empty( $settings['html_tag'] ) ) {
-			$settings['html_tag'] = 'h4';
+		   if ( empty( $settings['html_tag'] ) ) {
+                        $settings['html_tag'] = 'h3';
 		}
 
 		$output = '<div';
@@ -38,8 +38,9 @@ if ( ! function_exists( 'foxiz_get_end_widget_heading' ) ) {
 	 */
 	function foxiz_get_end_widget_heading( $settings = [] ) {
 
-		if ( empty( $settings['html_tag'] ) ) {
-			$settings['html_tag'] = 'h4';
+		
+                if ( empty( $settings['html_tag'] ) ) {
+                        $settings['html_tag'] = 'h3';
 		}
 		$output = '</span></' . $settings['html_tag'] . '>';
 		$output .= '</div></div>';
@@ -54,17 +55,17 @@ if ( ! function_exists( 'foxiz_register_all_sidebars' ) ) {
 		$settings = foxiz_get_option();
 
 		$heading        = [
-			'layout'   => '1',
-			'html_tag' => 'h4',
-		];
-		$footer_heading = [
-			'layout'   => '10',
-			'html_tag' => 'h4',
-		];
-		$more_heading   = [
-			'layout'   => '10',
-			'html_tag' => 'h5',
-		];
+                        'layout'   => '1',
+                        'html_tag' => 'h3',
+                ];
+                $footer_heading = [
+                        'layout'   => '10',
+                        'html_tag' => 'h3',
+                ];
+                $more_heading   = [
+                        'layout'   => '10',
+                        'html_tag' => 'h4',
+                ];
 
 		if ( ! empty( $settings['widget_heading_tag'] ) ) {
 			$heading['html_tag']        = $settings['widget_heading_tag'];
