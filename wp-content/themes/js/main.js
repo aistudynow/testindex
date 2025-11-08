@@ -1000,16 +1000,6 @@ Module.calcSubMenuPos = function () {
     }
   };
 
-  /* ===========================
-   * OPTIONAL THEME HOOK STUBS
-   * =========================== */
-  if (typeof Module.reInitAll !== 'function') {
-    Module.reInitAll = function () { /* no-op */ };
-  }
-  if (typeof Module.reloadBlockFunc !== 'function') {
-    Module.reloadBlockFunc = function () { /* no-op */ };
-  }
-
 
 
 /* ===========================

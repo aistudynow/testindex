@@ -8,6 +8,47 @@ body {
 
 
 
+/*
+ * Constrain the single post canvas so it aligns with the
+ * home page container widths. The base value keeps the
+ * layout fluid on small screens while the desktop breakpoints
+ * mirror the front-page max widths, accounting for the
+ * 20px edge padding applied by .rb-s-container.
+ */
+:where(.single-standard-8, .single-footer) {
+  --rb-width: 100%;
+}
+
+@media (min-width: 768px) {
+  :where(.single-standard-8, .single-footer) {
+    --rb-width: calc(min(94vw, 960px) - 40px);
+  }
+}
+
+@media (min-width: 1024px) {
+  :where(.single-standard-8, .single-footer) {
+    --rb-width: calc(min(90vw, 1120px) - 40px);
+  }
+}
+
+@media (min-width: 1100px) {
+  :where(.single-standard-8, .single-footer) {
+    --rb-width: calc(min(84vw, 1200px) - 40px);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
     .grid-container {
         position: relative;
         display: flex;
@@ -625,190 +666,18 @@ body {
     gap: 6px;
   }
 
+  /* Share button visuals are defined in sharesingle.css to avoid duplicate styling. */
+  
   
 
-  .s-ct .share-action {
-    min-width: 30px;
-    line-height: 30px;
-    padding: 0;
-  }
-
-  .s-ct .single-right-meta {
-    
-    justify-content: flex-end;
-    gap: 8px;
-    
-  }
-
-  .s-ct .single-right-meta:not(:first-child)::before {
-    display: none;
-  }
-}
 
 
 
 
-.s-ct .smeta-in {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 12px;
-}
 
-.s-ct .meta-avatar {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  flex-shrink: 0;
-  margin-right: -0.1em;
-}
 
-.s-ct .meta-avatar .meta-author-avatar {
-  display: inline-flex;
-  align-items: center;
-}
 
-.s-ct .meta-avatar,
-.s-ct .meta-avatar + div {
-  --meta-width: auto;
-}
 
-.s-ct .meta-avatar img {
-  display: inline-flex;
-  width: var(--avatar-size, var(--b-avatar-size, 60px));
-  height: var(--avatar-size, var(--b-avatar-size, 60px));
-  margin-left: 0 !important;
-  border-radius: var(--avatar-radius, 100%);
-  object-fit: cover;
-}
-
-.s-ct .smeta-sec {
-  display: flex;
-  flex-direction: column-reverse;
-  text-align: left;
-  gap: 0.1em;
-}
-
-.s-ct .p-meta {
-  display: flex;
-  align-items: center;
-  flex-flow: row wrap;
-  gap: 0.2em max(3px, 0.6em);
-}
-
-.s-ct .meta-el {
-  display: inline-flex;
-  align-items: center;
-  flex-flow: row wrap;
-  width: var(--meta-width, auto);
-  gap: max(2px, 0.35em);
-}
-
-.s-ct .meta-label {
-  font-family: var(--meta-family);
-  font-size: var(--meta-fsize);
-  font-weight: var(--meta-fweight);
-  letter-spacing: var(--meta-fspace);
-  text-transform: var(--meta-transform);
-  color: var(--meta-fcolor);
-  display: inline-flex;
-  align-items: center;
-  gap: max(2px, 0.35em);
-}
-
-.s-ct .meta-author {
-  font-family: var(--meta-b-family);
-  font-weight: var(--meta-b-fweight);
-  text-transform: var(--meta-b-transform);
-  color: var(--meta-b-fcolor, var(--body-fcolor));
-}
-
-.s-ct .meta-author:hover,
-.s-ct .meta-author:focus {
-  color: var(--g-color);
-  text-decoration: underline;
-  text-decoration-thickness: min(0.2em, 3px);
-  text-underline-offset: min(4px, 0.175em);
-}
-
-.s-ct .smeta-bottom {
-  font-family: var(--meta-family);
-  font-size: var(--meta-fsize);
-  color: var(--meta-fcolor);
-}
-
-.s-ct .smeta-extra {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.s-ct .single-right-meta {
-  display: flex;
-  align-items: center;
-  flex-flow: row nowrap;
-  flex-shrink: 0;
-  white-space: nowrap;
-  font-family: var(--meta-family);
-  font-size: var(--meta-fsize);
-  color: var(--meta-fcolor);
-}
-
-.s-ct .single-right-meta:not(:first-child)::before {
-  content: '';
-  display: inline-flex;
-  width: 1px;
-  height: 6px;
-  margin-right: 10px;
-  margin-left: 6px;
-  opacity: 0.25;
-  background-color: var(--meta-fcolor);
-}
-
-@media (min-width: 992px) {
-  .s-ct .single-right-meta > * {
-    font-size: 1.15em;
-  }
-}
-
-@media (min-width: 768px) {
-  .s-ct .smeta-in .is-meta > *,
-  .s-ct .smeta-in .meta-text > * {
-    font-size: 1.15em;
-  }
-}
-
-/* Share cluster ------------------------------------------------------ */
-.s-ct .t-shared-sec {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.s-ct .t-shared-header {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-right: 7px;
-  font-family: var(--meta-family);
-  font-size: var(--meta-fsize);
-  color: var(--meta-fcolor);
-  text-transform: var(--meta-transform);
-}
-
-.s-ct .share-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  line-height: 32px;
-  padding: 0 6px;
- 
-  color: inherit;
-  text-decoration: none;
-  transition: var(--effect, all 0.2s var(--timing, cubic-bezier(0.32, 0.74, 0.57, 1)));
 }
 
 
@@ -821,92 +690,19 @@ body {
 
 
 
-/* =============== POP ICON BUTTONS =============== */
-.s-ct .share-action {
-  --accent: var(--g-color);                  /* default, overridden per icon below */
-  --size: 40px;
-  --radius: 999px;
 
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 
-  width: var(--size);
-  height: var(--size);
-  border-radius: var(--radius);
-  color: #fff;                               /* icon color (via mask) */
-  background: radial-gradient(120% 120% at 30% 20%, color-mix(in srgb, var(--accent), #fff 22%), var(--accent));
-  box-shadow:
-    0 10px 20px -10px color-mix(in srgb, var(--accent), #000 70%),
-    inset 0 1px 0 rgba(255,255,255,.28);
-    transition: transform .18s ease, background .18s ease;
-  isolation: isolate;                        /* for the glow layer */
-}
 
-.s-ct .share-action::after {                 /* soft glow ring */
-  content: "";
-  position: absolute; inset: -6px;
-  border-radius: inherit;
-  background: radial-gradient(80% 80% at 50% 50%, color-mix(in srgb, var(--accent), transparent 82%), transparent 90%);
-  filter: blur(10px);
-  opacity: .6; pointer-events: none; z-index: -1;
-}
 
-.s-ct .share-action:hover,
-.s-ct .share-action:focus-visible {
-  transform: translateY(-1px) scale(1.04);
-  box-shadow:
-    0 14px 28px -12px color-mix(in srgb, var(--accent), #000 65%),
-    inset 0 1px 0 rgba(255,255,255,.35);
-}
 
-/* stop the old icon font & text-shadow */
-.s-ct .share-action i,
-.s-ct .rbi {
-  font-family: inherit !important;
-  font-style: normal; font-weight: 400;
-  text-shadow: none;
-}
 
-/* draw the icon with a masked pseudo-element */
-.s-ct .rbi::before {
-  content: "";
-  display: inline-block;
-  width: 1.15em; height: 1.15em;
-  vertical-align: -.12em;
-  background: currentColor;                  /* icon inherits button color */
-  -webkit-mask: var(--rb-icon) no-repeat center / contain;
-          mask: var(--rb-icon) no-repeat center / contain;
-}
 
-/* ====== Brand colors + SVG masks (zero network) ====== */
-.s-ct .rbi-share::before {                   /* Share / arrow-out */
-  --rb-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M18 16.08a3 3 0 1 0 3 2.92 3 3 0 0 0-3-2.92ZM7.2 10.3l7.5-4.17 1 1.73-7.5 4.1v1l7.5 4.1-1 1.73L7.2 14.7a3 3 0 0 1 0-4.4Z'/></svg>");
-}
-.s-ct .rbi-twitter::before {                 /* Twitter/X – use the classic bird for clarity */
-  --rb-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M22 5.9c-.7.3-1.5.5-2.3.6a4 4 0 0 0 1.8-2.2 8 8 0 0 1-2.5 1 4 4 0 0 0-6.9 3.6A11.3 11.3 0 0 1 3.9 4.8a4 4 0 0 0 1.2 5.3 4 4 0 0 1-1.8-.5 4 4 0 0 0 3.2 3.9 4 4 0 0 1-1.8.1 4 4 0 0 0 3.7 2.7A8.1 8.1 0 0 1 2 19.5 11.5 11.5 0 0 0 8.2 21c7.4 0 11.5-6.1 11.5-11.5v-.5c.8-.6 1.5-1.4 2.3-2.2Z'/></svg>");
-}
-.s-ct .rbi-linkedin::before {
-  --rb-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M4.98 3.5A2.5 2.5 0 1 1 2.5 6 2.49 2.49 0 0 1 4.98 3.5zM3 8h4v12H3zM10 8h3.6v1.7h.1A4 4 0 0 1 21 13.3V20h-4v-5.6c0-1.3-.5-2.2-1.7-2.2s-1.9.9-1.9 2.2V20h-4z'/></svg>");
-}
-.s-ct .rbi-reddit::before {
-  --rb-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M14.7 13.4a1.4 1.4 0 1 1 1.4-1.4 1.4 1.4 0 0 1-1.4 1.4zm-5.4 0A1.4 1.4 0 1 1 10.7 12a1.4 1.4 0 0 1-1.4 1.4zm6.8 3.5a6.3 6.3 0 0 1-8.2 0 .6.6 0 0 1 .8-.8 5.1 5.1 0 0 0 6.5 0 .6.6 0 1 1 .9.8zM22 12a2 2 0 0 0-3.4-1.5 8.1 8.1 0 0 0-4.8-1.5l.8-3.7 2.6.6a1.6 1.6 0 1 0 .2-1.2l-3.1-.7a.6.6 0 0 0-.7.5L12 8a8.3 8.3 0 0 0-7.4 2A2 2 0 1 0 2 12a8 8 0 0 0 8 8h4a8 8 0 0 0 8-8z'/></svg>");
-}
-.s-ct .rbi-link-o::before {                  /* link-open */
-  --rb-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M17 7h-3V5h5v5h-2V7zM7 17h3v2H5v-5h2v3zM8 8l8 8-1.4 1.4L6.6 9.4 8 8z'/></svg>");
-}
-.s-ct .rbi-more::before {                    /* kebab */
-  --rb-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M6 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'/></svg>");
-}
 
-/* brand accent colors */
-.s-ct .rbi-twitter   { --accent: #1da1f2; }
-.s-ct .rbi-linkedin  { --accent: #0a66c2; }
-.s-ct .rbi-reddit    { --accent: #ff4500; }
-.s-ct .rbi-share     { --accent: #7c3aed; }  /* violet */
-.s-ct .rbi-link-o    { --accent: #14b8a6; }  /* teal */
-.s-ct .rbi-more      { --accent: #94a3b8; }  /* slate */
+
+
+
+
+
 
 /* ====== MENU CARET (replace \e924) ====== */
 .main-menu > li.menu-item-has-children > a::after{

@@ -105,6 +105,15 @@
   align-items: center;
 }
 
+
+:where(.author-card__verified, .verified-tick).rbi-wavy::before {
+  --rb-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M20.9 8.2 19 5.3a2 2 0 0 0-2.2-.8l-3 .9a2 2 0 0 1-1.2 0l-3-.9a2 2 0 0 0-2.2.8L5.5 8.2a2 2 0 0 0-.3 1.8l.9 3a2 2 0 0 1 0 1.2l-.9 3a2 2 0 0 0 .3 1.8l1.9 2.9a2 2 0 0 0 2.2.8l3-.9a2 2 0 0 1 1.2 0l3 .9a2 2 0 0 0 2.2-.8l1.9-2.9a2 2 0 0 0 .3-1.8l-.9-3a2 2 0 0 1 0-1.2l.9-3a2 2 0 0 0-.3-1.8Zm-5.5 2.6-3.8 4a1 1 0 0 1-1.5 0l-1.5-1.7a1 1 0 0 1 1.5-1.4l.8.9 3.1-3.2a1 1 0 0 1 1.4 1.4Z'/></svg>");
+  width: 1.05em;
+  height: 1.05em;
+  vertical-align: -0.05em;
+}
+
+
 .usr-holder.entry-sec :where(.author-card__bio) {
   color: var(--author-card-text);
   line-height: 1.7;

@@ -521,27 +521,7 @@
     };
     
     
-        Lazy.lazyLoadBackgrounds = function () {
-        if (!('IntersectionObserver' in global)) return;
-
-        var lazyloadBackgrounds = doc.querySelectorAll('.e-con.e-parent:not(.e-lazyloaded)');
-        if (!lazyloadBackgrounds.length) return;
-
-        var lazyloadBackgroundObserver = new IntersectionObserver(function (entries, observer) {
-            entries.forEach(function (entry) {
-                if (!entry.isIntersecting) return;
-                var lazyloadBackground = entry.target;
-                if (lazyloadBackground) {
-                    lazyloadBackground.classList.add('e-lazyloaded');
-                }
-                observer.unobserve(entry.target);
-            });
-        }, { rootMargin: '200px 0px 200px 0px' });
-
-        lazyloadBackgrounds.forEach(function (lazyloadBackground) {
-            lazyloadBackgroundObserver.observe(lazyloadBackground);
-        });
-    };
+   
 
     
     
@@ -808,7 +788,7 @@
 
      var bootstrapLazy = function () {
         Lazy.init();
-        Lazy.lazyLoadBackgrounds(); // run once on initial load
+        
     };
 
     if (doc.readyState === 'loading') {
@@ -817,12 +797,7 @@
         bootstrapLazy();
     }
     
-     // Elementor’s custom event – re-run background lazyload when Elementor asks
-    ['elementor/lazyload/observe'].forEach(function (event) {
-        doc.addEventListener(event, function () {
-            Lazy.lazyLoadBackgrounds();
-        });
-    });
+   
 
     if (doc.addEventListener) {
         doc.addEventListener('foxiz:lazy-refresh', function () {

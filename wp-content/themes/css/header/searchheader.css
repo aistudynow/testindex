@@ -410,21 +410,22 @@
     outline: 0;
   }
 
-  .search-icon-svg {
+ .search-icon-svg {
     font-size: var(--wnav-size);
     min-width: 1em;
     height: 1em;
     color: inherit;
     background-color: currentColor;
+    background-position: center;
     background-repeat: no-repeat;
-    -webkit-mask-size: cover;
-    mask-size: cover;
+    background-size: contain;
   }
 }
 
 .search-icon-svg {
-  -webkit-mask-image: url(https://aistudynow.com/wp-content/uploads/2023/05/search.svg);
-  mask-image: url(https://aistudynow.com/wp-content/uploads/2023/05/search.svg);
+  --search-icon: var(--search-icon-mask, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79L20 21.49 21.49 20l-5.99-6zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z'/></svg>"));
+  -webkit-mask: var(--search-icon) no-repeat center / contain;
+          mask: var(--search-icon) no-repeat center / contain;
 }
 
 .search-icon-svg {

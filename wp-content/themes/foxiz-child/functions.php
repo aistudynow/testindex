@@ -123,7 +123,7 @@ function wd4_filter_share_option_matrix( array $options ): array {
         'native',
     );
 
-    $allowed_networks = array( 'twitter', 'linkedin', 'copy', 'whatsapp' );
+    $allowed_networks = array( 'twitter', 'linkedin', 'whatsapp', 'copy' );
     $share_groups      = array( 'top', 'left', 'bottom', 'sticky' );
 
     $options['share_top']    = 0;
@@ -837,6 +837,11 @@ if ( ! function_exists( 'foxiz_render_share_list' ) ) {
 
         $show_labels = ! empty( $settings['social_name'] );
 
+    
+    
+    
+    
+    
         $networks = array(
             'twitter'  => array(
                 'class' => 'icon-twitter share-trigger',
@@ -845,11 +850,18 @@ if ( ! function_exists( 'foxiz_render_share_list' ) ) {
                 'url'   => sprintf( 'https://twitter.com/intent/tweet?text=%s&url=%s', $encoded_txt, $encoded_url ),
                 'attrs' => array( 'data-bound-share' => '1' ),
             ),
-            'linkedin' => array(
-                'class' => 'icon-linkedin share-trigger',
-                'icon'  => 'rbi-linkedin',
-                'label' => esc_html__( 'LinkedIn', 'foxiz-child' ),
-                'url'   => sprintf( 'https://linkedin.com/shareArticle?mini=true&url=%s&title=%s', $encoded_url, $encoded_txt ),
+            'facebook' => array(
+                'class' => 'icon-facebook share-trigger',
+                'icon'  => 'rbi-facebook',
+                'label' => esc_html__( 'Facebook', 'foxiz-child' ),
+                'url'   => sprintf( 'https://www.facebook.com/sharer/sharer.php?u=%s', $encoded_url ),
+                'attrs' => array( 'data-bound-share' => '1' ),
+            ),
+            'telegram' => array(
+                'class' => 'icon-telegram share-trigger',
+                'icon'  => 'rbi-telegram',
+                'label' => esc_html__( 'Telegram', 'foxiz-child' ),
+                'url'   => sprintf( 'https://t.me/share/url?url=%s&text=%s', $encoded_url, $encoded_txt ),
                 'attrs' => array( 'data-bound-share' => '1' ),
             ),
             'whatsapp' => array(
@@ -861,20 +873,6 @@ if ( ! function_exists( 'foxiz_render_share_list' ) ) {
                     'data-bound-share' => '1',
                 ),
             ),
-            'copy'     => array(
-                'class' => 'icon-copy',
-                'icon'  => 'rbi-link-o',
-                'label' => esc_html__( 'Copy Link', 'foxiz-child' ),
-                'url'   => '#',
-                'attrs' => array(
-                    'rel'        => 'nofollow',
-                    'role'       => 'button',
-                    'data-copy'  => esc_url( $permalink ),
-                    'data-link'  => esc_url( $permalink ),
-                    'data-copied'=> esc_attr__( 'Copied!', 'foxiz-child' ),
-                    'data-bound-copy' => '1',
-                ),
-            ),
         );
 
         $output = array();
@@ -884,21 +882,19 @@ if ( ! function_exists( 'foxiz_render_share_list' ) ) {
                 continue;
             }
 
-            $classes = array( 'share-action', $config['class'], 'share-' . $key );
+            $classes = array( 'share-action', 'rbi', $config['icon'], $config['class'], 'share-' . $key );
 
-            if ( 'copy' === $key ) {
-                $classes[] = 'copy-trigger';
+            if ( $show_labels ) {
+                $classes[] = 'share-action--labeled';
             }
 
             $attr = array(
                 'class'      => implode( ' ', array_map( 'sanitize_html_class', $classes ) ),
-                'href'       => 'copy' === $key ? '#' : esc_url( $config['url'] ),
-                'target'     => 'copy' === $key ? '' : '_blank',
-                'rel'        => 'copy' === $key ? 'nofollow' : 'nofollow noopener',
+                'href'       => esc_url( $config['url'] ),
+                'target'     => '_blank',
+                'rel'        => 'nofollow noopener',
                 'role'       => 'listitem',
-                'aria-label' => 'copy' === $key
-                    ? esc_html__( 'Copy article link', 'foxiz-child' )
-                    : sprintf( esc_html__( 'Share on %s', 'foxiz-child' ), $config['label'] ),
+                'aria-label' => sprintf( esc_html__( 'Share on %s', 'foxiz-child' ), $config['label'] ),
                 'data-title' => $config['label'],
             );
 
@@ -906,12 +902,6 @@ if ( ! function_exists( 'foxiz_render_share_list' ) ) {
                 foreach ( $config['attrs'] as $name => $value ) {
                     $attr[ $name ] = $value;
                 }
-            }
-
-            if ( 'copy' === $key ) {
-                $attr['data-copy']  = esc_url( $permalink );
-                $attr['data-link']  = esc_url( $permalink );
-                $attr['data-title'] = $title ? esc_attr( $title ) : '';
             }
 
             $attr_string = '';
@@ -923,10 +913,10 @@ if ( ! function_exists( 'foxiz_render_share_list' ) ) {
                 $attr_string .= sprintf( ' %s="%s"', esc_attr( $name ), esc_attr( $value ) );
             }
 
-            $icon  = sprintf( '<i class="rbi %s" aria-hidden="true"></i>', esc_attr( $config['icon'] ) );
-            $label = $show_labels ? sprintf( '<span>%s</span>', esc_html( $config['label'] ) ) : '';
+            $icon  = '<span class="share-action__icon" aria-hidden="true"></span>';
+            $label = $show_labels ? sprintf( '<span class="share-action__label">%s</span>', esc_html( $config['label'] ) ) : '';
 
-            $output[] = sprintf( '<a%s>%s%s</a>', $attr_string, $icon, $label );
+            $output[] = sprintf( '<a%s>%s</a>', $attr_string, $icon . $label );
         }
 
         echo implode( '', $output );
@@ -1953,28 +1943,43 @@ function wd4_enqueue_styles(): void {
     $is_account = function_exists( 'is_account_page' ) && is_account_page();
 
     if ( is_front_page() || is_home() ) {
-        wp_enqueue_style( 'main',    'https://aistudynow.com/wp-content/themes/css/header/main.css',   array(), '998580591100565677766876655777999980.0' );
-        wp_enqueue_style( 'front',  'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '9998987886970999980.0' );
+        wp_enqueue_style( 'main',    'https://aistudynow.com/wp-content/themes/css/header/main.css',   array(), '4988580591100565677766876655777999980.0' );
+        wp_enqueue_style( 'front',  'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '339998987886970999980.0' );
         wp_enqueue_style( 'footer',  'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '8667876655777999980.0' );
        
     }
 
     if ( is_category() ) {
-        wp_enqueue_style( 'main',      'https://aistudynow.com/wp-content/themes/css/header/main.css',      array(), '8591117667876655777999980.0' );
-        wp_enqueue_style( 'front',     'https://aistudynow.com/wp-content/themes/css/header/front.css',     array(), '980.0' );
+        wp_enqueue_style( 'main',      'https://aistudynow.com/wp-content/themes/css/header/main.css',      array(), '8777999980.0' );
+        wp_enqueue_style( 'front',     'https://aistudynow.com/wp-content/themes/css/header/front.css',     array(), '9780.0' );
      
         wp_enqueue_style( 'footer',    'https://aistudynow.com/wp-content/themes/css/header/footer.css',    array(), '8667876655777999980.0' );
     }
 
+  
+  
+  
+  
+  
+  if ( is_page() ) {
+         wp_enqueue_style( 'main',      'https://aistudynow.com/wp-content/themes/css/header/main.css',      array(), '8777999980.0' );
+        wp_enqueue_style( 'pages',  'https://aistudynow.com/wp-content/themes/css/header/pages.css', array(), '62999024541216.1' );
+        wp_enqueue_style( 'footer', 'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '8667876655777999980.0' );
+    }
+  
+  
+  
+  
+  
     if ( is_singular( 'post' ) ) {
-        wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '0833990966976444448885909999880.0' );
-        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '49957907999099980.00' );
+        wp_enqueue_style( 'main',        'https://aistudynow.com/wp-content/themes/css/header/main.css',               array(), '68793209999880.0' );
+        wp_enqueue_style( 'single',      'https://aistudynow.com/wp-content/themes/css/header/single/single.css',      array(), '401090989' );
 
         wp_enqueue_style( 'email',       'https://aistudynow.com/wp-content/themes/css/header/single/email.css',       array(), '667876655777999980.0' );
-        wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '497667876655777999980.0' );
-        wp_enqueue_style( 'sharesingle', 'https://aistudynow.com/wp-content/themes/css/header/single/sharesingle.css', array(), '5667876655777999980.0' );
+        wp_enqueue_style( 'download',    'https://aistudynow.com/wp-content/themes/css/header/single/download.css',    array(), '4597667876655777999980.0' );
+        wp_enqueue_style( 'sharesingle', 'https://aistudynow.com/wp-content/themes/css/header/single/sharesingle.css', array(), '65564685667876655777999980.0' );
 
-        wp_enqueue_style( 'author',      'https://aistudynow.com/wp-content/themes/css/header/single/author.css',      array(), '8667876655777999980.0' );
+        wp_enqueue_style( 'author',      'https://aistudynow.com/wp-content/themes/css/header/single/author.css',      array(), '58667876655777999980.0' );
         wp_enqueue_style( 'comment',     'https://aistudynow.com/wp-content/themes/css/header/single/comment.css',     array(), '99667876655777999980.0' );
         wp_enqueue_style( 'footer',      'https://aistudynow.com/wp-content/themes/css/header/footer.css',             array(), '8667876655777999980.0' );
     }
@@ -2230,8 +2235,8 @@ JS;
 
     if ( in_array( $context, array( 'post', 'page' ), true ) ) {
         wp_enqueue_script( 'comment', $comment, array(), '1.0.0', true );
-        wp_enqueue_script( 'main', $main, array(), '9900899.0.0', true );
-        wp_enqueue_script( 'lazy', $lazy, array(), '9918.0.0', true );
+        wp_enqueue_script( 'main', $main, array(), '09900899.0.0', true );
+        wp_enqueue_script( 'lazy', $lazy, array(), '09918.0.0', true );
         wp_enqueue_script( 'pagination', $pagination_js, array(), '885.0.1', true );
         wp_enqueue_script( 'download', $download, array(), '000.0.0', true );
         wp_enqueue_script( 'foxiz-core', $core_js, array(), '7.0.0', true );

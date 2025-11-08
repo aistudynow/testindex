@@ -53,10 +53,22 @@
 }
 
 :where(.entry-content, .s-ct) .wp-block-file a:not(.wp-block-file__button)::before {
-  font-family: 'ruby-icon';
-  content: '\e944';
-  font-size: 1em;
-  line-height: 1;
+  content: "";
+  inline-size: 1.05em;
+  block-size: 1.05em;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: currentColor;
+  -webkit-mask-image: var(--download-icon, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V4a1 1 0 0 1 1-1Zm-7 14h14v2H5Z'/></svg>"));
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: var(--download-icon, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V4a1 1 0 0 1 1-1Zm-7 14h14v2H5Z'/></svg>"));
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
 }
 
 :where(.entry-content, .s-ct) .wp-block-file__button,
