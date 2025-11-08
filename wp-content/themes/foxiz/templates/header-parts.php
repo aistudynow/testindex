@@ -337,19 +337,28 @@ if ( ! function_exists( 'foxiz_header_user' ) ) {
 		<div class="wnav-holder widget-h-login header-dropdown-outer">
 			<?php if ( is_user_logged_in() && ! is_admin() ) :
 				global $current_user; ?>
-				<a class="dropdown-trigger is-logged header-element" href="#" rel="nofollow" role="button" aria-label="<?php foxiz_html_e( 'Toggle user account menu', 'foxiz' ); ?>">
-					<?php if ( ! empty( $settings['logged_gravatar'] ) ) : ?>
-						<span class="logged-avatar"><?php
-							$author_image_id = (int) get_the_author_meta( 'author_image_id', $current_user->ID );
-							if ( $author_image_id !== 0 ) {
-								echo foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', false );
-							} else {
-								echo get_avatar( $current_user->ID, 60 );
-							}
-							?></span>
-					<?php endif; ?>
-					<span class="logged-welcome"><?php echo foxiz_html__( 'Hi,', 'foxiz' ) . '<strong>' . foxiz_strip_tags( $current_user->display_name ) . '</strong>'; ?></span>
-				</a>
+			
+			
+			
+			
+		   <a class="dropdown-trigger is-logged header-element" href="#" rel="nofollow" role="button" aria-label="<?php foxiz_html_e( 'Toggle user account menu', 'foxiz' ); ?>">
+                                        <?php if ( ! empty( $settings['logged_gravatar'] ) ) : ?>
+                                                <span class="logged-avatar"><?php
+                                                        $author_image_id = (int) get_the_author_meta( 'author_image_id', $current_user->ID );
+                                                        if ( $author_image_id !== 0 ) {
+                                                                echo foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', false );
+                                                        } else {
+                                                                echo get_avatar( $current_user->ID, 60 );
+                                                        }
+                                                        ?></span>
+                                        <?php else : ?>
+                                                <i class="rbi rbi-user wnav-icon" aria-hidden="true"></i>
+                                        <?php endif; ?>
+                                        <span class="logged-welcome"><?php echo foxiz_html__( 'Hi,', 'foxiz' ) . '<strong>' . foxiz_strip_tags( $current_user->display_name ) . '</strong>'; ?></span>
+                                </a>
+				
+				
+				
 				<div class="header-dropdown user-dropdown">
 					<?php if ( ! empty( $settings['header_login_menu'] ) ) {
 						wp_nav_menu( [

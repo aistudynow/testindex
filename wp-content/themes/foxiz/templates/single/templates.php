@@ -383,24 +383,13 @@ if ( ! function_exists( 'foxiz_is_single_share_left' ) ) {
 			return false;
 		}
 
-		$settings = [
-				'facebook'  => foxiz_get_option( 'share_left_facebook' ),
-				'twitter'   => foxiz_get_option( 'share_left_twitter' ),
-				'flipboard' => foxiz_get_option( 'share_left_flipboard' ),
-				'pinterest' => foxiz_get_option( 'share_left_pinterest' ),
-				'whatsapp'  => foxiz_get_option( 'share_left_whatsapp' ),
-				'linkedin'  => foxiz_get_option( 'share_left_linkedin' ),
-				'tumblr'    => foxiz_get_option( 'share_left_tumblr' ),
-				'reddit'    => foxiz_get_option( 'share_left_reddit' ),
-				'vk'        => foxiz_get_option( 'share_left_vk' ),
-				'telegram'  => foxiz_get_option( 'share_left_telegram' ),
-				'threads'   => foxiz_get_option( 'share_left_threads' ),
-				'bsky'      => foxiz_get_option( 'share_left_bsky' ),
-				'email'     => foxiz_get_option( 'share_left_email' ),
-				'copy'      => foxiz_get_option( 'share_left_copy' ),
-				'print'     => foxiz_get_option( 'share_left_print' ),
-				'native'    => foxiz_get_option( 'share_left_native' ),
-		];
+		
+                $settings = [
+                                'facebook' => foxiz_get_option( 'share_left_facebook' ),
+                                'twitter'  => foxiz_get_option( 'share_left_twitter' ),
+                                'telegram' => foxiz_get_option( 'share_left_telegram' ),
+                                'whatsapp' => foxiz_get_option( 'share_left_whatsapp' ),
+                ];
 
 		if ( ! array_filter( $settings ) ) {
 			return false;
@@ -453,24 +442,12 @@ if ( ! function_exists( 'foxiz_is_single_share_top' ) ) {
 		if ( ! foxiz_get_option( 'share_top' ) ) {
 			return false;
 		}
-		$settings = [
-				'facebook'  => foxiz_get_option( 'share_top_facebook' ),
-				'twitter'   => foxiz_get_option( 'share_top_twitter' ),
-				'flipboard' => foxiz_get_option( 'share_top_flipboard' ),
-				'pinterest' => foxiz_get_option( 'share_top_pinterest' ),
-				'whatsapp'  => foxiz_get_option( 'share_top_whatsapp' ),
-				'linkedin'  => foxiz_get_option( 'share_top_linkedin' ),
-				'tumblr'    => foxiz_get_option( 'share_top_tumblr' ),
-				'reddit'    => foxiz_get_option( 'share_top_reddit' ),
-				'vk'        => foxiz_get_option( 'share_top_vk' ),
-				'telegram'  => foxiz_get_option( 'share_top_telegram' ),
-				'threads'   => foxiz_get_option( 'share_top_threads' ),
-				'bsky'      => foxiz_get_option( 'share_top_bsky' ),
-				'email'     => foxiz_get_option( 'share_top_email' ),
-				'copy'      => foxiz_get_option( 'share_top_copy' ),
-				'print'     => foxiz_get_option( 'share_top_print' ),
-				'native'    => foxiz_get_option( 'share_top_native' ),
-		];
+		 $settings = [
+                                'facebook' => foxiz_get_option( 'share_top_facebook' ),
+                                'twitter'  => foxiz_get_option( 'share_top_twitter' ),
+                                'telegram' => foxiz_get_option( 'share_top_telegram' ),
+                                'whatsapp' => foxiz_get_option( 'share_top_whatsapp' ),
+                ];
 		if ( ! array_filter( $settings ) ) {
 			return false;
 		}
@@ -582,11 +559,11 @@ if ( ! function_exists( 'foxiz_single_header_meta' ) ) {
                 }
 
                 $share_settings = [
-                        'post_id' => $post_id,
-                        'twitter' => 1,
-                        'linkedin' => 1,
-                        'email' => 1,
-                        'copy' => 1,
+                        'post_id'  => $post_id,
+                        'twitter'  => 1,
+                        'telegram' => 1,
+                        'whatsapp' => 1,
+                        'facebook' => 1,
                 ];
 
                 $read_time = '';
@@ -1000,24 +977,12 @@ if ( ! function_exists( 'foxiz_single_share_bottom' ) ) {
 			return;
 		}
 
-		$settings = [
-				'facebook'  => foxiz_get_option( 'share_bottom_facebook' ),
-				'twitter'   => foxiz_get_option( 'share_bottom_twitter' ),
-				'flipboard' => foxiz_get_option( 'share_bottom_flipboard' ),
-				'pinterest' => foxiz_get_option( 'share_bottom_pinterest' ),
-				'whatsapp'  => foxiz_get_option( 'share_bottom_whatsapp' ),
-				'linkedin'  => foxiz_get_option( 'share_bottom_linkedin' ),
-				'tumblr'    => foxiz_get_option( 'share_bottom_tumblr' ),
-				'reddit'    => foxiz_get_option( 'share_bottom_reddit' ),
-				'vk'        => foxiz_get_option( 'share_bottom_vk' ),
-				'telegram'  => foxiz_get_option( 'share_bottom_telegram' ),
-				'threads'   => foxiz_get_option( 'share_bottom_threads' ),
-				'bsky'      => foxiz_get_option( 'share_bottom_bsky' ),
-				'email'     => foxiz_get_option( 'share_bottom_email' ),
-				'copy'      => foxiz_get_option( 'share_bottom_copy' ),
-				'print'     => foxiz_get_option( 'share_bottom_print' ),
-				'native'    => foxiz_get_option( 'share_bottom_native' ),
-		];
+                $settings = [
+                                'facebook' => foxiz_get_option( 'share_bottom_facebook' ),
+                                'twitter'  => foxiz_get_option( 'share_bottom_twitter' ),
+                                'telegram' => foxiz_get_option( 'share_bottom_telegram' ),
+                                'whatsapp' => foxiz_get_option( 'share_bottom_whatsapp' ),
+                ];
 
 		if ( ! array_filter( $settings ) ) {
 			return;
@@ -1751,24 +1716,13 @@ if ( ! function_exists( 'foxiz_single_share_sticky' ) ) {
 			return;
 		}
 
-		$settings = [
-				'facebook'  => foxiz_get_option( 'share_sticky_facebook' ),
-				'twitter'   => foxiz_get_option( 'share_sticky_twitter' ),
-				'flipboard' => foxiz_get_option( 'share_sticky_flipboard' ),
-				'pinterest' => foxiz_get_option( 'share_sticky_pinterest' ),
-				'whatsapp'  => foxiz_get_option( 'share_sticky_whatsapp' ),
-				'linkedin'  => foxiz_get_option( 'share_sticky_linkedin' ),
-				'tumblr'    => foxiz_get_option( 'share_sticky_tumblr' ),
-				'reddit'    => foxiz_get_option( 'share_sticky_reddit' ),
-				'vk'        => foxiz_get_option( 'share_sticky_vk' ),
-				'telegram'  => foxiz_get_option( 'share_sticky_telegram' ),
-				'threads'   => foxiz_get_option( 'share_sticky_threads' ),
-				'bsky'      => foxiz_get_option( 'share_sticky_bsky' ),
-				'email'     => foxiz_get_option( 'share_sticky_email' ),
-				'copy'      => foxiz_get_option( 'share_sticky_copy' ),
-				'print'     => foxiz_get_option( 'share_sticky_print' ),
-				'native'    => foxiz_get_option( 'share_sticky_native' ),
-		];
+		
+                $settings = [
+                                'facebook' => foxiz_get_option( 'share_sticky_facebook' ),
+                                'twitter'  => foxiz_get_option( 'share_sticky_twitter' ),
+                                'telegram' => foxiz_get_option( 'share_sticky_telegram' ),
+                                'whatsapp' => foxiz_get_option( 'share_sticky_whatsapp' ),
+                ];
 
 		if ( ! array_filter( $settings ) ) {
 			return;
