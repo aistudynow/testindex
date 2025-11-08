@@ -1954,14 +1954,14 @@ function wd4_enqueue_styles(): void {
 
     if ( is_front_page() || is_home() ) {
         wp_enqueue_style( 'main',    'https://aistudynow.com/wp-content/themes/css/header/main.css',   array(), '998580591100565677766876655777999980.0' );
-        wp_enqueue_style( 'front',  'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '987886970999980.0' );
+        wp_enqueue_style( 'front',  'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '9998987886970999980.0' );
         wp_enqueue_style( 'footer',  'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '8667876655777999980.0' );
        
     }
 
     if ( is_category() ) {
         wp_enqueue_style( 'main',      'https://aistudynow.com/wp-content/themes/css/header/main.css',      array(), '8591117667876655777999980.0' );
-        wp_enqueue_style( 'front',  'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '88786970999980.0' );
+        wp_enqueue_style( 'front',     'https://aistudynow.com/wp-content/themes/css/header/front.css',     array(), '980.0' );
      
         wp_enqueue_style( 'footer',    'https://aistudynow.com/wp-content/themes/css/header/footer.css',    array(), '8667876655777999980.0' );
     }
