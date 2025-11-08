@@ -81,31 +81,35 @@ $category_sections = array(
                 ?>
                 <article <?php post_class( 'cartHolder bigCart' ); ?>>
                     <a class="storyLink" href="<?php the_permalink(); ?>" aria-label="<?php printf( esc_attr__( 'Read "%s"', 'foxiz-child' ), wp_strip_all_tags( get_the_title() ) ); ?>"></a>
-                    <figure>
-                        <?php
-                        if ( has_post_thumbnail() ) {
-                            echo wd4_frontpage_image(
-                                get_the_ID(),
-                                'wd4-frontpage-hero',
-                                array(
-                                    'class'            => 'wp-post-image',
-                                    'loading'          => 'eager',
-                                    'fetchpriority'    => 'high',
-                                    'decoding'         => 'async',
-                                    'sizes'            => implode(
-                                        ', ',
-                                        array(
-                                            '(max-width: 599px) 96vw',
-                                            '(max-width: 1023px) 88vw',
-                                            '(max-width: 1439px) 640px',
-                                            '720px',
-                                        )
-                                    ),
-                                    'max_srcset_width' => 720,
-                                )
-                            );
-                        }
-                        ?>
+                   
+                   
+                     <figure>
+                        <a class="storyImage" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
+                            <?php
+                            if ( has_post_thumbnail() ) {
+                                echo wd4_frontpage_image(
+                                    get_the_ID(),
+                                    'wd4-frontpage-hero',
+                                    array(
+                                        'class'            => 'wp-post-image',
+                                        'loading'          => 'eager',
+                                        'fetchpriority'    => 'high',
+                                        'decoding'         => 'async',
+                                        'sizes'            => implode(
+                                            ', ',
+                                            array(
+                                                '(max-width: 599px) 96vw',
+                                                '(max-width: 1023px) 88vw',
+                                                '(max-width: 1439px) 640px',
+                                                '720px',
+                                            )
+                                        ),
+                                        'max_srcset_width' => 720,
+                                    )
+                                );
+                            }
+                            ?>
+                        </a>
                     </figure>
 
                     <h3 class="hdg3"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
@@ -174,14 +178,15 @@ $category_sections = array(
 
                         <h3 class="hdg3"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 
-                        <div class="actionDiv flexElm">
+                       <div class="cardMeta">
                             <?php if ( $primary_category instanceof WP_Term && ! is_wp_error( $primary_category_link ) ) : ?>
-                                <div class="secName">
-                                    <a href="<?php echo esc_url( $primary_category_link ); ?>"><?php echo esc_html( $primary_category->name ); ?></a>
-                                </div>
+                                <a class="cardMeta__cat" href="<?php echo esc_url( $primary_category_link ); ?>"><?php echo esc_html( $primary_category->name ); ?></a>
                             <?php endif; ?>
-                            <div class="dateTime"><?php echo esc_html( implode( ' · ', array_filter( $meta_segments ) ) ); ?></div>
+                            <span class="cardMeta__time"><?php echo esc_html( implode( ' · ', array_filter( $meta_segments ) ) ); ?></span>
                         </div>
+                  
+                  
+                  
                     </article>
                     <?php
                 endwhile;
@@ -249,38 +254,42 @@ $category_sections = array(
                                 <li <?php post_class(); ?>>
                                     <a class="storyLink" href="<?php the_permalink(); ?>" aria-label="<?php printf( esc_attr__( 'Read "%s"', 'foxiz-child' ), wp_strip_all_tags( get_the_title() ) ); ?>"></a>
                                     <figure>
-                                        <?php
-                                        if ( has_post_thumbnail() ) {
-                                            echo wd4_frontpage_image(
-                                                get_the_ID(),
-                                                'wd4-frontpage-slider',
-                                                array(
-                                                    'class'            => 'wp-post-image',
-                                                    'loading'          => 'lazy',
-                                                    'decoding'         => 'async',
-                                                    'sizes'            => implode(
-                                                        ', ',
-                                                        array(
-                                                            '(max-width: 599px) 48vw',
-                                                            '(max-width: 1023px) 216px',
-                                                            '(max-width: 1439px) 252px',
-                                                            '280px',
-                                                        )
-                                                    ),
-                                                    'max_srcset_width' => 600,
-                                                )
-                                            );
-                                        }
-                                        ?>
+                                        <a class="storyImage" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
+                                            <?php
+                                            if ( has_post_thumbnail() ) {
+                                                echo wd4_frontpage_image(
+                                                    get_the_ID(),
+                                                    'wd4-frontpage-slider',
+                                                    array(
+                                                        'class'            => 'wp-post-image',
+                                                        'loading'          => 'lazy',
+                                                        'decoding'         => 'async',
+                                                        'sizes'            => implode(
+                                                            ', ',
+                                                            array(
+                                                                '(max-width: 599px) 48vw',
+                                                                '(max-width: 1023px) 216px',
+                                                                '(max-width: 1439px) 252px',
+                                                                '280px',
+                                                            )
+                                                        ),
+                                                        'max_srcset_width' => 600,
+                                                    )
+                                                );
+                                            }
+                                            ?>
+                                        </a>
                                     </figure>
                                     <p><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></p>
-                                    <div class="actionDiv flexElm">
+                                 
+                                 
+                                 
+                                 
+                                     <div class="cardMeta">
                                         <?php if ( $primary_category instanceof WP_Term && ! is_wp_error( $primary_category_link ) ) : ?>
-                                            <div class="secName">
-                                                <a href="<?php echo esc_url( $primary_category_link ); ?>"><?php echo esc_html( $primary_category->name ); ?></a>
-                                            </div>
+                                            <a class="cardMeta__cat" href="<?php echo esc_url( $primary_category_link ); ?>"><?php echo esc_html( $primary_category->name ); ?></a>
                                         <?php endif; ?>
-                                        <div class="dateTime"><?php echo esc_html( get_the_date() ); ?></div>
+                                        <span class="cardMeta__time"><?php echo esc_html( get_the_date() ); ?></span>
                                     </div>
                                 </li>
                                 <?php
