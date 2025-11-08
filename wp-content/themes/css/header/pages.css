@@ -374,3 +374,127 @@
 :where(body.page, body.page-template-default) .entry-content .vdo-wrap.is-floating {
   position: static !important;
 }
+
+/*
+ * Contact Form 7 styling for static pages
+ * Keeps the contact form aligned with the page card aesthetic
+ */
+:where(body.page, body.page-template-default) .wpcf7 {
+  margin-top: clamp(1.75rem, 1.2rem + 1vw, 2.5rem);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form {
+  display: grid;
+  gap: clamp(1.25rem, 1rem + 0.6vw, 1.75rem);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .input-col-1 {
+  display: grid;
+  gap: 0.45rem;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--heading-fcolor, #04102f) 92%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-form-control {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--body-fcolor, #04102f) 14%, transparent);
+  border-radius: 10px;
+  background: rgba(244, 247, 252, 0.55);
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form textarea.wpcf7-form-control {
+  min-height: clamp(9.5rem, 8.5rem + 3vw, 12rem);
+  resize: vertical;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-form-control:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--g-color, #0066ff) 78%, transparent);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--g-color, #0066ff) 18%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-not-valid {
+  border-color: #f97316;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #f97316 45%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .is-meta,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-not-valid-tip {
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--body-fcolor, #04102f) 55%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-not-valid-tip {
+  color: #f97316;
+  margin-top: 0.15rem;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"],
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: fit-content;
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--g-color, #0066ff), #1f51ff);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"]:hover,
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"]:focus-visible,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit:hover,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit:focus-visible {
+  outline: none;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(31, 81, 255, 0.2);
+  filter: brightness(1.05);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"]:active,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(31, 81, 255, 0.18);
+}
+
+:where(body.page, body.page-template-default) .wpcf7 .wpcf7-response-output {
+  margin: 0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--body-fcolor, #04102f) 12%, transparent);
+  background: rgba(248, 250, 255, 0.85);
+  font-size: 0.95rem;
+}
+
+:where(body.page, body.page-template-default) .wpcf7 .wpcf7-spinner {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  :where(body.page, body.page-template-default) .wpcf7-form {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  :where(body.page, body.page-template-default) .wpcf7-form .input-col-1.is-input-border:nth-last-of-type(1) {
+    grid-column: 1 / -1;
+  }
+
+  :where(body.page, body.page-template-default) .wpcf7-form textarea.wpcf7-form-control {
+    min-height: clamp(10.5rem, 9.5rem + 3vw, 14rem);
+  }
+}
