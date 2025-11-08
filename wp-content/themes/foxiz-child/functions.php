@@ -5,10 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 
-
-
-
-
 /**
  * Ensure remote Google Fonts fall back to system fonts immediately while the
  * custom font files are still downloading. Without this parameter the browser
@@ -197,6 +193,567 @@ function wd4_disable_remote_google_fonts(): void {
     wp_deregister_style( 'foxiz-font' );
 }
 add_action( 'wp_enqueue_scripts', 'wd4_disable_remote_google_fonts', 20 );
+
+
+
+
+
+
+
+/**
+ * Limit a srcset string to candidates that are no wider than the provided
+ * maximum. This keeps high-density devices from grabbing 768px variants when
+ * a 300px asset is all we need for the front-page cards.
+ */
+function wd4_frontpage_limit_srcset_width( string $srcset, int $max_width ): string {
+    if ( '' === $srcset || $max_width <= 0 ) {
+        return $srcset;
+    }
+
+    $candidates = array_filter( array_map( 'trim', explode( ',', $srcset ) ) );
+    if ( empty( $candidates ) ) {
+        return $srcset;
+    }
+
+    $filtered = array();
+
+    foreach ( $candidates as $candidate ) {
+        if ( preg_match( '/\s(\d+)w$/', $candidate, $matches ) ) {
+            $width = (int) $matches[1];
+
+            if ( $width <= $max_width ) {
+                $filtered[] = $candidate;
+            }
+        }
+    }
+
+    return $filtered ? implode( ', ', $filtered ) : $srcset;
+}
+
+/**
+ * Map logical context sizes to on-disk variant definitions.
+ */
+function wd4_frontpage_variant_definitions(): array {
+    return array(
+        'wd4-frontpage-hero' => array(
+            array(
+                'key'    => 'wd4-frontpage-hero',
+                'width'  => 960,
+                'height' => 0,
+                'crop'   => false,
+            ),
+            array(
+                'key'    => 'wd4-frontpage-hero-720',
+                'width'  => 720,
+                'height' => 0,
+                'crop'   => false,
+            ),
+            array(
+                'key'    => 'wd4-frontpage-hero-640',
+                'width'  => 640,
+                'height' => 0,
+                'crop'   => false,
+            ),
+            array(
+                'key'    => 'wd4-frontpage-hero-480',
+                'width'  => 480,
+                'height' => 0,
+                'crop'   => false,
+            ),
+        ),
+        'wd4-frontpage-feed' => array(
+            array(
+                'key'    => 'wd4-frontpage-feed',
+                'width'  => 360,
+                'height' => 0,
+                'crop'   => false,
+            ),
+            array(
+                'key'    => 'wd4-frontpage-feed-240',
+                'width'  => 240,
+                'height' => 0,
+                'crop'   => false,
+            ),
+        ),
+        'wd4-frontpage-slider' => array(
+            array(
+                'key'    => 'wd4-frontpage-slider-600',
+                'width'  => 600,
+                'height' => 0,
+                'crop'   => false,
+            ),
+            array(
+                'key'    => 'wd4-frontpage-slider',
+                'width'  => 420,
+                'height' => 0,
+                'crop'   => false,
+            ),
+            array(
+                'key'    => 'wd4-frontpage-slider-280',
+                'width'  => 280,
+                'height' => 0,
+                'crop'   => false,
+            ),
+        ),
+        'wd4-frontpage-logo' => array(
+            array(
+                'key'    => 'wd4-frontpage-logo',
+                'width'  => 220,
+                'height' => 0,
+                'crop'   => false,
+            ),
+            array(
+                'key'    => 'wd4-frontpage-logo-2x',
+                'width'  => 440,
+                'height' => 0,
+                'crop'   => false,
+            ),
+        ),
+    );
+}
+
+/**
+ * Ensure the requested attachment size has lightweight variants available.
+ */
+function wd4_frontpage_prime_variants( int $attachment_id, string $size ): void {
+    static $primed = array();
+
+    if ( isset( $primed[ $attachment_id ][ $size ] ) ) {
+        return;
+    }
+
+    $definitions = wd4_frontpage_variant_definitions();
+    if ( ! isset( $definitions[ $size ] ) ) {
+        $primed[ $attachment_id ][ $size ] = true;
+
+        return;
+    }
+
+    if ( ! function_exists( 'wp_get_image_editor' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+    }
+
+    foreach ( $definitions[ $size ] as $variant ) {
+        wd4_frontpage_ensure_variant( $attachment_id, $variant );
+    }
+
+    $primed[ $attachment_id ][ $size ] = true;
+}
+
+/**
+ * Create a resized attachment copy if it does not already exist.
+ */
+function wd4_frontpage_ensure_variant( int $attachment_id, array $variant ): void {
+    $size_key = isset( $variant['key'] ) ? (string) $variant['key'] : '';
+    $width    = isset( $variant['width'] ) ? (int) $variant['width'] : 0;
+    $height   = isset( $variant['height'] ) ? (int) $variant['height'] : 0;
+    $crop     = ! empty( $variant['crop'] );
+
+    if ( ! $size_key || $width <= 0 ) {
+        return;
+    }
+
+    $metadata = wp_get_attachment_metadata( $attachment_id );
+    if ( ! is_array( $metadata ) || empty( $metadata['file'] ) ) {
+        return;
+    }
+
+    if ( isset( $metadata['sizes'][ $size_key ] ) ) {
+        return;
+    }
+
+    $uploads = wp_upload_dir();
+    if ( ! empty( $uploads['error'] ) ) {
+        return;
+    }
+
+    $relative_path = $metadata['file'];
+    $absolute_path = trailingslashit( $uploads['basedir'] ) . $relative_path;
+
+    if ( ! file_exists( $absolute_path ) ) {
+        return;
+    }
+
+    $editor = wp_get_image_editor( $absolute_path );
+    if ( is_wp_error( $editor ) ) {
+        return;
+    }
+
+    if ( method_exists( $editor, 'set_quality' ) ) {
+        $editor->set_quality( 82 );
+    }
+
+    $resize_height = $height > 0 ? $height : null;
+    $resize        = $editor->resize( $width, $resize_height, $crop );
+    if ( is_wp_error( $resize ) ) {
+        return;
+    }
+
+    $dest_file = $editor->generate_filename( $size_key );
+    $saved     = $editor->save( $dest_file );
+    if ( is_wp_error( $saved ) ) {
+        return;
+    }
+
+    $metadata['sizes'][ $size_key ] = array(
+        'file'      => wp_basename( $saved['path'] ),
+        'width'     => (int) $saved['width'],
+        'height'    => (int) $saved['height'],
+        'mime-type' => $saved['mime-type'],
+    );
+
+    wp_update_attachment_metadata( $attachment_id, $metadata );
+}
+
+/**
+ * Generate a constrained attachment image tailored for the custom front page.
+ */
+function wd4_frontpage_image( int $post_id, string $size, array $args = array() ): string {
+    $attachment_id = get_post_thumbnail_id( $post_id );
+
+    if ( ! $attachment_id ) {
+        return '';
+    }
+
+    return wd4_generate_image_markup( $attachment_id, $size, $args, $post_id );
+}
+
+/**
+ * Generate the list style card markup used on category archives and
+ * asynchronous pagination responses.
+ */
+function wd4_get_category_card_markup( $post ): string {
+    $post = get_post( $post );
+
+    if ( ! ( $post instanceof WP_Post ) ) {
+        return '';
+    }
+
+    $permalink  = get_permalink( $post );
+    $title      = get_the_title( $post );
+    $title_attr = wp_strip_all_tags( $title );
+    $label      = sprintf( __( 'Read "%s"', 'foxiz-child' ), $title_attr );
+
+    $classes = get_post_class( array( 'cartHolder', 'listView', 'timeAgo' ), $post );
+    $classes = is_array( $classes ) ? implode( ' ', array_map( 'sanitize_html_class', $classes ) ) : 'cartHolder listView timeAgo';
+
+    $image_html = '';
+    if ( has_post_thumbnail( $post ) ) {
+        $image_html = wd4_frontpage_image(
+            $post->ID,
+            'wd4-frontpage-feed',
+            array(
+                'class'            => 'wp-post-image',
+                'loading'          => 'lazy',
+                'decoding'         => 'async',
+                'sizes'            => implode(
+                    ', ',
+                    array(
+                        '(max-width: 599px) 42vw',
+                        '(max-width: 1023px) 172px',
+                        '(max-width: 1439px) 188px',
+                        '208px',
+                    )
+                ),
+                'max_srcset_width' => 360,
+            )
+        );
+    }
+
+    $primary_category = get_the_category( $post->ID );
+    $primary_category = ! empty( $primary_category ) ? $primary_category[0] : null;
+
+    $category_link = '';
+    $category_name = '';
+    if ( $primary_category instanceof WP_Term ) {
+        $category_link = get_category_link( $primary_category );
+
+        if ( ! is_wp_error( $category_link ) ) {
+            $category_name = $primary_category->name;
+        } else {
+            $category_link = '';
+        }
+    }
+
+    $meta_segments = array( get_the_date( '', $post ) );
+    if ( function_exists( 'foxiz_reading_time' ) ) {
+        $reading_time = foxiz_reading_time( $post->ID );
+        if ( $reading_time ) {
+            $meta_segments[] = $reading_time;
+        }
+    }
+
+    $meta_text = implode( ' · ', array_filter( $meta_segments ) );
+
+    ob_start();
+    ?>
+    <article class="<?php echo esc_attr( $classes ); ?>">
+        <a class="storyLink" href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php echo esc_attr( $label ); ?>">
+            <span class="screen-reader-text"><?php echo esc_html( $label ); ?></span>
+        </a>
+        <figure>
+            <span>
+                <?php if ( $image_html ) : ?>
+                    <?php echo $image_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php endif; ?>
+            </span>
+        </figure>
+
+        <h3 class="hdg3"><a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a></h3>
+
+        <div class="cardMeta">
+            <?php if ( $category_link && $category_name ) : ?>
+                <a class="cardMeta__cat" href="<?php echo esc_url( $category_link ); ?>"><?php echo esc_html( $category_name ); ?></a>
+            <?php endif; ?>
+
+            <?php if ( $meta_text ) : ?>
+                <span class="cardMeta__time"><?php echo esc_html( $meta_text ); ?></span>
+            <?php endif; ?>
+        </div>
+    </article>
+    <?php
+
+    return trim( ob_get_clean() );
+}
+
+/**
+ * Normalize admin-ajax payloads that may arrive as arrays or JSON strings.
+ */
+function wd4_normalize_ajax_query_data( $raw ): array {
+    if ( is_array( $raw ) ) {
+        return wp_unslash( $raw );
+    }
+
+    if ( is_string( $raw ) ) {
+        $raw = wp_unslash( $raw );
+
+        $decoded = json_decode( $raw, true );
+        if ( is_array( $decoded ) ) {
+            return $decoded;
+        }
+
+        parse_str( $raw, $parsed );
+        if ( is_array( $parsed ) ) {
+            return $parsed;
+        }
+    }
+
+    return array();
+}
+
+/**
+ * AJAX endpoint that powers the category archive infinite scroll.
+ */
+function wd4_ajax_category_pagination(): void {
+    if ( ! function_exists( 'wp_doing_ajax' ) || ! wp_doing_ajax() ) {
+        return;
+    }
+
+    $nonce_ok = check_ajax_referer( 'foxiz-ajax', 'security', false );
+    if ( ! $nonce_ok ) {
+        wp_send_json( array( 'content' => '', 'error' => 'invalid_nonce' ) );
+    }
+
+    $payload = isset( $_REQUEST['data'] ) ? $_REQUEST['data'] : array();
+    $data    = wd4_normalize_ajax_query_data( $payload );
+
+    $paged = isset( $data['page_next'] ) ? (int) $data['page_next'] : ( isset( $data['paged'] ) ? (int) $data['paged'] : 1 );
+    if ( $paged < 1 ) {
+        $paged = 1;
+    }
+
+    $posts_per_page = isset( $data['posts_per_page'] ) ? (int) $data['posts_per_page'] : 0;
+    if ( $posts_per_page < 1 ) {
+        $posts_per_page = (int) get_option( 'posts_per_page', 10 );
+    }
+
+    $taxonomy = isset( $data['entry_tax'] ) ? sanitize_key( (string) $data['entry_tax'] ) : 'category';
+
+    $term_ids = array();
+    if ( isset( $data['category'] ) ) {
+        if ( is_array( $data['category'] ) ) {
+            $term_ids = array_map( 'intval', $data['category'] );
+        } else {
+            $term_ids = array( (int) $data['category'] );
+        }
+    }
+
+    $term_ids = array_values( array_filter( $term_ids ) );
+
+    $query_args = array(
+        'post_type'           => 'post',
+        'post_status'         => 'publish',
+        'ignore_sticky_posts' => true,
+        'paged'               => $paged,
+        'posts_per_page'      => $posts_per_page,
+    );
+
+    if ( $term_ids && taxonomy_exists( $taxonomy ) ) {
+        $query_args['tax_query'] = array(
+            array(
+                'taxonomy' => $taxonomy,
+                'field'    => 'term_id',
+                'terms'    => $term_ids,
+            ),
+        );
+    }
+
+    $query   = new WP_Query( $query_args );
+    $content = '';
+
+    if ( $query->have_posts() ) {
+        foreach ( $query->posts as $post ) {
+            $content .= wd4_get_category_card_markup( $post );
+        }
+    }
+
+    wp_reset_postdata();
+
+    wp_send_json(
+        array(
+            'content'  => $content,
+            'paged'    => $paged,
+            'page_max' => (int) $query->max_num_pages,
+        )
+    );
+}
+add_action( 'wp_ajax_rblivep', 'wd4_ajax_category_pagination' );
+add_action( 'wp_ajax_nopriv_rblivep', 'wd4_ajax_category_pagination' );
+
+
+
+/**
+ * Generate a tailored `<img>` tag for a specific attachment.
+ */
+function wd4_generate_image_markup( int $attachment_id, string $size, array $args = array(), int $post_id = 0 ): string {
+    if ( ! $attachment_id ) {
+        return '';
+    }
+
+    wd4_frontpage_prime_variants( $attachment_id, $size );
+
+    $image = wp_get_attachment_image_src( $attachment_id, $size );
+    if ( ! $image ) {
+        return '';
+    }
+
+    $defaults = array(
+        'class'            => '',
+        'loading'          => 'lazy',
+        'decoding'         => 'async',
+        'sizes'            => '',
+        'fetchpriority'    => '',
+        'max_srcset_width' => 0,
+    );
+
+    $args = wp_parse_args( $args, $defaults );
+
+    $attributes = array(
+        'src'      => $image[0],
+        'width'    => (int) $image[1],
+        'height'   => (int) $image[2],
+        'loading'  => $args['loading'],
+        'decoding' => $args['decoding'],
+    );
+
+    if ( $args['class'] ) {
+        $attributes['class'] = $args['class'];
+    }
+
+    if ( $args['sizes'] ) {
+        $attributes['sizes'] = $args['sizes'];
+    }
+
+    if ( $args['fetchpriority'] ) {
+        $attributes['fetchpriority'] = $args['fetchpriority'];
+    }
+
+    $alt_text = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+    if ( '' === $alt_text && $post_id > 0 ) {
+        $alt_text = get_the_title( $post_id );
+    }
+    $attributes['alt'] = wp_strip_all_tags( (string) $alt_text );
+
+    $srcset = wp_get_attachment_image_srcset( $attachment_id, $size );
+    if ( $srcset ) {
+        $max_width = (int) $args['max_srcset_width'];
+        if ( $max_width > 0 ) {
+            $srcset = wd4_frontpage_limit_srcset_width( $srcset, $max_width );
+        }
+
+        $attributes['srcset'] = $srcset;
+    }
+
+    $html_parts = array();
+    foreach ( $attributes as $name => $value ) {
+        if ( '' === $value || null === $value ) {
+            continue;
+        }
+
+        $html_parts[] = sprintf( '%s="%s"', esc_attr( $name ), esc_attr( (string) $value ) );
+    }
+
+    if ( empty( $html_parts ) ) {
+        return '';
+    }
+
+    return '<img ' . implode( ' ', $html_parts ) . ' />';
+}
+
+/**
+ * Swap the site logo for a lighter-weight responsive variant.
+ */
+function wd4_optimize_custom_logo_markup( string $html ): string {
+    if ( ! wd4_is_front_context() ) {
+        return $html;
+    }
+
+    $logo_id = (int) get_theme_mod( 'custom_logo' );
+    if ( ! $logo_id ) {
+        return $html;
+    }
+
+    $image = wd4_generate_image_markup(
+        $logo_id,
+        'wd4-frontpage-logo',
+        array(
+            'class'            => 'custom-logo',
+            'loading'          => 'eager',
+            'decoding'         => 'async',
+            'sizes'            => '(max-width: 767px) 150px, 180px',
+            'max_srcset_width' => 480,
+        )
+    );
+
+    if ( '' === $image ) {
+        return $html;
+    }
+
+    $home_url  = esc_url( home_url( '/' ) );
+    $site_name = get_bloginfo( 'name', 'display' );
+
+    return sprintf(
+        '<a href="%1$s" class="custom-logo-link" rel="home" aria-label="%2$s">%3$s</a>',
+        $home_url,
+        esc_attr( $site_name ),
+        $image
+    );
+}
+add_filter( 'get_custom_logo', 'wd4_optimize_custom_logo_markup' );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -963,7 +1520,7 @@ function wd4_get_inline_styles_map(): array {
         'author'       => 'css/header/single/author.css',
         'comment'      => 'css/header/single/comment.css',
         'searchheader' => 'css/header/searchheader.css',
-        'fixgrid'      => 'css/header/fixgrid.css',
+        'front'        => 'css/header/front.css',
         'login'        => 'css/login.css',
         'my-account'   => 'css/profile.css',
     );
@@ -1397,17 +1954,15 @@ function wd4_enqueue_styles(): void {
 
     if ( is_front_page() || is_home() ) {
         wp_enqueue_style( 'main',    'https://aistudynow.com/wp-content/themes/css/header/main.css',   array(), '998580591100565677766876655777999980.0' );
-        wp_enqueue_style( 'slider',  'https://aistudynow.com/wp-content/themes/css/header/slider.css', array(), '968999090099987980.0' );
-        wp_enqueue_style( 'divider', 'https://aistudynow.com/wp-content/themes/css/header/divider.css', array(), '66997876655777999980.0' );
-        wp_enqueue_style( 'grid',    'https://aistudynow.com/wp-content/themes/css/header/grid.css',   array(), '0655777999980.0' );
-        wp_enqueue_style( 'fixgrid', 'https://aistudynow.com/wp-content/themes/css/header/fixgrid.css',   array(), '999809785667876655777999980.0' );
+        wp_enqueue_style( 'front',  'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '987886970999980.0' );
         wp_enqueue_style( 'footer',  'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '8667876655777999980.0' );
+       
     }
 
     if ( is_category() ) {
         wp_enqueue_style( 'main',      'https://aistudynow.com/wp-content/themes/css/header/main.css',      array(), '8591117667876655777999980.0' );
-        wp_enqueue_style( 'catheader', 'https://aistudynow.com/wp-content/themes/css/header/catheader.css', array(), '91661667876655777999980.0' );
-        wp_enqueue_style( 'grid',      'https://aistudynow.com/wp-content/themes/css/header/grid.css',      array(), '6678766557779799980.0' );
+        wp_enqueue_style( 'front',  'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '88786970999980.0' );
+     
         wp_enqueue_style( 'footer',    'https://aistudynow.com/wp-content/themes/css/header/footer.css',    array(), '8667876655777999980.0' );
     }
 
@@ -1641,6 +2196,35 @@ JS,
         );
 
         wp_add_inline_script( 'pagination', $bootstrap, 'before' );
+
+        $sentinel_patch = <<<'JS'
+(function(){
+  var Module = window.FOXIZ_MAIN_SCRIPT;
+  if (!Module || Module.__wd4SentinelPatched) return;
+  if (typeof Module.ajaxRenderHTML !== 'function') return;
+
+  var original = Module.ajaxRenderHTML;
+  Module.ajaxRenderHTML = function(block, uuid, response, action){
+    original.call(this, block, uuid, response, action);
+    try {
+      if (!block || !block.querySelector) return;
+      var inner = block.querySelector('.block-inner');
+      var sentinel = inner ? inner.querySelector('.pagination-infinite') : null;
+      if (inner && sentinel && sentinel !== inner.lastElementChild) {
+        inner.appendChild(sentinel);
+      }
+    } catch (err) {
+      if (window.console && console.warn) {
+        console.warn('WD4 pagination sentinel reposition failed', err);
+      }
+    }
+  };
+
+  Module.__wd4SentinelPatched = true;
+})();
+JS;
+
+        wp_add_inline_script( 'pagination', $sentinel_patch, 'after' );
         return;
     }
 
@@ -1648,7 +2232,7 @@ JS,
         wp_enqueue_script( 'comment', $comment, array(), '1.0.0', true );
         wp_enqueue_script( 'main', $main, array(), '9900899.0.0', true );
         wp_enqueue_script( 'lazy', $lazy, array(), '9918.0.0', true );
-        wp_enqueue_script( 'pagination', $pagination_js, array(), '5.0.1', true );
+        wp_enqueue_script( 'pagination', $pagination_js, array(), '885.0.1', true );
         wp_enqueue_script( 'download', $download, array(), '000.0.0', true );
         wp_enqueue_script( 'foxiz-core', $core_js, array(), '7.0.0', true );
         if ( wd4_should_defer_styles() ) {
@@ -1987,12 +2571,11 @@ function allow_json_mime( array $mimes ): array {
 }
 add_filter( 'upload_mimes', 'allow_json_mime' );
 
+
+
+
 add_action( 'shutdown', function (): void {
     while ( ob_get_level() > 0 ) {
         @ob_end_flush();
     }
 }, PHP_INT_MAX );
-
-
-
-

@@ -67,6 +67,32 @@ body.dark-mode {
   gap: var(--daily-feed-stack-gap);
   align-items: stretch;
   padding-block: clamp(4px, 1.6vw, 12px);
+  --daily-feed-visible-rows: 4;
+  --daily-feed-min-height: calc(
+    var(--daily-feed-header-min) +
+    (var(--daily-feed-card-min) * var(--daily-feed-visible-rows)) +
+    (var(--daily-feed-stack-gap) * var(--daily-feed-visible-rows)) +
+    var(--daily-feed-stack-gap)
+  );
+  min-height: var(--daily-feed-min-height);
+}
+
+@supports (contain-intrinsic-size: auto 1px) {
+  .elementor-element-00190a7.e-con {
+    content-visibility: auto;
+    contain: layout paint;
+    contain-intrinsic-size: auto var(--daily-feed-min-height);
+  }
+}
+
+@supports selector(:has(*)) {
+  .elementor-element-00190a7.e-con:has(#uid_8c476fa .p-wrap:nth-of-type(5)) {
+    --daily-feed-visible-rows: 5;
+  }
+
+  .elementor-element-00190a7.e-con:has(#uid_8c476fa .p-wrap:nth-of-type(6)) {
+    --daily-feed-visible-rows: 6;
+  }
 }
 
 /* Remove Elementor widget extra margins inside the two columns */
@@ -148,6 +174,7 @@ body.dark-mode {
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.01em;
+  font-size-adjust: 0.52;
   color: var(--slider-text);
 }
 
@@ -438,7 +465,7 @@ img.featured-img.wp-post-image {
 
   .elementor-element-ee596fb.e-con,
   .elementor-element-00190a7.e-con {
-    min-height: auto;
+    --daily-feed-visible-rows: 4;
   }
 
   #uid_d1a5d75 .entry-summary,

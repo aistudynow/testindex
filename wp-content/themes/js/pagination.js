@@ -241,13 +241,17 @@
     if (!res.content || res.content.trim() === '') {
       console.warn('admin-ajax returned empty content.', { uuid, raw: typeof response === 'string' ? response : '(object)', parsed: res });
     }
+    
+    const sentinel = inner.querySelector('.pagination-infinite');
 
     if (action === 'replace') {
+    const keepSentinel = sentinel && sentinel.parentElement === inner ? sentinel : null;
       inner.innerHTML = res.content || '';
       const absLoader = block.querySelector('.rb-loader.loader-absolute');
       if (absLoader) absLoader.remove();
       inner.style.minHeight = '';
       inner.style.opacity = '1';
+      if (keepSentinel) inner.appendChild(keepSentinel);
     } else {
       const tmp = document.createElement('div');
       tmp.innerHTML = res.content || '';
@@ -259,6 +263,9 @@
           setTimeout(() => n.classList.remove('is-invisible'), 200);
         }
       });
+      if (sentinel && sentinel.parentElement === inner) {
+        inner.appendChild(sentinel);
+      }
       const loader = block.querySelector('.rb-loader');
       if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 200); }
       const btn = block.querySelector('.loadmore-trigger');
