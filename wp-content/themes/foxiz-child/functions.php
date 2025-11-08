@@ -1961,11 +1961,11 @@ function wd4_enqueue_styles(): void {
   
   
   
-  if ( is_page() ) {
+     if ( is_page() ) {
          wp_enqueue_style( 'main',      'https://aistudynow.com/wp-content/themes/css/header/main.css',      array(), '8777999980.0' );
-        wp_enqueue_style( 'pages',  'https://aistudynow.com/wp-content/themes/css/header/pages.css', array(), '62999024541216.1' );
+        wp_enqueue_style( 'pages',  'https://aistudynow.com/wp-content/themes/css/header/pages.css', array(), '629999024541216.1' );
         wp_enqueue_style( 'footer', 'https://aistudynow.com/wp-content/themes/css/header/footer.css', array(), '8667876655777999980.0' );
-    }
+      }
   
   
   
@@ -1984,13 +1984,11 @@ function wd4_enqueue_styles(): void {
         wp_enqueue_style( 'footer',      'https://aistudynow.com/wp-content/themes/css/header/footer.css',             array(), '8667876655777999980.0' );
     }
 
-    if ( $is_login ) {
-        wp_enqueue_style( 'login', 'https://aistudynow.com/wp-content/themes/css/login.css', array(), '974777977.2.0' );
-    }
+  
 
     if ( is_search() ) {
         wp_enqueue_style( 'main',         'https://aistudynow.com/wp-content/themes/css/header/main.css',        array(), '8667876655777999980.0' );
-        wp_enqueue_style( 'searchheader', 'https://aistudynow.com/wp-content/themes/css/header/searchheader.css', array(), '667876655777999980.0' );
+        wp_enqueue_style( 'front', 'https://aistudynow.com/wp-content/themes/css/header/front.css', array(), '667876655777999980.0' );
         wp_enqueue_style( 'grid',         'https://aistudynow.com/wp-content/themes/css/header/grid.css',         array(), '667876655777999980.0' );
         wp_enqueue_style( 'fixgrid',      'https://aistudynow.com/wp-content/themes/css/header/fixgrid.css',      array(), '667876655777999980.0' );
         wp_enqueue_style( 'footer',       'https://aistudynow.com/wp-content/themes/css/header/footer.css',       array(), '667876655777999980.0' );
@@ -2029,6 +2027,51 @@ function wd4_prune_styles(): void {
     }
 }
 add_action( 'wp_print_styles', 'wd4_prune_styles', PHP_INT_MAX );
+
+
+
+function wd4_prune_login_styles(): void {
+    if ( is_admin() || ! wd4_is_front_login_page() ) return;
+
+    global $wp_styles;
+    if ( ! ( $wp_styles instanceof WP_Styles ) ) return;
+
+    // Keep the core page wrapper stylesheet alongside the login bundle so the
+    // layout retains its base structure. Without the "pages" handle the theme
+    // strips most layout rules which leaves the page completely unstyled.
+    $allowed = array( 'main', 'login', 'footer' );
+
+    if ( is_user_logged_in() ) {
+        $allowed[] = 'admin-bar';
+    }
+
+    foreach ( (array) $wp_styles->queue as $handle ) {
+        if ( ! in_array( $handle, $allowed, true ) ) {
+            wp_dequeue_style( $handle );
+            wp_deregister_style( $handle );
+        }
+    }
+}
+add_action( 'wp_print_styles', 'wd4_prune_login_styles', PHP_INT_MAX );
+
+function wd4_force_login_styles_in_head(): void {
+    if ( is_admin() || ! wd4_is_front_login_page() ) {
+        return;
+    }
+
+    $handles = array( 'main', 'login', 'footer' );
+
+    if ( is_user_logged_in() ) {
+        $handles[] = 'admin-bar';
+    }
+
+    foreach ( $handles as $handle ) {
+        if ( wp_style_is( $handle, 'enqueued' ) && ! wp_style_is( $handle, 'done' ) ) {
+            wp_print_styles( array( $handle ) );
+        }
+    }
+}
+add_action( 'wp_head', 'wd4_force_login_styles_in_head', 40 );
 
 add_action( 'login_enqueue_scripts', function (): void {
     wp_enqueue_style( 'login', 'https://aistudynow.com/wp-content/themes/css/login.css', array(), '97488777977.2.0' );
