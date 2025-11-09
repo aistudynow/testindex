@@ -1,0 +1,223 @@
+:root {
+    color-scheme: light;
+    --wd-login-bg: #f5f7fb;
+    --wd-login-card: #ffffff;
+    --wd-login-border: rgba(15, 23, 42, 0.08);
+    --wd-login-primary: #2563eb;
+    --wd-login-primary-hover: #1d4ed8;
+    --wd-login-text: #0f172a;
+    --wd-login-muted: #475569;
+    --wd-login-radius: 18px;
+    --wd-login-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+
+body.wd-login-page {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--wd-login-bg);
+    color: var(--wd-login-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(2rem, 4vw, 4rem) 1.5rem;
+}
+
+body.wd-login-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.12), transparent 60%),
+        radial-gradient(circle at 85% 25%, rgba(14, 165, 233, 0.14), transparent 55%),
+        radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1), transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.wd-login {
+    width: min(420px, 100%);
+}
+
+.wd-login__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.wd-login__header {
+    text-align: center;
+}
+
+.wd-login__title {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    letter-spacing: -0.02em;
+}
+
+.wd-login__tagline {
+    margin: 0.5rem 0 0;
+    color: var(--wd-login-muted);
+    font-size: 1rem;
+}
+
+.wd-login__card {
+    background: var(--wd-login-card);
+    border-radius: var(--wd-login-radius);
+    padding: clamp(1.75rem, 2.5vw, 2.75rem);
+    box-shadow: var(--wd-login-shadow);
+    border: 1px solid var(--wd-login-border);
+}
+
+.wd-login__subtitle {
+    margin: 0 0 1.5rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.wd-login__welcome p {
+    margin: 0 0 1.5rem;
+    color: var(--wd-login-muted);
+}
+
+.wd-login__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.wd-login__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--wd-login-primary);
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.wd-login__button:hover,
+.wd-login__button:focus {
+    background: var(--wd-login-primary-hover);
+}
+
+.wd-login__link {
+    color: var(--wd-login-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.wd-login__link:hover,
+.wd-login__link:focus {
+    text-decoration: underline;
+}
+
+.wd-login__extras {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.wd-login__footer {
+    text-align: center;
+}
+
+.wd-login__back {
+    color: var(--wd-login-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.wd-login__back:hover,
+.wd-login__back:focus {
+    color: var(--wd-login-primary);
+}
+
+/* WordPress login form adjustments */
+.wd-login .login-form,
+.wd-login .wp-login-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.wd-login label {
+    font-weight: 600;
+    color: var(--wd-login-muted);
+}
+
+.wd-login input[type="text"],
+.wd-login input[type="password"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--wd-login-border);
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.wd-login input[type="text"]:focus,
+.wd-login input[type="password"]:focus {
+    border-color: var(--wd-login-primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    outline: none;
+}
+
+.wd-login .forgetmenot {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.wd-login input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--wd-login-primary);
+}
+
+.wd-login .submit {
+    margin-top: 0.5rem;
+}
+
+.wd-login .submit input[type="submit"] {
+    width: 100%;
+    padding: 0.85rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--wd-login-primary);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.wd-login .submit input[type="submit"]:hover,
+.wd-login .submit input[type="submit"]:focus {
+    background: var(--wd-login-primary-hover);
+    transform: translateY(-1px);
+}
+
+.wd-login .wp-error {
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: rgba(254, 226, 226, 0.55);
+    color: #b91c1c;
+    font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
