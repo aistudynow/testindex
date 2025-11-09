@@ -19,6 +19,28 @@ defined( 'WD_LOGIN_PAGE_ID' ) || define( 'WD_LOGIN_PAGE_ID', 0 );
 $GLOBALS['wd4_is_login_view'] = false;
 
 
+
+add_filter( 'login_url', function ( string $login_url, string $redirect, bool $force_reauth ): string {
+    if ( is_admin() ) {
+        return $login_url;
+    }
+
+    if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+        return $login_url;
+    }
+
+    if ( false === stripos( $login_url, 'redirect_to=' ) ) {
+        return $login_url;
+    }
+
+    $cleaned = remove_query_arg( 'redirect_to', $login_url );
+
+    return is_string( $cleaned ) ? $cleaned : $login_url;
+}, 20, 3 );
+
+
+
+
 /**
  * -------------------------------------------------------------------------
  * Kill Foxiz CSS so we can fully control styles
@@ -95,10 +117,62 @@ function wd4_is_front_login_page(): bool {
 /**
  * Compute the $wd4_is_login_view flag once per request, after the main query is ready.
  */
+
+
+
 function wd4_bootstrap_login_flag(): void {
     $GLOBALS['wd4_is_login_view'] = wd4_is_front_login_page();
 }
 add_action( 'wp', 'wd4_bootstrap_login_flag' );
+
+
+
+
+
+/**
+ * Determine whether the current request should be treated as the front-end login view.
+ *
+ * The `$wd4_is_login_view` flag is normally populated on the `wp` hook, but some logic
+ * (like CSS enqueues) executes earlier. Those early hooks can call this helper to
+ * eagerly detect the login request and prime the global flag so the rest of the
+ * pipeline sees a consistent state.
+ */
+function wd4_is_login_view_context(): bool {
+    global $wd4_is_login_view;
+
+    if ( $wd4_is_login_view ) {
+        return true;
+    }
+
+    $is_login_view = wd4_is_front_login_page();
+
+    if ( ! $is_login_view ) {
+        $request_path = '';
+
+        if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+            $request_path = (string) wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
+        }
+
+        if ( '' !== $request_path ) {
+            $segments   = array_filter( array_map( 'trim', explode( '/', trim( $request_path, '/' ) ) ) );
+            $last_segment = $segments ? end( $segments ) : '';
+
+            if ( $last_segment && in_array( $last_segment, array( 'login', 'login-3', 'sign-in' ), true ) ) {
+                $is_login_view = true;
+            }
+        }
+    }
+
+    if ( $is_login_view ) {
+        $wd4_is_login_view = true;
+    }
+
+    return $is_login_view;
+}
+
+
+
+
 
 
 /**
@@ -143,7 +217,7 @@ function wd4_get_front_login_url(): string {
         }
     }
 
-    // If we found a page, use its permalink.
+     // If we found a page, use its permalink.
     if ( $page_id ) {
         $permalink = get_permalink( $page_id );
         if ( $permalink ) {
@@ -164,9 +238,7 @@ function wd4_get_front_login_url(): string {
  * Force login pages to always use login.php template when we are on the front login view.
  */
 function wd4_force_login_template( string $template ): string {
-    global $wd4_is_login_view;
-
-    if ( is_admin() || ! is_page() || ! $wd4_is_login_view ) {
+    if ( is_admin() || ! is_page() || ! wd4_is_login_view_context() ) {
         return $template;
     }
 
@@ -179,9 +251,7 @@ add_filter( 'template_include', 'wd4_force_login_template', 99 );
  * Canonicalize login URLs when ?redirect_to is present: redirect to pretty login URL.
  */
 function wd4_canonicalize_front_login_request(): void {
-    global $wd4_is_login_view;
-
-    if ( ! $wd4_is_login_view || empty( $_GET['redirect_to'] ) ) {
+    if ( ! wd4_is_login_view_context() || empty( $_GET['redirect_to'] ) ) {
         return;
     }
 
@@ -199,9 +269,7 @@ add_action( 'template_redirect', 'wd4_canonicalize_front_login_request', 1 );
  * Add login-specific body classes on front login view.
  */
 function wd4_login_body_class( array $classes ): array {
-    global $wd4_is_login_view;
-
-    if ( $wd4_is_login_view ) {
+    if ( wd4_is_login_view_context() ) {
         if ( ! in_array( 'wd4-login-template', $classes, true ) ) {
             $classes[] = 'wd4-login-template';
         }
@@ -321,10 +389,10 @@ function wd4_get_style_registry(): array {
         'pages'       => wd4_get_theme_style_meta( 'header/pages.css' ),
         'grid'        => wd4_get_theme_style_meta( 'header/grid.css' ),
         'fixgrid'     => wd4_get_theme_style_meta( 'header/fixgrid.css' ),
-        'login'       => wd4_get_theme_style_meta( 'header/login.css' ),
+        'login-view'  => wd4_get_theme_style_meta( 'header/login.css' ),
 
         // Profile / account / author
-        'profile'     => wd4_get_theme_style_meta( 'profile.css' ),
+        'profile'     => wd4_get_theme_style_meta( 'header/profile.css' ),
 
         // Single post pieces
         'single'      => wd4_get_theme_style_meta( 'header/single/single.css' ),
@@ -382,14 +450,14 @@ function wd4_is_account_view(): bool {
  */
 
 function wd4_enqueue_styles(): void {
-    global $wd4_is_login_view;
+    $is_login_view = wd4_is_login_view_context();
 
     // 1) Front login page (pretty URL, not /wp-login.php)
-    if ( $wd4_is_login_view ) {
-        
+    if ( $is_login_view ) {
+
 
         wd4_enqueue_theme_style( 'main' );
-        wd4_enqueue_theme_style( 'login' );
+        wd4_enqueue_theme_style( 'login-view' );
         wd4_enqueue_theme_style( 'footer' );
 
         
@@ -397,11 +465,11 @@ function wd4_enqueue_styles(): void {
     }
 
     // 2) Account / author views (Woo account + /author/*)
-    if ( wd4_is_account_view() ) {
-        wd4_enqueue_theme_style( 'main' );
-        wd4_enqueue_theme_style( 'profile' );
-        wd4_enqueue_theme_style( 'footer' );
-        return;
+     if ( wd4_is_account_view() ) {
+          wd4_enqueue_theme_style( 'main' );
+          wd4_enqueue_theme_style( 'profile' );
+          wd4_enqueue_theme_style( 'footer' );
+          return;
     }
 
     // 3) Front page / blog home
@@ -417,8 +485,8 @@ function wd4_enqueue_styles(): void {
         wd4_enqueue_theme_style( 'front' );
         wd4_enqueue_theme_style( 'footer' );
     }
-
-    // 5) Static pages
+  
+   // 5) Static pages
     if ( is_page() ) {
         wd4_enqueue_theme_style( 'main' );
         wd4_enqueue_theme_style( 'pages' );
@@ -436,6 +504,8 @@ function wd4_enqueue_styles(): void {
         wd4_enqueue_theme_style( 'comment' );
         wd4_enqueue_theme_style( 'footer' );
     }
+  
+  
 
     // 7) Search results
     if ( is_search() ) {
@@ -455,16 +525,19 @@ add_action( 'wp_enqueue_scripts', 'wd4_enqueue_styles', 20 );
  * -------------------------------------------------------------------------
  */
 
-function wd4_prune_styles(): void {
-    global $wd4_is_login_view;
+function wd4_expand_allowed_handles_with_inline( array $handles ): array {
+    $expanded = [];
 
-    // Don't prune in admin, on login view, or search results (search uses more handles).
-    if ( is_admin() || $wd4_is_login_view || is_search() ) {
-        return;
+    foreach ( $handles as $handle ) {
+        $expanded[] = $handle;
+        $expanded[] = $handle . '-inline-css';
     }
 
-    // Only prune on selected views.
-    if ( ! ( is_front_page() || is_home() || is_category() || is_singular( 'post' ) ) ) {
+    return array_values( array_unique( $expanded ) );
+}
+
+function wd4_prune_styles(): void {
+    if ( is_admin() || wd4_is_login_view_context() ) {
         return;
     }
 
@@ -474,17 +547,32 @@ function wd4_prune_styles(): void {
     }
 
     // Handles we allow to remain enqueued on those views.
-    $allowed = [
-        'main','cat','login','search','single',
-        'slider','pro-crusal','fixgrid','crusal','searchheader','front',
-        'login2','header-mobile','profile','search-mobile','menu-mobile','sidebar-mobile',
-        'divider','footer','grid','social','catheader','sidebar','related','email','download','sharesingle','author','comment',
-        'dashicons','style','theme-style','foxiz-style',
-    ];
+    
+    $allowed = [];
+
+    if ( wd4_is_account_view() ) {
+        $allowed = [ 'main', 'profile', 'footer' ];
+    } elseif ( is_front_page() || is_home() ) {
+        $allowed = [ 'main', 'front', 'footer' ];
+    } elseif ( is_category() ) {
+        $allowed = [ 'main', 'front', 'footer' ];
+    } elseif ( is_singular( 'post' ) ) {
+        $allowed = [ 'main', 'single', 'email', 'download', 'sharesingle', 'author', 'sidebar', 'related', 'comment', 'footer' ];
+    } elseif ( is_page() ) {
+        $allowed = [ 'main', 'pages', 'footer' ];
+    } elseif ( is_search() ) {
+        $allowed = [ 'main', 'front', 'grid', 'fixgrid', 'footer' ];
+    } else {
+        return;
+    }
 
     if ( is_user_logged_in() ) {
         $allowed[] = 'admin-bar';
     }
+
+    $allowed = wd4_expand_allowed_handles_with_inline( $allowed );
+
+
 
     foreach ( (array) $wp_styles->queue as $handle ) {
         if ( ! in_array( $handle, $allowed, true ) ) {
@@ -496,10 +584,7 @@ function wd4_prune_styles(): void {
 add_action( 'wp_print_styles', 'wd4_prune_styles', PHP_INT_MAX );
 
 function wd4_prune_login_styles(): void {
-    global $wd4_is_login_view;
-
-    // Only run on front-end login page, not in admin.
-    if ( is_admin() || ! $wd4_is_login_view ) {
+    if ( is_admin() || ! wd4_is_login_view_context() ) {
         return;
     }
 
@@ -509,11 +594,13 @@ function wd4_prune_login_styles(): void {
     }
 
     // Only allow these on /login-3/ etc.
-    $allowed = [ 'main', 'login', 'footer' ];
+     $allowed = [ 'main', 'login-view', 'footer' ];
 
     if ( is_user_logged_in() ) {
         $allowed[] = 'admin-bar';
     }
+
+     $allowed = wd4_expand_allowed_handles_with_inline( $allowed );
 
     foreach ( (array) $wp_styles->queue as $handle ) {
         if ( ! in_array( $handle, $allowed, true ) ) {
@@ -523,8 +610,3 @@ function wd4_prune_login_styles(): void {
     }
 }
 add_action( 'wp_print_styles', 'wd4_prune_login_styles', PHP_INT_MAX - 1 );
-
-
-
-
-
