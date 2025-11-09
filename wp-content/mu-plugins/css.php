@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 defined( 'WD_LOGIN_PAGE_ID' ) || define( 'WD_LOGIN_PAGE_ID', 0 );
 
 // Global flag: are we on the front-end login page (e.g. /login-3/)?
-$GLOBALS['wd4_is_login_view'] = false;
+$GLOBALS['wd4_is_login_view'] = true;
 
 
 

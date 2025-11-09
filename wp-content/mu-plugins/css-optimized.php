@@ -73,7 +73,7 @@ if ( ! function_exists( 'wd4_get_inline_styles_map' ) ) {
             'searchheader' => 'css/header/searchheader.css',
             'front'        => 'css/header/front.css',
             'login-view'   => 'css/header/login.css',
-            'my-account'   => 'css/profile.css',
+            'profile'   => 'css/header/profile.css',
         );
         return (array) apply_filters( 'wd4_inline_styles_map', $map );
     }
