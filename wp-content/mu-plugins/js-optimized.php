@@ -133,8 +133,8 @@ if ( ! function_exists( 'wd4_js_get_script_catalog' ) ) {
                 'src'       => 'https://aistudynow.com/wp-content/themes/js/main.js',
                 'deps'      => array(),
                 'versions'  => array(
-                    'default'  => '09900899.0.0',
-                    'home'     => '2.0.0',
+                    'default'  => '99008999.0.0',
+                    'home'     => '21.0.0',
                     'category' => '4.0.0',
                 ),
                 'in_footer' => true,
@@ -488,6 +488,84 @@ if ( ! function_exists( 'wd4_bootstrap_nav_measure_inline' ) ) {
     }
 }
 add_action( 'wp_enqueue_scripts', 'wd4_bootstrap_nav_measure_inline', 99 );
+
+
+
+if ( ! function_exists( 'wd4_bootstrap_profile_modal_inline' ) ) {
+    function wd4_bootstrap_profile_modal_inline(): void {
+        // Don’t run in admin or on the special login views.
+        if ( is_admin() || wd4_js_is_login_view() ) {
+            return;
+        }
+
+        // Only add this if the "main" script is actually enqueued.
+        if ( ! wp_script_is( 'main', 'enqueued' ) ) {
+            return;
+        }
+
+        $script = <<<'JS'
+(function () {
+  var body  = document.body;
+  var modal = document.getElementById('wd4-profile-modal');
+
+  if (!modal) return;
+
+  function openModal() {
+    modal.removeAttribute('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    body.classList.add('wd4-profile-modal-open');
+
+    var focusTarget = modal.querySelector(
+      '[autofocus], input, select, textarea, button, [href]'
+    );
+    if (focusTarget) {
+      try { focusTarget.focus(); } catch (e) {}
+    }
+  }
+
+  function closeModal() {
+    if (modal.hasAttribute('hidden')) return;
+    modal.setAttribute('hidden', 'hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    body.classList.remove('wd4-profile-modal-open');
+  }
+
+  document.addEventListener('click', function (e) {
+    var openBtn = e.target.closest('[data-wd4-profile-modal-open]');
+    if (openBtn) {
+      e.preventDefault();
+      openModal();
+      return;
+    }
+
+    var closeBtn = e.target.closest('[data-wd4-profile-modal-close]');
+    if (closeBtn) {
+      e.preventDefault();
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      closeModal();
+    }
+  });
+})();
+JS;
+
+        // Attach after "main.js" so it runs once main is loaded.
+        wp_add_inline_script( 'main', $script, 'after' );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'wd4_bootstrap_profile_modal_inline', 101 );
+
+
+
+
+
+
+
+
 
 /**
  * Core script tuning helpers (defer, preload, fallback).
