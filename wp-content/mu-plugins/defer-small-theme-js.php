@@ -30,7 +30,8 @@ add_filter('script_loader_tag', function ($tag, $handle, $src) {
     'lazy',                  // lazy.js
     'pagination',            // pagination.js
     'download',              // download-form-validation.js
-    'tw-facade',             // tw-facade.js
+    'tw-facade',  
+    'infinity',             // tw-facade.js
     // Add/remove handles as needed
   ];
 

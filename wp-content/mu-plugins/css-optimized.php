@@ -74,6 +74,7 @@ if ( ! function_exists( 'wd4_get_inline_styles_map' ) ) {
             'front'        => 'css/header/front.css',
             'login-view'   => 'css/header/login.css',
             'profile'   => 'css/header/profile.css',
+            'infinity'   => 'css/header/category-archive.css',
         );
         return (array) apply_filters( 'wd4_inline_styles_map', $map );
     }

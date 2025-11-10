@@ -390,6 +390,7 @@ function wd4_get_style_registry(): array {
         'grid'        => wd4_get_theme_style_meta( 'header/grid.css' ),
         'fixgrid'     => wd4_get_theme_style_meta( 'header/fixgrid.css' ),
         'login-view'  => wd4_get_theme_style_meta( 'header/login.css' ),
+        'infinity'    => wd4_get_theme_style_meta( 'header/category-archive.css' ),
 
         // Profile / account / author
         'profile'     => wd4_get_theme_style_meta( 'header/profile.css' ),
@@ -398,6 +399,7 @@ function wd4_get_style_registry(): array {
         'single'      => wd4_get_theme_style_meta( 'header/single/single.css' ),
         'email'       => wd4_get_theme_style_meta( 'header/single/email.css' ),
         'download'    => wd4_get_theme_style_meta( 'header/single/download.css' ),
+        'related'     => wd4_get_theme_style_meta( 'header/single/related-posts.css' ),
         'sharesingle' => wd4_get_theme_style_meta( 'header/single/sharesingle.css' ),
         'author'      => wd4_get_theme_style_meta( 'header/single/author.css' ),
         'comment'     => wd4_get_theme_style_meta( 'header/single/comment.css' ),
@@ -483,6 +485,7 @@ function wd4_enqueue_styles(): void {
     if ( is_category() ) {
         wd4_enqueue_theme_style( 'main' );
         wd4_enqueue_theme_style( 'front' );
+        wd4_enqueue_theme_style( 'infinity' );
         wd4_enqueue_theme_style( 'footer' );
     }
   
@@ -498,6 +501,7 @@ function wd4_enqueue_styles(): void {
         wd4_enqueue_theme_style( 'main' );
         wd4_enqueue_theme_style( 'single' );
         wd4_enqueue_theme_style( 'email' );
+        wd4_enqueue_theme_style( 'related' );
         wd4_enqueue_theme_style( 'download' );
         wd4_enqueue_theme_style( 'sharesingle' );
         wd4_enqueue_theme_style( 'author' );
@@ -555,7 +559,7 @@ function wd4_prune_styles(): void {
     } elseif ( is_front_page() || is_home() ) {
         $allowed = [ 'main', 'front', 'footer' ];
     } elseif ( is_category() ) {
-        $allowed = [ 'main', 'front', 'footer' ];
+        $allowed = [ 'main', 'front', 'infinity', 'footer' ];
     } elseif ( is_singular( 'post' ) ) {
         $allowed = [ 'main', 'single', 'email', 'download', 'sharesingle', 'author', 'sidebar', 'related', 'comment', 'footer' ];
     } elseif ( is_page() ) {
