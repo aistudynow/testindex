@@ -10,6 +10,20 @@ function mu_vdoai_is_amp(): bool {
     return function_exists('is_amp_endpoint') && is_amp_endpoint();
 }
 
+
+function mu_vdoai_is_login_view(): bool {
+    if (!function_exists('is_page_template')) {
+        return false;
+    }
+
+    $is_login_template = is_page_template('login.php') || is_page_template('foxiz-child/login.php');
+
+    return (bool) apply_filters('mu_vdoai_is_login_view', $is_login_template);
+}
+
+
+
+
 /* ===================
    Config (filterable)
    =================== */
@@ -26,7 +40,8 @@ function mu_vdoai_noifr_cfg(): array {
         'root_margin'   => '600px 0px',
 
         // Where enabled
-        'enabled'       => !mu_vdoai_is_amp() && is_singular(['post','page']),
+        // Where enabled
+        'enabled'       => !mu_vdoai_is_amp() && is_singular(['post','page']) && !mu_vdoai_is_login_view(),
 
         // Accessibility label
         'aria_label'    => 'Advertisement',

@@ -456,9 +456,9 @@ function wd4_enqueue_styles(): void {
     if ( $is_login_view ) {
 
 
-        wd4_enqueue_theme_style( 'main' );
+       
         wd4_enqueue_theme_style( 'login-view' );
-        wd4_enqueue_theme_style( 'footer' );
+    
 
         
         return; // Stop here; login view uses a minimal bundle.
@@ -594,7 +594,7 @@ function wd4_prune_login_styles(): void {
     }
 
     // Only allow these on /login-3/ etc.
-     $allowed = [ 'main', 'login-view', 'footer' ];
+     $allowed = [ 'login-view' ];
 
     if ( is_user_logged_in() ) {
         $allowed[] = 'admin-bar';

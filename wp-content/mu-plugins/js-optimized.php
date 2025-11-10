@@ -6,6 +6,47 @@
 
 defined( 'ABSPATH' ) || exit;
 
+
+/**
+ * Is this the front-end login page (/login-3/, /login/, /sign-in/)?
+ */
+if ( ! function_exists( 'wd4_js_is_login_view' ) ) {
+    function wd4_js_is_login_view(): bool {
+        // Explicit page ID, if you ever set WD_LOGIN_PAGE_ID
+        if ( defined( 'WD_LOGIN_PAGE_ID' ) && WD_LOGIN_PAGE_ID && is_page( (int) WD_LOGIN_PAGE_ID ) ) {
+            return true;
+        }
+
+        // Template check
+        if ( is_page_template( 'login.php' ) ) {
+            return true;
+        }
+
+        // Slug check
+        if ( is_page() ) {
+            $id   = get_queried_object_id();
+            $slug = $id ? get_post_field( 'post_name', $id ) : '';
+            if ( $slug && in_array( $slug, array( 'login-3', 'login', 'sign-in' ), true ) ) {
+                return true;
+            }
+        }
+
+        // Fallback: look at URL path
+        if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+            $path     = (string) wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
+            $segments = array_filter( array_map( 'trim', explode( '/', trim( $path, '/' ) ) ) );
+            $last     = $segments ? end( $segments ) : '';
+            if ( $last && in_array( $last, array( 'login-3', 'login', 'sign-in' ), true ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+
+
 /**
  * -------------------------------------------------------------------------
  * Inline parameter bootstrap for legacy Foxiz bundles
@@ -13,9 +54,14 @@ defined( 'ABSPATH' ) || exit;
  */
 if ( ! function_exists( 'wd4_js_print_core_params' ) ) {
     function wd4_js_print_core_params(): void {
-        if ( is_admin() ) {
-            return;
-        }
+    if ( is_admin() ) {
+        return;
+    }
+
+    // Do not output Foxiz JS params on the front login page
+    if ( wd4_js_is_login_view() ) {
+        return;
+    }
 
         $params = array(
             'ajaxurl'         => admin_url( 'admin-ajax.php' ),
@@ -118,8 +164,13 @@ if ( ! function_exists( 'my_get_allowed_js_handles_by_context' ) ) {
  * -------------------------------------------------------------------------
  */
 if ( ! function_exists( 'wd4_js_register_context_only_scripts' ) ) {
-    function wd4_js_register_context_only_scripts(): void {
-        $context = wd4_js_detect_view_context();
+     function wd4_js_register_context_only_scripts(): void {
+    $context = wd4_js_detect_view_context();
+
+    // On front-end login (/login-3/ etc.) we do NOT enqueue Foxiz scripts at all
+    if ( wd4_js_is_login_view() ) {
+        return;
+    }
 
         $main          = 'https://aistudynow.com/wp-content/themes/js/main.js';
         $lazy          = 'https://aistudynow.com/wp-content/themes/js/lazy.js';
@@ -505,13 +556,18 @@ if ( ! function_exists( 'wd4_js_prune_script_queue' ) ) {
 
 if ( ! function_exists( 'wd4_js_disable_all_js_except_whitelisted' ) ) {
     function wd4_js_disable_all_js_except_whitelisted(): void {
-        $doing_ajax = function_exists( 'wp_doing_ajax' ) && wp_doing_ajax();
-        if ( is_admin() || $doing_ajax ) {
-            return;
-        }
+    $doing_ajax = function_exists( 'wp_doing_ajax' ) && wp_doing_ajax();
+    if ( is_admin() || $doing_ajax ) {
+        return;
+    }
 
-        $context = wd4_js_detect_view_context();
-        $targets = array( 'home', 'category', 'search', 'author', 'post', 'page' );
+    // On the front login view we handle JS separately, do not run the generic pruner
+    if ( wd4_js_is_login_view() ) {
+        return;
+    }
+
+    $context = wd4_js_detect_view_context();
+    $targets = array( 'home', 'category', 'search', 'author', 'post', 'page' );
         if ( ! in_array( $context, $targets, true ) ) {
             return;
         }
@@ -539,3 +595,49 @@ if ( ! function_exists( 'my_disable_all_js_except_whitelisted' ) ) {
         wd4_js_disable_all_js_except_whitelisted();
     }
 }
+
+
+/**
+ * On the front-end login page, strip Foxiz/theme JS so only core + reCAPTCHA remain.
+ */
+function wd4_js_strip_theme_js_on_login(): void {
+    if ( is_admin() || ! wd4_js_is_login_view() ) {
+        return;
+    }
+
+    /**
+     * Handles to remove on the front-end login page.
+     *
+     * NOTE: <script id="HANDLE-js"> means the handle is just "HANDLE".
+     */
+    $block = array(
+        // Foxiz / theme JS
+        'foxiz-core',
+        'main',
+        'lazy',
+        'pagination',
+        'comment',
+        'download',
+        'tw-facade',
+        'wd-defer-css',
+        'wd-comment-toggle',          // <script id="wd-comment-toggle-js">
+
+        // Newsletter download validation
+        'wns-download-validation',    // <script id="wns-download-validation-js">
+
+        // Contact Form 7
+        'swv',                        // <script id="swv-js">
+        'contact-form-7',             // <script id="contact-form-7-js">
+
+        // Core block helpers (not needed on bare login page)
+        'wp-hooks',                   // <script id="wp-hooks-js">
+        'wp-i18n',                    // <script id="wp-i18n-js">
+    );
+
+    foreach ( $block as $handle ) {
+        wp_dequeue_script( $handle );
+        wp_deregister_script( $handle );
+    }
+}
+add_action( 'wp_print_scripts', 'wd4_js_strip_theme_js_on_login', PHP_INT_MAX );
+add_action( 'wp_print_footer_scripts', 'wd4_js_strip_theme_js_on_login', PHP_INT_MAX );
