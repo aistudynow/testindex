@@ -577,8 +577,16 @@ Module.hoverTipsy = function () {
    
    
   Module.headerDropdown = function () {
-  const closeAll = () => $$('.dropdown-activated').forEach(el => el.classList.remove('dropdown-activated'));
-
+  const closeAll = () => {
+    $$('.dropdown-activated').forEach(el => {
+      el.classList.remove('dropdown-activated');
+      el.querySelectorAll('.dropdown-trigger[aria-expanded]').forEach(toggle => {
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  };
+  
+  
   // already good: we keep rAF here
   delegate(document, '.more-trigger', 'click', (e, btn) => {
     e.preventDefault(); e.stopPropagation();
@@ -616,15 +624,23 @@ Module.hoverTipsy = function () {
   // already added by you (good) — keep it
   delegate(document, '.dropdown-trigger', 'click', (e, btn) => {
     e.preventDefault(); e.stopPropagation();
-    
+
     this.queueMenuMeasure();
 
     const holder = safeClosest(btn, '.header-dropdown-outer');
     if (!holder) return;
-    if (!holder.classList.contains('dropdown-activated')) {
-      closeAll(); holder.classList.add('dropdown-activated');
+
+    const isOpen = holder.classList.contains('dropdown-activated');
+
+    if (!isOpen) {
+      closeAll();
+      holder.classList.add('dropdown-activated');
     } else {
       holder.classList.remove('dropdown-activated');
+    }
+
+    if (btn.hasAttribute('aria-expanded')) {
+      btn.setAttribute('aria-expanded', holder.classList.contains('dropdown-activated') ? 'true' : 'false');
     }
   });
 };
@@ -773,7 +789,15 @@ Module.calcSubMenuPos = function () {
       if (safeClosest(e.target, '.mobile-menu-trigger, .mobile-collapse, .more-section-outer, .header-dropdown-outer, .mfp-wrap', document)) {
         return;
       }
-      document.querySelectorAll('.dropdown-activated').forEach(el => el.classList.remove('dropdown-activated'));
+      
+      document.querySelectorAll('.dropdown-activated').forEach(el => {
+        el.classList.remove('dropdown-activated');
+        el.querySelectorAll('.dropdown-trigger[aria-expanded]').forEach(toggle => {
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    
+    
       document.documentElement.classList.remove('collapse-activated');
       document.body.classList.remove('collapse-activated');
       document.querySelectorAll('.is-form-layout .live-search-response').forEach(el => { el.style.display = 'none'; });

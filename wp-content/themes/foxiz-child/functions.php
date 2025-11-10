@@ -515,6 +515,89 @@ function wd4_get_category_card_markup( $post ): string {
     return trim( ob_get_clean() );
 }
 
+
+
+
+
+/**
+ * Build a unique signature for a category feed so cached responses can detect
+ * when new posts are published or existing posts change.
+ *
+ * @param WP_Term|null $term Category term instance.
+ */
+function wd4_get_category_feed_signature( ?WP_Term $term ): string {
+    if ( ! ( $term instanceof WP_Term ) ) {
+        return '';
+    }
+
+    $latest_posts = get_posts(
+        array(
+            'post_type'           => 'post',
+            'post_status'         => 'publish',
+            'ignore_sticky_posts' => true,
+            'posts_per_page'      => 1,
+            'orderby'             => 'date',
+            'order'               => 'DESC',
+            'no_found_rows'       => true,
+            'fields'              => 'ids',
+            'tax_query'           => array(
+                array(
+                    'taxonomy' => $term->taxonomy,
+                    'field'    => 'term_id',
+                    'terms'    => array( (int) $term->term_id ),
+                ),
+            ),
+        )
+    );
+
+    $latest_id = $latest_posts ? (int) $latest_posts[0] : 0;
+
+    $modified_gmt = '';
+
+    if ( $latest_id > 0 ) {
+        $latest_post = get_post( $latest_id );
+
+        if ( $latest_post instanceof WP_Post ) {
+            $modified_gmt = $latest_post->post_modified_gmt ?: $latest_post->post_modified;
+
+            if ( ! $modified_gmt ) {
+                $modified_gmt = $latest_post->post_date_gmt ?: $latest_post->post_date;
+            }
+
+            if ( $modified_gmt ) {
+                $timestamp    = strtotime( $modified_gmt ) ?: time();
+                $modified_gmt = gmdate( 'c', $timestamp );
+            }
+        }
+    }
+
+    if ( ! $latest_id && ! $modified_gmt ) {
+        return 'empty-' . (int) $term->term_id;
+    }
+
+    $payload = array(
+        'term'     => (int) $term->term_id,
+        'latest'   => $latest_id,
+        'modified' => $modified_gmt,
+    );
+
+    $encoded = wp_json_encode( $payload );
+
+    if ( ! is_string( $encoded ) || '' === $encoded ) {
+        return '';
+    }
+
+    return wp_hash( $encoded );
+}
+
+
+
+
+
+
+
+
+
 /**
  * Normalize admin-ajax payloads that may arrive as arrays or JSON strings.
  */
@@ -1766,6 +1849,280 @@ add_action( 'template_redirect', 'wd4_enable_head_markup_scrubber', 0 );
 
 /**
  * -------------------------------------------------------------------------
+ * Query parameter hygiene
+ * -------------------------------------------------------------------------
+ */
+
+/**
+ * Redirect legacy replytocom URLs to their canonical comment permalinks.
+ */
+function wd4_redirect_replytocom_to_comment(): void {
+    if ( ! wd4_is_front_context() ) {
+        return;
+    }
+
+    $method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : 'GET';
+    if ( 'GET' !== $method ) {
+        return;
+    }
+
+    if ( empty( $_GET['replytocom'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        return;
+    }
+
+    $comment_id = absint( $_GET['replytocom'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ( $comment_id <= 0 ) {
+        return;
+    }
+
+    $comment_link = get_comment_link( $comment_id );
+    if ( ! $comment_link || is_wp_error( $comment_link ) ) {
+        return;
+    }
+
+    wp_safe_redirect( $comment_link, 301 );
+    exit;
+}
+add_action( 'template_redirect', 'wd4_redirect_replytocom_to_comment', 1 );
+
+/**
+ * Return the list of query parameters that should remain indexable.
+ *
+ * Defaults to an empty whitelist so every query string triggers a noindex
+ * response unless a plugin filters the list explicitly.
+ */
+function wd4_allowed_public_query_keys(): array {
+    $allowed = array();
+
+    /**
+     * Filter the whitelist of query parameters that remain indexable.
+     */
+    return apply_filters( 'wd4_allowed_public_query_keys', $allowed );
+}
+
+/**
+ * Detect unexpected query variables that should be marked as noindex.
+ *
+ * @return array<string>
+ */
+function wd4_disallowed_query_keys(): array {
+    if ( empty( $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        return array();
+    }
+
+    $allowed    = array_map( 'strtolower', wd4_allowed_public_query_keys() );
+    $disallowed = array();
+
+    foreach ( array_keys( $_GET ) as $raw_key ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $key = strtolower( (string) $raw_key );
+
+        if ( '' === $key ) {
+            continue;
+        }
+
+        if ( in_array( $key, $allowed, true ) ) {
+            continue;
+        }
+
+        if ( 0 === strpos( $key, 'utm_' ) ) {
+            $disallowed[] = $key;
+            continue;
+        }
+
+        $disallowed[] = $key;
+    }
+
+    return array_values( array_unique( $disallowed ) );
+}
+
+/**
+ * Flag front-end requests that should be hidden from search engines.
+ */
+function wd4_mark_request_noindex( bool $strip_canonical = false ): void {
+    if ( ! has_filter( 'wp_headers', 'wd4_append_noindex_header' ) ) {
+        add_filter( 'wp_headers', 'wd4_append_noindex_header' );
+    }
+
+    if ( ! has_action( 'wp_head', 'wd4_render_noindex_meta' ) ) {
+        add_action( 'wp_head', 'wd4_render_noindex_meta', 0 );
+    }
+
+    if ( $strip_canonical && ! has_filter( 'get_canonical_url', 'wd4_force_queryless_canonical' ) ) {
+        add_filter( 'get_canonical_url', 'wd4_force_queryless_canonical', 10, 2 );
+    }
+}
+
+/**
+ * Flag front-end requests that should be hidden from search engines.
+ */
+function wd4_flag_request_for_noindex(): void {
+    if ( ! wd4_is_front_context() ) {
+        return;
+    }
+
+    $method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : 'GET';
+    if ( 'GET' !== $method ) {
+        return;
+    }
+
+    $should_block = false;
+
+    $disallowed = wd4_disallowed_query_keys();
+    if ( ! empty( $disallowed ) ) {
+        $should_block = true;
+    }
+
+    if ( function_exists( 'is_search' ) && is_search() ) {
+        $should_block = true;
+    }
+
+    $is_paged = false;
+    if ( function_exists( 'is_paged' ) && is_paged() ) {
+        $is_paged = true;
+    } elseif ( get_query_var( 'paged' ) > 1 ) {
+        $is_paged = true;
+    }
+
+    if ( $is_paged ) {
+        $should_block = true;
+    }
+
+    if ( ! $should_block ) {
+        return;
+    }
+
+    wd4_mark_request_noindex( true );
+}
+add_action( 'template_redirect', 'wd4_flag_request_for_noindex', 2 );
+
+/**
+ * Determine whether the current request targets a JSON workflow asset inside the uploads directory.
+ */
+function wd4_is_json_workflow_request(): bool {
+    if ( ! wd4_is_front_context() ) {
+        return false;
+    }
+
+    if ( is_attachment() ) {
+        $mime = get_post_mime_type();
+        if ( is_string( $mime ) && false !== stripos( $mime, 'json' ) ) {
+            return true;
+        }
+    }
+
+    $request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( (string) $_SERVER['REQUEST_URI'] ) : '';
+    if ( '' === $request_uri ) {
+        return false;
+    }
+
+    $path = (string) wp_parse_url( $request_uri, PHP_URL_PATH );
+    if ( '' === $path ) {
+        return false;
+    }
+
+    $trimmed_path = trim( $path, '/' );
+    if ( '' !== $trimmed_path && 0 === stripos( $trimmed_path, 'wp-json' ) ) {
+        return false;
+    }
+
+    if ( '.json' !== strtolower( substr( $path, -5 ) ) ) {
+        return false;
+    }
+
+    $uploads = wp_get_upload_dir();
+    if ( empty( $uploads['baseurl'] ) ) {
+        return true;
+    }
+
+    $uploads_path = (string) wp_parse_url( $uploads['baseurl'], PHP_URL_PATH );
+    if ( '' === $uploads_path ) {
+        return true;
+    }
+
+    return false !== strpos( $path, rtrim( $uploads_path, '/' ) . '/' );
+}
+
+/**
+ * Apply a noindex directive to JSON workflow downloads so crawlers ignore them.
+ */
+function wd4_noindex_json_workflows(): void {
+    if ( ! wd4_is_json_workflow_request() ) {
+        return;
+    }
+
+    wd4_mark_request_noindex( false );
+}
+add_action( 'template_redirect', 'wd4_noindex_json_workflows', 3 );
+
+/**
+ * Append an X-Robots-Tag header so crawlers ignore disallowed query URLs.
+ */
+function wd4_append_noindex_header( array $headers ): array {
+    if ( isset( $headers['X-Robots-Tag'] ) ) {
+        $directives = array_map( 'trim', explode( ',', (string) $headers['X-Robots-Tag'] ) );
+
+        if ( ! in_array( 'noindex', $directives, true ) ) {
+            $directives[] = 'noindex';
+        }
+
+        if ( ! in_array( 'follow', $directives, true ) ) {
+            $directives[] = 'follow';
+        }
+
+        $headers['X-Robots-Tag'] = implode( ', ', array_filter( $directives ) );
+    } else {
+        $headers['X-Robots-Tag'] = 'noindex, follow';
+    }
+
+    return $headers;
+}
+
+/**
+ * Render a meta robots directive for disallowed query strings.
+ */
+function wd4_render_noindex_meta(): void {
+    echo "<meta name='robots' content='noindex,follow'>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+/**
+ * Force canonical links to drop query parameters and pagination segments when
+ * we block indexing.
+ */
+function wd4_force_queryless_canonical( $canonical, $post ) {
+    unset( $post );
+
+    global $wp;
+
+    $request_path = '';
+    if ( isset( $wp->request ) && is_string( $wp->request ) ) {
+        $request_path = trim( $wp->request );
+    }
+
+    if ( '' !== $request_path ) {
+        $request_path = preg_replace( '#/page/\d+/?$#i', '', $request_path );
+    }
+
+    $request_path = trim( (string) $request_path, '/' );
+
+    if ( '' === $request_path ) {
+        return home_url( '/' );
+    }
+
+    $canonical_path = user_trailingslashit( $request_path );
+    $canonical_url  = home_url( '/' . ltrim( $canonical_path, '/' ) );
+
+    return is_string( $canonical_url ) ? $canonical_url : $canonical;
+}
+
+
+
+
+
+
+
+
+/**
+ * -------------------------------------------------------------------------
  * Misc integrations (non-AdSense)
  * -------------------------------------------------------------------------
  */
@@ -1806,3 +2163,306 @@ add_action( 'shutdown', function (): void {
         @ob_end_flush();
     }
 }, PHP_INT_MAX );
+
+
+
+
+/**
+ * Replace newsletter download email gates with a login CTA for guests and
+ * streamline the form for members so they can trigger downloads in one click.
+ */
+function wd4_transform_download_forms( string $content ): string {
+    if ( ! wd4_is_front_context() ) {
+        return $content;
+    }
+
+    if ( ! is_singular() ) {
+        return $content;
+    }
+
+    if ( false === stripos( $content, 'download-form' ) ) {
+        return $content;
+    }
+
+    if ( ! class_exists( 'DOMDocument' ) ) {
+        return $content;
+    }
+
+    $libxml_previous_state = libxml_use_internal_errors( true );
+
+    $dom           = new DOMDocument( '1.0', 'UTF-8' );
+    $wrapped       = '<div>' . $content . '</div>';
+    $loaded        = $dom->loadHTML( '<?xml encoding="UTF-8"?>' . $wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+    $login_url     = wp_login_url( get_permalink() );
+    $login_url_attr = esc_url_raw( $login_url );
+
+    if ( ! $loaded ) {
+        libxml_clear_errors();
+        if ( null !== $libxml_previous_state ) {
+            libxml_use_internal_errors( $libxml_previous_state );
+        }
+        return $content;
+    }
+
+    $xpath = new DOMXPath( $dom );
+    $forms = $xpath->query( "//*[contains(concat(' ', normalize-space(@class), ' '), ' download-form ')]" );
+
+    if ( ! $forms || 0 === $forms->length ) {
+        libxml_clear_errors();
+        if ( null !== $libxml_previous_state ) {
+            libxml_use_internal_errors( $libxml_previous_state );
+        }
+        return $content;
+    }
+
+    $logged_in     = is_user_logged_in();
+    $current_email = '';
+    $host_fallback = (string) parse_url( home_url(), PHP_URL_HOST );
+
+    if ( $logged_in ) {
+        $user = wp_get_current_user();
+        if ( $user instanceof WP_User && ! empty( $user->user_email ) ) {
+            $current_email = sanitize_email( $user->user_email );
+        }
+    }
+
+    if ( '' === $current_email ) {
+        $sanitized_host = preg_replace( '/[^a-z0-9.\-]+/i', '', $host_fallback );
+        $current_email  = $sanitized_host ? 'member@' . $sanitized_host : 'member@example.com';
+    }
+
+    foreach ( $forms as $form ) {
+        if ( ! $form instanceof DOMElement ) {
+            continue;
+        }
+
+        if ( $logged_in ) {
+            $form->setAttribute( 'class', trim( $form->getAttribute( 'class' ) . ' download-form-logged-in' ) );
+
+            $email_input = $xpath->query( ".//input[@name='EMAIL']", $form )->item( 0 );
+
+            if ( $email_input instanceof DOMElement ) {
+                $email_input->setAttribute( 'type', 'hidden' );
+                $email_input->setAttribute( 'value', $current_email );
+                $email_input->removeAttribute( 'placeholder' );
+                $email_input->removeAttribute( 'required' );
+                if ( ! $email_input->hasAttribute( 'autocomplete' ) ) {
+                    $email_input->setAttribute( 'autocomplete', 'email' );
+                }
+            } else {
+                $hidden = $dom->createElement( 'input' );
+                $hidden->setAttribute( 'type', 'hidden' );
+                $hidden->setAttribute( 'name', 'EMAIL' );
+                $hidden->setAttribute( 'value', $current_email );
+                $form->appendChild( $hidden );
+            }
+
+            $post_input  = $xpath->query( ".//input[@name='postId']", $form )->item( 0 );
+            $block_input = $xpath->query( ".//input[@name='blockId']", $form )->item( 0 );
+
+            $form_post_id = 0;
+            if ( $post_input instanceof DOMElement ) {
+                $form_post_id = (int) $post_input->getAttribute( 'value' );
+            }
+
+            $form_block_id = '';
+            if ( $block_input instanceof DOMElement ) {
+                $form_block_id = trim( (string) $block_input->getAttribute( 'value' ) );
+            }
+
+            $direct_url = '';
+            if ( $form_post_id > 0 && function_exists( 'wns_resolve_file_url' ) ) {
+                $resolved = wns_resolve_file_url( $form_post_id, $form_block_id );
+                if ( is_string( $resolved ) && '' !== $resolved ) {
+                    $direct_url = esc_url_raw( $resolved );
+                }
+            }
+
+            if ( '' !== $direct_url ) {
+                $form->setAttribute( 'data-direct-download-url', $direct_url );
+
+                $filename = '';
+                $path     = (string) parse_url( $direct_url, PHP_URL_PATH );
+                if ( '' !== $path ) {
+                    $filename = sanitize_file_name( wp_basename( $path ) );
+                }
+
+                if ( '' !== $filename ) {
+                    $form->setAttribute( 'data-direct-download-filename', $filename );
+                }
+
+                $file_input = $xpath->query( ".//input[@name='fileUrl']", $form )->item( 0 );
+                if ( $file_input instanceof DOMElement ) {
+                    $file_input->setAttribute( 'type', 'hidden' );
+                    $file_input->setAttribute( 'value', $direct_url );
+                } else {
+                    $file_hidden = $dom->createElement( 'input' );
+                    $file_hidden->setAttribute( 'type', 'hidden' );
+                    $file_hidden->setAttribute( 'name', 'fileUrl' );
+                    $file_hidden->setAttribute( 'value', $direct_url );
+                    $form->appendChild( $file_hidden );
+                }
+            }
+
+            $submit = $xpath->query( ".//input[@type='submit']", $form )->item( 0 );
+            if ( $submit instanceof DOMElement ) {
+                $submit->setAttribute( 'type', 'submit' );
+                if ( ! $submit->hasAttribute( 'value' ) || '' === trim( $submit->getAttribute( 'value' ) ) ) {
+                    $submit->setAttribute( 'value', 'Download Now' );
+                }
+            }
+
+            continue;
+        }
+
+        $existing_class = $form->getAttribute( 'class' );
+        $form->setAttribute( 'class', trim( $existing_class . ' requires-login' ) );
+        $form->setAttribute( 'data-requires-login', '1' );
+        $form->setAttribute( 'data-login-url', $login_url_attr );
+
+        $email_inputs = $xpath->query( ".//input[@name='EMAIL']", $form );
+        if ( $email_inputs ) {
+            foreach ( $email_inputs as $email_input ) {
+                if ( $email_input instanceof DOMNode && $email_input->parentNode ) {
+                    $email_input->parentNode->removeChild( $email_input );
+                }
+            }
+        }
+
+        $submit = $xpath->query( ".//input[@type='submit' or @type='button']", $form )->item( 0 );
+        $login_label = 'Log in to Download';
+
+        $login_link = $dom->createElement( 'a', $login_label );
+        $login_link->setAttribute( 'href', $login_url_attr );
+        $login_link->setAttribute( 'class', 'download-login-button' );
+        $login_link->setAttribute( 'rel', 'nofollow noopener' );
+        $login_link->setAttribute( 'data-login-url', $login_url_attr );
+        $login_link->setAttribute( 'role', 'button' );
+
+        if ( $submit instanceof DOMElement && $submit->parentNode ) {
+            $existing_classes = trim( $submit->getAttribute( 'class' ) );
+            if ( '' !== $existing_classes ) {
+                $login_link->setAttribute(
+                    'class',
+                    trim( $existing_classes . ' download-login-button' )
+                );
+            }
+
+            $submit->parentNode->replaceChild( $login_link, $submit );
+        } else {
+            $form->appendChild( $login_link );
+        }
+
+        $notice = $xpath->query( ".//*[contains(concat(' ', normalize-space(@class), ' '), ' notice-text ')]", $form )->item( 0 );
+        if ( $notice instanceof DOMElement ) {
+            while ( $notice->firstChild ) {
+                $notice->removeChild( $notice->firstChild );
+            }
+            $notice->appendChild( $dom->createTextNode( 'Please log in to download this file.' ) );
+        }
+    }
+
+    $output = '';
+    $container = $dom->getElementsByTagName( 'div' )->item( 0 );
+    if ( $container instanceof DOMNode ) {
+        foreach ( $container->childNodes as $child ) {
+            $output .= $dom->saveHTML( $child );
+        }
+    }
+
+    libxml_clear_errors();
+    if ( null !== $libxml_previous_state ) {
+        libxml_use_internal_errors( $libxml_previous_state );
+    }
+
+    return $output ?: $content;
+}
+add_filter( 'the_content', 'wd4_transform_download_forms', 25 );
+
+if ( ! function_exists( 'wd4_get_default_avatar_url' ) ) {
+    function wd4_get_default_avatar_url( $user = null ) {
+        $default_url = apply_filters( 'foxiz_default_profile_avatar', 'https://aistudynow.com/er.png', $user );
+
+        return esc_url_raw( $default_url );
+    }
+}
+
+if ( ! function_exists( 'wd4_resolve_avatar_user' ) ) {
+    function wd4_resolve_avatar_user( $id_or_email ) {
+        if ( $id_or_email instanceof WP_User ) {
+            return $id_or_email;
+        }
+
+        if ( $id_or_email instanceof WP_Post && ! empty( $id_or_email->post_author ) ) {
+            return get_user_by( 'id', (int) $id_or_email->post_author );
+        }
+
+        if ( $id_or_email instanceof WP_Comment ) {
+            if ( ! empty( $id_or_email->user_id ) ) {
+                return get_user_by( 'id', (int) $id_or_email->user_id );
+            }
+
+            if ( ! empty( $id_or_email->comment_author_email ) ) {
+                return get_user_by( 'email', $id_or_email->comment_author_email );
+            }
+        }
+
+        if ( is_numeric( $id_or_email ) ) {
+            return get_user_by( 'id', (int) $id_or_email );
+        }
+
+        if ( is_string( $id_or_email ) && is_email( $id_or_email ) ) {
+            return get_user_by( 'email', $id_or_email );
+        }
+
+        return null;
+    }
+}
+
+if ( ! function_exists( 'wd4_maybe_supply_avatar_data' ) ) {
+    function wd4_maybe_supply_avatar_data( $args, $id_or_email ) {
+        if ( ! empty( $args['found_avatar'] ) && ! empty( $args['url'] ) ) {
+            return $args;
+        }
+
+        $user = wd4_resolve_avatar_user( $id_or_email );
+        $size = ! empty( $args['size'] ) ? (int) $args['size'] : 96;
+        $url  = '';
+
+        if ( $user instanceof WP_User ) {
+            $author_image_id = (int) get_user_meta( $user->ID, 'author_image_id', true );
+            if ( $author_image_id ) {
+                $attachment = wp_get_attachment_image_src( $author_image_id, 'thumbnail' );
+                if ( $attachment ) {
+                    $url = $attachment[0];
+                }
+            }
+        }
+
+        if ( empty( $url ) ) {
+            $url = wd4_get_default_avatar_url( $user );
+        }
+
+        if ( empty( $url ) ) {
+            return $args;
+        }
+
+        $args['url']          = esc_url_raw( $url );
+        $args['found_avatar'] = true;
+        $args['height']       = $size;
+        $args['width']        = $size;
+        $args['class']        = trim( (string) ( $args['class'] ?? '' ) . ' default-avatar' );
+
+        $extra_attr = (string) ( $args['extra_attr'] ?? '' );
+        if ( false === stripos( $extra_attr, 'loading=' ) ) {
+            $extra_attr .= ' loading="lazy"';
+        }
+        if ( false === stripos( $extra_attr, 'decoding=' ) ) {
+            $extra_attr .= ' decoding="async"';
+        }
+        $args['extra_attr'] = trim( $extra_attr );
+
+        return $args;
+    }
+}
+add_filter( 'get_avatar_data', 'wd4_maybe_supply_avatar_data', 20, 2 );

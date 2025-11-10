@@ -366,21 +366,23 @@ Module.shareTrigger = function () {
       }
     }, 'boundPwdToggle');
   };
-
-  Module.isValidEmail = function (email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
+  
+  
+  
+  
+  
+  
   Module.emailToDownload = function () {
     const self = this;
 
     $all('.download-form').forEach(function (form) {
-      var acceptTerms = form.querySelector('input[name="acceptTerms"]');
-      var submitBtn = form.querySelector('input[type="submit"]');
       var noticeText = form.querySelector('.notice-text');
-
       var emailInput = form.querySelector('input[name="EMAIL"]');
+      var submitBtn = form.querySelector('input[type="submit"]');
+      var acceptTerms = form.querySelector('input[name="acceptTerms"]');
+      var loggedIn = !!self.themeSettings.isLoggedIn;
+      var storedEmail = self.themeSettings.currentUserEmail || '';
+      var loginUrl = self.themeSettings.loginUrl || form.getAttribute('data-login-url') || '/login-3/';
 
       if (emailInput) {
         var currentAutocomplete = emailInput.getAttribute('autocomplete');
@@ -389,12 +391,54 @@ Module.shareTrigger = function () {
         }
       }
 
+      if (!loggedIn) {
+        if (form.dataset.loginGateBound) return;
+        form.dataset.loginGateBound = '1';
+
+        if (noticeText) {
+          noticeText.textContent = 'Please log in to download this file.';
+        }
+
+        if (emailInput) {
+          emailInput.removeAttribute('required');
+          emailInput.value = '';
+          emailInput.setAttribute('type', 'hidden');
+        }
+
+        if (submitBtn) {
+          var loginLabel = submitBtn.getAttribute('data-login-label') || 'Log in to Download';
+          submitBtn.type = 'button';
+          submitBtn.value = loginLabel;
+          submitBtn.addEventListener('click', function () {
+            window.location.href = loginUrl;
+          });
+        }
+
+        var wrapperGate = form.closest('.gb-download');
+        if (wrapperGate) {
+          wrapperGate.classList.add('requires-login');
+        }
+
+        return;
+      }
 
       if (acceptTerms && submitBtn) {
         on(acceptTerms, 'change', function () {
           submitBtn.disabled = !this.checked;
         });
       }
+
+      if (emailInput) {
+        emailInput.removeAttribute('required');
+        emailInput.setAttribute('type', 'hidden');
+        if (!emailInput.value && storedEmail) {
+          emailInput.value = storedEmail;
+        }
+      }
+
+      form.classList.add('download-form-logged-in');
+      var directUrl = form.getAttribute('data-direct-download-url') || '';
+      var directFileName = form.getAttribute('data-direct-download-filename') || '';
 
       // prevent duplicate binding if init() re-runs
       if (form.dataset.boundSubmit) return;
@@ -403,19 +447,61 @@ Module.shareTrigger = function () {
       on(form, 'submit', function (event) {
         event.preventDefault();
 
-        var emailInput = form.querySelector('input[name="EMAIL"]');
-        var email = emailInput ? emailInput.value : '';
+        var activeEmailInput = form.querySelector('input[name="EMAIL"]');
+        var email = activeEmailInput ? activeEmailInput.value : '';
+        if (!email && storedEmail) {
+          email = storedEmail;
+          if (activeEmailInput) {
+            activeEmailInput.value = email;
+          }
+        }
+
+        if (!email) {
+          var host = (window.location && window.location.hostname) ? window.location.hostname.replace(/[^a-z0-9.-]/gi, '') : 'example.com';
+          email = 'member@' + host;
+          if (activeEmailInput) {
+            activeEmailInput.value = email;
+          }
+        }
+
         var labelEl = form.querySelector('input[type="submit"]');
         var label = labelEl ? labelEl.value : 'Download';
         if (noticeText) noticeText.textContent = '';
 
-        if (!self.isValidEmail(email)) {
-          if (noticeText) noticeText.textContent = 'Please enter a valid email address.';
-          return;
-        }
-
         var wrapper = form.closest('.gb-download');
         if (wrapper) wrapper.classList.add('submitting');
+
+        if (directUrl) {
+          var downloadAttr = ' download';
+          var safeFileName = directFileName.replace(/"/g, '&quot;');
+          if (directFileName) {
+            downloadAttr = ' download="' + safeFileName + '"';
+          }
+
+          var autoMessage = 'Your download will start automatically.';
+          if (noticeText) noticeText.textContent = autoMessage;
+
+          var tempLink = document.createElement('a');
+          tempLink.href = directUrl;
+          tempLink.rel = 'nofollow';
+          if (directFileName) {
+            tempLink.setAttribute('download', directFileName);
+          } else {
+            tempLink.setAttribute('download', '');
+          }
+          tempLink.style.display = 'none';
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          tempLink.remove();
+
+          if (wrapper) wrapper.classList.remove('submitting');
+
+          var fallbackHtml = '<div class="fallback-info">' + autoMessage + '</div>' +
+            '<a href="' + directUrl + '"' + downloadAttr + ' rel="nofollow" class="is-btn gb-download-btn fallback-download-btn">' + label + '</a>';
+
+          form.outerHTML = fallbackHtml;
+          return;
+        }
 
         var url = self.themeSettings.ajaxurl || null;
         if (!url) {
@@ -423,6 +509,15 @@ Module.shareTrigger = function () {
           if (wrapper) wrapper.classList.remove('submitting');
           return;
         }
+
+  
+  
+
+ 
+ 
+ 
+ 
+ 
 
         var fd = new FormData(form);
 

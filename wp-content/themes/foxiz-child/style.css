@@ -14,3 +14,21 @@ License URI:    https://themeforest.net/licenses/standard
 /* Your CSS code goes here
 -------------------------------------- */
 
+.wd4-category .pagination-infinite {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0 40px;
+}
+
+.wd4-category .pagination-infinite .infinite-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.wd4-category .pagination-infinite .rb-loader {
+    font-size: 24px;
+}
