@@ -425,6 +425,45 @@ License URI:    https://themeforest.net/licenses/standard
 /* Your CSS code goes here
 -------------------------------------- */
 -------------------------------------- */
+.wd4-header-profile__toggle {
+    border: 1px solid rgba(0,0,0,.1);
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.wd4-header-profile__panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.wd4-header-profile__close {
+    border: none;
+    background: transparent;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Improve contrast for the privacy consent button */
 .privacy-bar .privacy-dismiss-btn {
@@ -1419,13 +1458,34 @@ a.p-flink::before {
   min-height: var(--mbnav-height, 42px);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .mbnav-center .navbar-left,
 .mbnav-center .navbar-right {
-  flex: 0 0 30%;
+  flex: 0 1 auto;
+  flex-basis: auto;
+  min-width: 0;
+  width: auto;
 }
 
 .mbnav-center .navbar-center {
-  flex: 0 0 40%;
+  flex: 1 1 40%;
+  min-width: 0;
   display: flex;
   justify-content: center;
 }
@@ -1444,9 +1504,60 @@ a.p-flink::before {
 
 
 
+
+
+
+
+
+.mbnav-center .navbar-left,
+.mbnav-center .navbar-right {
+  flex: 0 1 auto !important;
+  flex-basis: auto !important;
+  min-width: 0;
+  width: auto;
+}
+
+.mbnav-center .navbar-center {
+  flex: 1 1 40%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.mobile-toggle-wrap {
+  display: flex;
+  align-items: stretch;
+}
+
+.mobile-menu-trigger {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
 .header-mobile .navbar-right {
+  display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 8px;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.header-mobile .navbar-left,
+.header-mobile .navbar-center,
+.header-mobile .navbar-right {
+  min-width: 0;
 }
 
 
@@ -1455,6 +1566,12 @@ a.p-flink::before {
   align-items: center;
   height: 100%;
   color: inherit;
+  min-width: 0;
+}
+
+.header-mobile .navbar-right .wnav-holder {
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 
@@ -1463,8 +1580,156 @@ a.p-flink::before {
 }
 
 .header-mobile .logged-user-control {
-  gap: 4px;
+  display: flex;
+  gap: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
+
+.header-mobile .logged-user-control .logged-welcome {
+  display: none !important;
+}
+
+.header-mobile .logged-user-control .logged-profile-link {
+  min-width: 0;
+}
+
+.logged-user-control .logged-welcome {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.logged-user-control .logged-welcome strong {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-dropdown .wd4-header-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(320px, 100%);
+  padding: 16px;
+  background: var(--rb-white, #ffffff);
+  border-bottom: 1px solid var(--rb-border, rgba(0, 0, 0, 0.08));
+  box-sizing: border-box;
+}
+
+.user-dropdown .wd4-header-profile__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--body-fcolor, #1a1a1a);
+}
+
+.user-dropdown .wd4-header-profile__notice {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  background: rgba(46, 125, 50, 0.12);
+  color: #2e7d32;
+}
+
+.user-dropdown .wd4-header-profile__notice--error {
+  background: rgba(198, 40, 40, 0.12);
+  color: #c62828;
+}
+
+.user-dropdown .wd4-header-profile__notice--success {
+  background: rgba(33, 150, 83, 0.12);
+  color: #1b5e20;
+}
+
+.user-dropdown .wd4-header-profile__form,
+.user-dropdown .wd4-header-avatar__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-dropdown .wd4-header-avatar__form {
+  padding-top: 8px;
+  border-top: 1px solid var(--rb-border, rgba(0, 0, 0, 0.08));
+}
+
+.user-dropdown .wd4-header-profile__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--body-fcolor, #333333);
+}
+
+.user-dropdown .wd4-header-profile__label input[type='text'],
+.user-dropdown .wd4-header-profile__label input[type='file'] {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border: 1px solid var(--rb-border, rgba(0, 0, 0, 0.16));
+  border-radius: 6px;
+  color: inherit;
+  background: var(--rb-white, #ffffff);
+}
+
+.user-dropdown .wd4-header-profile__label input[type='file'] {
+  padding: 4px 0;
+}
+
+.user-dropdown .wd4-header-profile__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background: var(--g-color, #ff5722);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--effect, all 0.25s ease);
+}
+
+.user-dropdown .wd4-header-profile__submit:hover,
+.user-dropdown .wd4-header-profile__submit:focus {
+  background: color-mix(in srgb, var(--g-color, #ff5722) 88%, black 12%);
+  outline: none;
+}
+
+.user-dropdown .wd4-header-profile__submit:focus-visible {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.user-dropdown .wd4-header-profile__form + .wd4-header-avatar__form {
+  margin-top: 4px;
+}
+
+.mobile-login-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.mobile-login-title strong {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+
 
 
 
@@ -1869,4 +2134,212 @@ a.p-flink::before {
   }
 
  
+}
+
+
+/* ===========================
+   Header profile popup modal
+   =========================== */
+
+/* "Edit profile" button inside the user dropdown */
+.wd4-header-profile__edit-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--effect);
+}
+
+.wd4-header-profile__edit-link:hover,
+.wd4-header-profile__edit-link:focus-visible {
+  background: var(--flex-gray-7);
+}
+
+/* Base modal visibility */
+.wd4-profile-modal[hidden] {
+  display: none;
+}
+
+.wd4-profile-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dark backdrop */
+.wd4-profile-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 18, 23, 0.55);
+}
+
+/* Dialog container */
+.wd4-profile-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(480px, 100% - 32px);
+  max-height: 90vh;
+  overflow: auto;
+  background: var(--solid-white, #ffffff);
+  border-radius: var(--round-7, 12px);
+  padding: 18px 20px 20px;
+  box-shadow: 0 20px 40px var(--shadow-12, rgba(0, 0, 0, 0.18));
+  box-sizing: border-box;
+}
+
+/* Header row */
+.wd4-profile-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.wd4-profile-modal__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Close (X) button */
+.wd4-profile-modal__close {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Flash message inside modal */
+.wd4-profile-modal .wd4-header-profile__notice {
+  margin: 0 0 10px;
+}
+
+/* Form layout inside modal */
+.wd4-profile-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wd4-profile-modal__body .wd4-header-profile__form,
+.wd4-profile-modal__body .wd4-header-avatar__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wd4-profile-modal__body .wd4-header-avatar__form {
+  padding-top: 10px;
+  border-top: 1px solid var(--rb-border, rgba(0, 0, 0, 0.08));
+}
+
+/* Reuse your label/input styling but make it global for the modal */
+.wd4-profile-modal__body .wd4-header-profile__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--body-fcolor, #333333);
+}
+
+.wd4-profile-modal__body .wd4-header-profile__label input[type='text'],
+.wd4-profile-modal__body .wd4-header-profile__label input[type='file'] {
+  width: 100%;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border: 1px solid var(--rb-border, rgba(0, 0, 0, 0.16));
+  border-radius: 6px;
+  color: inherit;
+  background: var(--rb-white, #ffffff);
+}
+
+/* Save buttons (reuse your old style) */
+.wd4-profile-modal__body .wd4-header-profile__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: none;
+  background: var(--g-color, #ff5722);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--effect, all 0.25s ease);
+}
+
+.wd4-profile-modal__body .wd4-header-profile__submit:hover,
+.wd4-profile-modal__body .wd4-header-profile__submit:focus-visible {
+  background: color-mix(in srgb, var(--g-color, #ff5722) 88%, black 12%);
+}
+
+/* Prevent background scroll when modal is open */
+body.wd4-profile-modal-open {
+  overflow: hidden;
+}
+
+/* OPTIONAL: hide the old inline panel if any markup remains by accident */
+.user-dropdown .wd4-header-profile {
+  display: none;
+}
+
+
+/* Compact styling for the header user dropdown (Edit profile + Sign Out) */
+.header-dropdown.user-dropdown {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+/* Make Edit profile fill the dropdown width */
+.header-dropdown.user-dropdown .wd4-header-profile__edit-link {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Wrap for the Sign Out row */
+.header-dropdown.user-dropdown .logout-wrap {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--subnav-color-10, rgba(0,0,0,0.08));
+}
+
+/* Sign Out link styled like a button, same width as Edit profile */
+.header-dropdown.user-dropdown .logout-url {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: transparent;
+  transition: var(--effect);
+}
+
+.header-dropdown.user-dropdown .logout-url:hover,
+.header-dropdown.user-dropdown .logout-url:focus-visible {
+  background: var(--flex-gray-7, rgba(0,0,0,0.04));
+  color: var(--g-color);
 }

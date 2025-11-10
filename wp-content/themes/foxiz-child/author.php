@@ -11,6 +11,7 @@ get_header();
 
 $author_object = get_queried_object();
 $author_id     = $author_object instanceof WP_User ? (int) $author_object->ID : 0;
+$author_user   = $author_id ? get_user_by( 'id', $author_id ) : null;
 
 $display_name = '';
 if ( $author_id ) {
@@ -19,10 +20,74 @@ if ( $author_id ) {
 if ( ! $display_name && $author_object instanceof WP_User ) {
     $display_name = $author_object->display_name;
 }
+if ( ! $display_name && $author_user instanceof WP_User ) {
+    $display_name = $author_user->display_name;
+}
+
+$compact_display_name        = $display_name;
+$compact_default_member_name = __( 'Member', 'foxiz-child' );
+if ( $author_user instanceof WP_User && function_exists( 'wd4_get_compact_user_name' ) ) {
+    $resolved_compact = wd4_get_compact_user_name( $author_user );
+    if ( '' !== $resolved_compact ) {
+        $compact_display_name = $resolved_compact;
+    }
+}
+if ( '' === $compact_display_name && $display_name ) {
+    $compact_display_name = $display_name;
+}
+if ( '' === $compact_display_name ) {
+    $compact_display_name = $compact_default_member_name;
+}
 
 $is_own_profile = $author_id && is_user_logged_in() && get_current_user_id() === $author_id;
 
-$avatar_error = '';
+
+
+
+$avatar_error            = '';
+$profile_update_message = '';
+$profile_update_error   = '';
+
+if ( $is_own_profile && isset( $_GET['profile-updated'] ) ) {
+    $profile_flag = sanitize_text_field( wp_unslash( $_GET['profile-updated'] ) );
+
+    if ( '1' === $profile_flag ) {
+        $profile_update_message = __( 'Profile details updated.', 'foxiz-child' );
+    }
+}
+
+/**
+ * Handle compact name updates for the profile owner.
+ */
+if (
+    $is_own_profile &&
+    isset( $_POST['wd4_profile_fields_nonce'] )
+) {
+    $profile_nonce = sanitize_text_field( wp_unslash( $_POST['wd4_profile_fields_nonce'] ) );
+
+    if ( wp_verify_nonce( $profile_nonce, 'wd4_update_profile_fields' ) ) {
+        $new_first_name = isset( $_POST['wd4_profile_first_name'] )
+            ? sanitize_text_field( wp_unslash( $_POST['wd4_profile_first_name'] ) )
+            : '';
+        $new_short_name = isset( $_POST['wd4_profile_short_name'] )
+            ? sanitize_text_field( wp_unslash( $_POST['wd4_profile_short_name'] ) )
+            : '';
+
+        update_user_meta( $author_id, 'first_name', $new_first_name );
+        update_user_meta( $author_id, 'wd4_short_display_name', $new_short_name );
+
+        $redirect_url = add_query_arg( 'profile-updated', '1', get_author_posts_url( $author_id ) );
+
+        wp_safe_redirect( $redirect_url );
+        exit;
+    } else {
+        $profile_update_error = __( 'We could not verify your request. Please try again.', 'foxiz-child' );
+    }
+}
+
+
+
+
 
 /**
  * Handle front-end avatar upload for the profile owner.
@@ -34,30 +99,79 @@ if (
 ) {
     if (
         isset( $_POST['wd4_author_avatar_nonce'] ) &&
-        wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wd4_author_avatar_nonce'] ) ), 'wd4_update_author_avatar' )
+        wp_verify_nonce(
+            sanitize_text_field( wp_unslash( $_POST['wd4_author_avatar_nonce'] ) ),
+            'wd4_update_author_avatar'
+        )
     ) {
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        require_once ABSPATH . 'wp-admin/includes/media.php';
-        require_once ABSPATH . 'wp-admin/includes/image.php';
+        $file = $_FILES['wd4_author_avatar'];
 
-        $attachment_id = media_handle_upload(
-            'wd4_author_avatar',
-            0,
-            array(
-                'post_title' => $display_name ? $display_name . ' avatar' : 'Author avatar',
-            )
-        );
-
-        if ( is_wp_error( $attachment_id ) ) {
-            $avatar_error = $attachment_id->get_error_message();
+        // 1) Basic upload error check.
+        if ( ! isset( $file['error'] ) || UPLOAD_ERR_OK !== (int) $file['error'] ) {
+            $avatar_error = __( 'Upload failed. Please try again.', 'foxiz-child' );
         } else {
-            update_user_meta( $author_id, 'author_image_id', (int) $attachment_id );
-            // Avoid resubmission on refresh.
-            wp_safe_redirect( get_author_posts_url( $author_id ) );
-            exit;
+            // 2) Enforce max file size: 400 KB.
+            $max_size_bytes = 400 * 1024; // 400 KB
+            if ( (int) $file['size'] > $max_size_bytes ) {
+                $avatar_error = __( 'Image too large. Please upload an image under 400 KB.', 'foxiz-child' );
+            } else {
+                // 3) Allow only safe image types.
+                $allowed_mimes = array(
+                    'jpg|jpeg|jpe' => 'image/jpeg',
+                    'png'          => 'image/png',
+                    'gif'          => 'image/gif',
+                    'webp'         => 'image/webp',
+                );
+
+                $filetype = wp_check_filetype_and_ext(
+                    $file['tmp_name'],
+                    $file['name'],
+                    $allowed_mimes
+                );
+
+                if ( empty( $filetype['ext'] ) || empty( $filetype['type'] ) ) {
+                    $avatar_error = __( 'Invalid file type. Please upload a JPG, PNG, GIF, or WEBP image.', 'foxiz-child' );
+                } elseif ( 0 !== strpos( $filetype['type'], 'image/' ) ) {
+                    // MIME type must be image/*.
+                    $avatar_error = __( 'Invalid file type. Only image files are allowed.', 'foxiz-child' );
+                } else {
+                    // 4) Extra safety: verify it’s really an image.
+                    $image_info = @getimagesize( $file['tmp_name'] );
+                    if ( ! is_array( $image_info ) ) {
+                        $avatar_error = __( 'The uploaded file is not a valid image.', 'foxiz-child' );
+                    }
+                }
+            }
         }
+
+        // Only proceed to upload if everything above passed.
+        if ( '' === $avatar_error ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            $attachment_id = media_handle_upload(
+                'wd4_author_avatar',
+                0,
+                array(
+                    'post_title' => $display_name ? $display_name . ' avatar' : 'Author avatar',
+                )
+            );
+
+            if ( is_wp_error( $attachment_id ) ) {
+                $avatar_error = $attachment_id->get_error_message();
+            } else {
+                update_user_meta( $author_id, 'author_image_id', (int) $attachment_id );
+                // Avoid resubmission on refresh.
+                wp_safe_redirect( get_author_posts_url( $author_id ) );
+                exit;
+            }
+        }
+    } else {
+        $avatar_error = __( 'We could not verify your request. Please refresh and try again.', 'foxiz-child' );
     }
 }
+
 
 $job         = $author_id ? get_the_author_meta( 'job', $author_id ) : '';
 $description = $author_id ? get_the_author_meta( 'description', $author_id ) : '';
@@ -70,6 +184,7 @@ $website     = $author_id ? get_the_author_meta( 'user_url', $author_id ) : '';
  */
 
 $avatar_img_html = '';
+$author_user     = null;
 
 if ( $author_id ) {
     $avatar_meta_id = (int) get_the_author_meta( 'author_image_id', $author_id );
@@ -90,20 +205,37 @@ if ( $author_id ) {
     }
 }
 
+
+
+
+
 if ( ! $avatar_img_html && $author_id ) {
     // Gravatar fallback with small srcset to reduce LCP weight.
+    if ( ! $author_user ) {
+        $author_user = get_user_by( 'id', $author_id );
+    }
+    $default_avatar_url = '';
+
+    if ( function_exists( 'wd4_get_default_avatar_url' ) ) {
+        $default_avatar_url = wd4_get_default_avatar_url( $author_user );
+    }
+
+    if ( empty( $default_avatar_url ) ) {
+        $default_avatar_url = 'mm';
+    }
+
     $avatar_160 = get_avatar_url(
         $author_id,
         array(
             'size'    => 160,
-            'default' => 'mm',
+            'default' => $default_avatar_url,
         )
     );
     $avatar_320 = get_avatar_url(
         $author_id,
         array(
             'size'    => 320,
-            'default' => 'mm',
+            'default' => $default_avatar_url,
         )
     );
 
@@ -112,6 +244,12 @@ if ( ! $avatar_img_html && $author_id ) {
         esc_url( $avatar_160 ),
         esc_url( $avatar_320 )
     );
+    
+    
+    
+    
+    
+    
     $avatar_sizes_attr = '(max-width: 480px) 260px, (max-width: 1024px) 320px, 380px';
     $avatar_alt        = $display_name ? $display_name : __( 'Author avatar', 'foxiz-child' );
 
@@ -127,7 +265,22 @@ if ( ! $avatar_img_html && $author_id ) {
 $greeting_text = $author_id ? get_user_meta( $author_id, 'profile_greeting', true ) : '';
 $greeting_text = $greeting_text ? $greeting_text : __( 'Hello!', 'foxiz-child' );
 
-$headline_role = $job ? wp_strip_all_tags( $job ) : __( 'Author & Creator', 'foxiz-child' );
+$hero_name_title = '';
+if ( $display_name ) {
+    $hero_name_title = $display_name;
+} elseif ( $compact_display_name && $compact_default_member_name !== $compact_display_name ) {
+    $hero_name_title = $compact_display_name;
+}
+
+$headline_role = $job ? wp_strip_all_tags( $job ) : '';
+
+if ( ! $headline_role ) {
+    if ( $author_user && user_can( $author_user, 'manage_options' ) ) {
+        $headline_role = __( 'Author & Creator', 'foxiz-child' );
+    } else {
+        $headline_role = __( 'Subscriber', 'foxiz-child' );
+    }
+}
 
 $testimonial_text = $author_id ? get_user_meta( $author_id, 'profile_testimonial', true ) : '';
 if ( ! $testimonial_text && $description ) {
@@ -142,7 +295,9 @@ if ( ! $bio_text && $description ) {
     $bio_text = wp_strip_all_tags( $description );
 }
 if ( ! $bio_text ) {
-    $bio_text = __( 'Studied Computer Science. Passionate about AI, ComfyUI workflows, and hands-on learning through trial and error. Creator of AIStudyNow — sharing tested workflows, tutorials, and real-world experiments.', 'foxiz-child' );
+    $bio_text = $display_name
+        ? sprintf( __( '%s has not added a bio yet.', 'foxiz-child' ), $display_name )
+        : __( 'This contributor has not added a bio yet.', 'foxiz-child' );
 }
 
 $stat_primary_value = $author_id ? get_user_meta( $author_id, 'profile_stat_primary_value', true ) : '';
@@ -199,19 +354,50 @@ if ( ! $cta_primary_url ) {
 $cta_secondary_label = $author_id ? get_user_meta( $author_id, 'profile_cta_secondary_label', true ) : '';
 $cta_secondary_url   = $author_id ? get_user_meta( $author_id, 'profile_cta_secondary_url', true ) : '';
 if ( ! $cta_secondary_label ) {
-    $cta_secondary_label = __( 'Hire Me', 'foxiz-child' );
+    $cta_secondary_label = __( 'Follow', 'foxiz-child' );
 }
 if ( ! $cta_secondary_url ) {
-    $author_email = $author_id ? get_the_author_meta( 'user_email', $author_id ) : '';
-    if ( $author_email ) {
-        $cta_secondary_url = 'mailto:' . sanitize_email( $author_email );
-    }
+    $cta_secondary_url = $author_id ? get_author_feed_link( $author_id ) : '';
 }
 
 $show_primary_cta   = $cta_primary_url;
 $show_secondary_cta = $cta_secondary_url;
 
+
+$is_admin_profile = $author_user && user_can( $author_user, 'manage_options' );
+
+$account_age_seconds = $registered_timestamp ? time() - $registered_timestamp : 0;
+$account_age_months  = $account_age_seconds > 0 ? floor( $account_age_seconds / MONTH_IN_SECONDS ) : 0;
+
+$subscriber_level            = '';
+$subscriber_level_star       = 0;
+$subscriber_duration_message = '';
+
+if ( ! $is_admin_profile ) {
+    if ( $account_age_months >= 12 ) {
+        $subscriber_level      = __( 'Level 5', 'foxiz-child' );
+        $subscriber_level_star = 5;
+        $subscriber_duration_message = __( 'Member for 1+ years', 'foxiz-child' );
+    } elseif ( $account_age_months >= 3 ) {
+        $subscriber_level      = __( 'Level 3', 'foxiz-child' );
+        $subscriber_level_star = 3;
+        $subscriber_duration_message = __( 'Member for 3+ months', 'foxiz-child' );
+    } elseif ( $account_age_months >= 1 ) {
+        $subscriber_level      = __( 'Level 2', 'foxiz-child' );
+        $subscriber_level_star = 2;
+        $subscriber_duration_message = __( 'Member for 1+ month', 'foxiz-child' );
+    } else {
+        $subscriber_level      = __( 'Level 1', 'foxiz-child' );
+        $subscriber_level_star = 1;
+        $subscriber_duration_message = __( 'New member', 'foxiz-child' );
+    }
+}
+
+
+
 ?>
+
+
 <main id="primary" class="site-main wd4-author-profile wd4-frontpage">
     <div class="wd4-author-profile__container">
         <section class="wd4-author-hero" aria-labelledby="wd4-author-hero-title">
@@ -230,8 +416,8 @@ $show_secondary_cta = $cta_secondary_url;
                     <span class="wd4-author-hero__title-dark">
                         <?php esc_html_e( "I'm", 'foxiz-child' ); ?>
                     </span>
-                    <span class="wd4-author-hero__title-accent">
-                        <?php echo esc_html( $display_name ); ?>
+                    <span class="wd4-author-hero__title-accent"<?php echo $hero_name_title ? ' title="' . esc_attr( $hero_name_title ) . '"' : ''; ?>>
+                        <?php echo esc_html( $compact_display_name ); ?>
                     </span>
                 </h1>
                 <p class="wd4-author-hero__subtitle">
@@ -323,25 +509,57 @@ $show_secondary_cta = $cta_secondary_url;
                     </form>
                 <?php endif; ?>
 
-                <aside class="wd4-author-hero__stats-right" aria-label="<?php esc_attr_e( 'Author accolades', 'foxiz-child' ); ?>">
-                    <div
-                        class="wd4-author-hero__stars"
-                        role="img"
-                        aria-label="<?php printf( esc_attr__( '%d star rating', 'foxiz-child' ), $rating_value ); ?>"
-                    >
-                        <?php for ( $i = 0; $i < $rating_value; $i++ ) : ?>
-                            <svg class="wd4-author-hero__star" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                            </svg>
-                        <?php endfor; ?>
+
+
+
+
+               
+               
+                <?php if ( $is_admin_profile ) : ?>
+                    <aside class="wd4-author-hero__stats-right" aria-label="<?php esc_attr_e( 'Author accolades', 'foxiz-child' ); ?>">
+                        <div
+                            class="wd4-author-hero__stars"
+                            role="img"
+                            aria-label="<?php printf( esc_attr__( '%d star rating', 'foxiz-child' ), $rating_value ); ?>"
+                        >
+                            <?php for ( $i = 0; $i < $rating_value; $i++ ) : ?>
+                                <svg class="wd4-author-hero__star" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                                </svg>
+                            <?php endfor; ?>
+                        </div>
+                        <div class="wd4-author-hero__experience-number">
+                            <?php echo esc_html( $experience_years ); ?> <?php esc_html_e( 'Years', 'foxiz-child' ); ?>
+                        </div>
+                        <div class="wd4-author-hero__experience-label">
+                            <?php echo esc_html( $experience_label ); ?>
+                        </div>
+                    </aside>
+                <?php elseif ( $subscriber_level ) : ?>
+                    <div class="wd4-author-hero__subscriber-card" aria-label="<?php esc_attr_e( 'Subscriber status', 'foxiz-child' ); ?>">
+                        <span class="wd4-author-hero__subscriber-level">
+                            <?php echo esc_html( $subscriber_level ); ?>
+                        </span>
+                        <div class="wd4-author-hero__subscriber-stars" aria-hidden="true">
+                            <?php for ( $i = 0; $i < $subscriber_level_star; $i++ ) : ?>
+                                <svg class="wd4-author-hero__star" viewBox="0 0 24 24">
+                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                                </svg>
+                            <?php endfor; ?>
+                        </div>
+                        <?php if ( $subscriber_duration_message ) : ?>
+                            <span class="wd4-author-hero__subscriber-duration">
+                                <?php echo esc_html( $subscriber_duration_message ); ?>
+                            </span>
+                        <?php endif; ?>
                     </div>
-                    <div class="wd4-author-hero__experience-number">
-                        <?php echo esc_html( $experience_years ); ?> <?php esc_html_e( 'Years', 'foxiz-child' ); ?>
-                    </div>
-                    <div class="wd4-author-hero__experience-label">
-                        <?php echo esc_html( $experience_label ); ?>
-                    </div>
-                </aside>
+                <?php endif; ?>
+               
+               
+               
+               
+               
+               
             </div>
         </section>
     </div>
