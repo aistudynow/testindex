@@ -334,32 +334,73 @@ if ( ! function_exists( 'foxiz_header_user' ) ) {
 		if ( empty( $settings['login_icon'] ) && ! empty( $icon['url'] ) ) {
 			$settings['login_icon'] = $icon['url'];
 		} ?>
-		<div class="wnav-holder widget-h-login header-dropdown-outer">
-			<?php if ( is_user_logged_in() && ! is_admin() ) :
-				global $current_user; ?>
-			
-			
-			
-			
-		   <a class="dropdown-trigger is-logged header-element" href="#" rel="nofollow" role="button" aria-label="<?php foxiz_html_e( 'Toggle user account menu', 'foxiz' ); ?>">
-                                        <?php if ( ! empty( $settings['logged_gravatar'] ) ) : ?>
-                                                <span class="logged-avatar"><?php
-                                                        $author_image_id = (int) get_the_author_meta( 'author_image_id', $current_user->ID );
-                                                        if ( $author_image_id !== 0 ) {
-                                                                echo foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', false );
-                                                        } else {
-                                                                echo get_avatar( $current_user->ID, 60 );
-                                                        }
-                                                        ?></span>
-                                        <?php else : ?>
-                                                <i class="rbi rbi-user wnav-icon" aria-hidden="true"></i>
-                                        <?php endif; ?>
-                                        <span class="logged-welcome"><?php echo foxiz_html__( 'Hi,', 'foxiz' ) . '<strong>' . foxiz_strip_tags( $current_user->display_name ) . '</strong>'; ?></span>
-                                </a>
-				
-				
-				
-				<div class="header-dropdown user-dropdown">
+		
+		
+		
+		
+		
+<div class="wnav-holder widget-h-login header-dropdown-outer">
+                        <?php if ( is_user_logged_in() && ! is_admin() ) :
+                                global $current_user;
+
+                                $author_image_id = (int) get_the_author_meta( 'author_image_id', $current_user->ID );
+                                $profile_url     = get_author_posts_url( $current_user->ID );
+                                $avatar_markup   = '';
+
+                                if ( 0 !== $author_image_id ) {
+                                        $avatar_markup = foxiz_get_avatar_by_attachment( $author_image_id, 'thumbnail', false );
+                                } else {
+                                        $has_avatar = get_avatar_url( $current_user->ID, [
+                                                'size'    => 60,
+                                                'default' => '404',
+                                        ] );
+
+                                        if ( ! empty( $has_avatar ) ) {
+                                                $avatar_markup = get_avatar( $current_user->ID, 60 );
+                                        }
+                                }
+
+                                if ( empty( $avatar_markup ) ) {
+                                        $default_avatar_url = apply_filters( 'foxiz_default_profile_avatar', 'https://aistudynow.com/er.png', $current_user );
+
+                                        if ( ! empty( $default_avatar_url ) ) {
+                                                $avatar_markup = sprintf(
+                                                        '<img src="%1$s" class="avatar avatar-60 photo default-avatar" alt="" width="60" height="60" loading="lazy" decoding="async">',
+                                                        esc_url( $default_avatar_url )
+                                                );
+                                        }
+                                }
+                                ?>
+                                <div class="logged-user-control">
+                                        <a class="logged-profile-link header-element" href="<?php echo esc_url( $profile_url ); ?>" rel="nofollow" aria-label="<?php foxiz_html_e( 'View your profile', 'foxiz' ); ?>">
+                                                <?php if ( ! empty( $avatar_markup ) || ! empty( $settings['logged_gravatar'] ) ) : ?>
+                                                        <span class="logged-avatar"><?php
+                                                                if ( ! empty( $avatar_markup ) ) {
+                                                                        echo $avatar_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                                                } else {
+                                                                        echo get_avatar( $current_user->ID, 60 );
+                                                                }
+                                                                ?></span>
+                                                <?php else : ?>
+                                                        <i class="rbi rbi-user wnav-icon" aria-hidden="true"></i>
+                                                <?php endif; ?>
+                                                <span class="logged-welcome"><?php echo foxiz_html__( 'Hi,', 'foxiz' ) . '<strong>' . foxiz_strip_tags( $current_user->display_name ) . '</strong>'; ?></span>
+                                        </a>
+                                        <button class="dropdown-trigger is-logged header-element logged-menu-toggle" type="button" aria-label="<?php foxiz_html_e( 'Toggle user account menu', 'foxiz' ); ?>" aria-haspopup="true" aria-expanded="false">
+                                                <span class="logged-menu-toggle-icon" aria-hidden="true"></span>
+                                                <span class="screen-reader-text"><?php foxiz_html_e( 'Toggle user account menu', 'foxiz' ); ?></span>
+                                        </button>
+                                </div>
+
+                                <div class="header-dropdown user-dropdown">
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
 					<?php if ( ! empty( $settings['header_login_menu'] ) ) {
 						wp_nav_menu( [
 								'menu'        => $settings['header_login_menu'],
@@ -660,14 +701,17 @@ if ( ! function_exists( 'foxiz_header_mobile_layout_default' ) ) {
 				foxiz_render_mobile_logo( $settings );
 				?>
 			</div>
-			<div class="navbar-right">
-				<?php
-				foxiz_mobile_header_mini_cart();
-				foxiz_mobile_search_icon();
-				if ( ! empty( $settings['single_font_resizer'] ) ) {
-					foxiz_header_font_resizer();
-				}
-				foxiz_dark_mode_switcher(); ?>
+			                        <div class="navbar-right">
+                                <?php
+                                foxiz_mobile_header_mini_cart();
+                                if ( ! empty( $settings['header_login_icon'] ) ) {
+                                        foxiz_header_user( $settings );
+                                }
+                                foxiz_mobile_search_icon();
+                                if ( ! empty( $settings['single_font_resizer'] ) ) {
+                                        foxiz_header_font_resizer();
+                                }
+                                foxiz_dark_mode_switcher(); ?>
 			</div>
 		</div>
 	<?php }
@@ -686,12 +730,15 @@ if ( ! function_exists( 'foxiz_header_mobile_layout_center' ) ) {
 			<div class="navbar-center">
 				<?php foxiz_render_mobile_logo( $settings ); ?>
 			</div>
-			<div class="navbar-right">
-				<?php
-				foxiz_mobile_header_mini_cart();
-				foxiz_mobile_search_icon();
-				foxiz_dark_mode_switcher(); ?>
-			</div>
+			     <div class="navbar-right">
+                                <?php
+                                foxiz_mobile_header_mini_cart();
+                                if ( ! empty( $settings['header_login_icon'] ) ) {
+                                        foxiz_header_user( $settings );
+                                }
+                                foxiz_dark_mode_switcher();
+                                foxiz_mobile_search_icon(); ?>
+                        </div>
 		</div>
 	<?php }
 }
@@ -702,17 +749,21 @@ if ( ! function_exists( 'foxiz_header_mobile_layout_left_logo' ) ) {
 			<div class="navbar-left">
 				<?php foxiz_render_mobile_logo( $settings ); ?>
 			</div>
-			<div class="navbar-right">
-				<?php
-				foxiz_mobile_header_mini_cart();
-				foxiz_mobile_search_icon();
-				if ( ! empty( $settings['single_font_resizer'] ) ) {
-					foxiz_header_font_resizer();
-				}
-				foxiz_dark_mode_switcher();
-				foxiz_mobile_toggle_btn();
-				?>
-			</div>
+		     
+                        <div class="navbar-right">
+                                <?php
+                                foxiz_mobile_header_mini_cart();
+                                if ( ! empty( $settings['header_login_icon'] ) ) {
+                                        foxiz_header_user( $settings );
+                                }
+                                if ( ! empty( $settings['single_font_resizer'] ) ) {
+                                        foxiz_header_font_resizer();
+                                }
+                                foxiz_dark_mode_switcher();
+                                foxiz_mobile_search_icon();
+                                foxiz_mobile_toggle_btn();
+                                ?>
+                        </div>
 		</div>
 	<?php }
 }
@@ -726,16 +777,19 @@ if ( ! function_exists( 'foxiz_header_mobile_layout_top_logo' ) ) {
 			<div class="navbar-left">
 				<?php foxiz_mobile_toggle_btn(); ?>
 			</div>
-			<div class="navbar-right">
-				<?php
-				foxiz_mobile_header_mini_cart();
-				foxiz_mobile_search_icon();
-				if ( ! empty( $settings['single_font_resizer'] ) ) {
-					foxiz_header_font_resizer();
-				}
-				foxiz_dark_mode_switcher();
-				?>
-			</div>
+			     <div class="navbar-right">
+                                <?php
+                                foxiz_mobile_header_mini_cart();
+                                if ( ! empty( $settings['header_login_icon'] ) ) {
+                                        foxiz_header_user( $settings );
+                                }
+                                if ( ! empty( $settings['single_font_resizer'] ) ) {
+                                        foxiz_header_font_resizer();
+                                }
+                                foxiz_dark_mode_switcher();
+                                foxiz_mobile_search_icon();
+                                ?>
+                        </div>
 		</div>
 	<?php }
 }
