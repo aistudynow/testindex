@@ -25,6 +25,11 @@ main.wd4-frontpage {
   --wd4-list-thumb-width: 104px;
   --wd4-list-thumb-gap: 20px;
   --wd4-list-thumb-aspect: 4 / 3;
+  --wd4-touch-target: clamp(44px, 6vw, 52px);
+  --wd4-touch-pad: clamp(8px, 1.5vw, 12px);
+  --wd4-touch-pad-tight: clamp(6px, 1.2vw, 10px);
+  --wd4-inline-gap: clamp(6px, 1.25vw, 12px);
+  --wd4-inline-gap-tight: clamp(4px, 1vw, 8px);
   display: block;
   background-color: var(--solid-light, #fafafa);
 }
@@ -124,10 +129,11 @@ main.wd4-frontpage .secHdg .hdgStyle {
 main.wd4-frontpage .cardMeta {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-start;
-  gap: 8px;
+  gap: var(--wd4-inline-gap);
   padding: 4px 0 0;
+  margin-block: calc(var(--wd4-touch-pad) * -0.5);
   width: 100%;
   box-sizing: border-box;
   font-size: 14px;
@@ -135,14 +141,30 @@ main.wd4-frontpage .cardMeta {
   color: var(--ht-muted);
 }
 
+
+main.wd4-frontpage :where(.cardMeta__cat, .cardMeta__time) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wd4-inline-gap-tight);
+  padding-inline: clamp(4px, 1vw, 12px);
+  padding-block: var(--wd4-touch-pad);
+  min-height: var(--wd4-touch-target);
+  line-height: 1.4;
+  border-radius: 999px;
+  position: relative;
+  touch-action: manipulation;
+  transition: var(--effect, color 0.2s var(--timing, ease));
+}
+
+main.wd4-frontpage :where(.cardMeta__cat, .cardMeta__time):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ht-primary) 80%, white 20%);
+  outline-offset: 2px;
+}
+
 main.wd4-frontpage .cardMeta__cat {
   color: var(--ht-primary);
   font-weight: 700;
   text-transform: capitalize;
-  display: inline-flex;
-  align-items: center;
-  padding: 0;
-  line-height: 1.4;
 }
 
 main.wd4-frontpage .cardMeta__cat:hover,
@@ -153,10 +175,6 @@ main.wd4-frontpage .cardMeta__cat:focus {
 
 main.wd4-frontpage .cardMeta__time {
   color: var(--ht-muted);
-  line-height: 1.4;
-  display: inline-flex;
-  align-items: center;
-  padding: 0;
 }
 
 
@@ -279,14 +297,15 @@ main.wd4-frontpage .storyLink {
 
 
 
-main.wd4-frontpage .cartHolder > figure,
-main.wd4-frontpage .htSlider ul li > figure {
+main.wd4-frontpage :is(.cartHolder, .htSlider ul li) > figure {
   position: relative;
   z-index: 0;
 }
 
-main.wd4-frontpage .cartHolder > *:not(.storyLink):not(figure),
-main.wd4-frontpage .htSlider ul li > *:not(.storyLink):not(figure) {
+
+
+
+main.wd4-frontpage :is(.cartHolder, .htSlider ul li) > *:not(.storyLink):not(figure) {
   position: relative;
   z-index: 2;
 }
@@ -297,28 +316,24 @@ main.wd4-frontpage .htSlider ul li > *:not(.storyLink):not(figure) {
 
 
 
-main.wd4-frontpage .cartHolder > *:not(.storyLink) a,
-main.wd4-frontpage .htSlider ul li > *:not(.storyLink) a {
+main.wd4-frontpage :is(.cartHolder, .htSlider ul li) > *:not(.storyLink) a {
   position: relative;
   z-index: 3;
   pointer-events: auto;
 }
 
-main.wd4-frontpage .cartHolder .cardMeta,
-main.wd4-frontpage .htSlider ul li .cardMeta {
+main.wd4-frontpage :is(.cartHolder, .htSlider ul li) .cardMeta {
   position: relative;
   z-index: 4;
 }
 
-main.wd4-frontpage .cartHolder .cardMeta a,
-main.wd4-frontpage .htSlider ul li .cardMeta a {
+main.wd4-frontpage :is(.cartHolder, .htSlider ul li) .cardMeta a {
   position: relative;
   z-index: 5;
   pointer-events: auto;
 }
 
-main.wd4-frontpage .cartHolder > figure > .storyImage,
-main.wd4-frontpage .htSlider ul li > figure > .storyImage {
+main.wd4-frontpage :is(.cartHolder, .htSlider ul li) > figure > .storyImage {
   display: block;
   width: 100%;
   height: 100%;
@@ -380,7 +395,7 @@ main.wd4-frontpage #topnews {
 
 main.wd4-frontpage .cartHolder.timeAgo .cardMeta {
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--wd4-inline-gap);
 }
 
 main.wd4-frontpage .cartHolder.timeAgo .cardMeta__time {
@@ -431,7 +446,8 @@ main.wd4-frontpage .listView .cardMeta {
   clear: left;
   width: calc(100% - (var(--wd4-list-thumb-width) + var(--wd4-list-thumb-gap)));
   padding-top: 6px;
-  gap: 6px;
+  gap: var(--wd4-inline-gap-tight);
+  margin-block: 0;
 }
 
 main.wd4-frontpage .htSlider {
@@ -561,12 +577,14 @@ main.wd4-frontpage .htSlider ul li .cardMeta {
   padding: 0 10px 12px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: var(--wd4-inline-gap-tight);
+  margin-block: 0;
 }
 
 main.wd4-frontpage .htSlider ul li .cardMeta__cat {
-  padding: 6px 0 0;
-  min-height: 32px;
+  padding-block: var(--wd4-touch-pad-tight);
+  padding-inline: clamp(4px, 1vw, 10px);
+  min-height: max(32px, calc(var(--wd4-touch-target) - 8px));
 }
 
 main.wd4-frontpage.wd4-category .navigation.pagination {
@@ -967,7 +985,7 @@ main.wd4-frontpage .liveBlinker span:after {
 
 @media (min-width: 1100px) {
   main.wd4-frontpage {
-    --wd4-main-max-width: min(84vw, 1200px);
+    --wd4-main-max-wixdth: min(84vw, 1200px);
     --wd4-slider-card-width: clamp(240px, 20vw, 300px);
     --wd4-list-thumb-width: 180px;
     --wd4-list-thumb-gap: 32px;
