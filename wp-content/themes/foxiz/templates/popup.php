@@ -3,7 +3,6 @@
 defined( 'ABSPATH' ) || exit;
 
 add_action( 'wp_footer', 'foxiz_localize_galleries', 0 );
-add_action( 'foxiz_top_site', 'foxiz_render_privacy', 1 );
 add_action( 'wp_footer', 'foxiz_footer_slide_up', 9 );
 add_action( 'wp_footer', 'foxiz_popup_newsletter', 10 );
 add_action( 'wp_footer', 'foxiz_adblock_popup', 11 );
@@ -31,50 +30,8 @@ if ( ! function_exists( 'foxiz_localize_galleries' ) ) {
  *
  * @return string
  */
-if ( ! function_exists( 'foxiz_get_privacy' ) ) {
-	function foxiz_get_privacy( $text = '', $classes = '' ) {
 
-		$class_name = 'privacy-bar';
-		if ( ! empty( $classes ) ) {
-			$class_name .= ' ' . $classes;
-		}
 
-		$output = '<aside id="rb-privacy" class="' . strip_tags( $class_name ) . '">';
-		$output .= '<div class="privacy-inner">';
-		$output .= '<div class="privacy-content">';
-		$output .= foxiz_strip_tags( $text );
-		$output .= '</div>';
-		$output .= '<div class="privacy-dismiss">';
-		$output .= '<a id="privacy-trigger" href="#" role="button" class="privacy-dismiss-btn is-btn"><span>' . foxiz_html__( 'Accept', 'foxiz' ) . '</span></a>';
-		$output .= '</div>';
-		$output .= '</div>';
-		$output .= '</aside>';
-
-		return $output;
-	}
-}
-
-if ( ! function_exists( 'foxiz_render_privacy' ) ) {
-	function foxiz_render_privacy() {
-
-		$text = foxiz_get_option( 'privacy_text' );
-
-		if ( empty( foxiz_get_option( 'privacy_bar' ) ) || ! $text || foxiz_is_amp() ) {
-			return false;
-		}
-
-		$class_name = 'privacy-top';
-		if ( ! empty( foxiz_get_option( 'privacy_position' ) ) ) {
-			$class_name = 'privacy-' . foxiz_get_option( 'privacy_position' );
-		}
-
-		if ( ! empty( foxiz_get_option( 'privacy_width' ) ) && 'wide' === foxiz_get_option( 'privacy_width' ) ) {
-			$class_name .= ' privacy-wide';
-		}
-
-		echo foxiz_get_privacy( $text, $class_name );
-	}
-}
 
 if ( ! function_exists( 'foxiz_popup_newsletter' ) ) {
 	function foxiz_popup_newsletter() {
