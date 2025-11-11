@@ -1,9 +1,4 @@
-/*
- * Lightweight footer styling inspired by the Foxiz layout with
- * lower selector specificity to cut style recalculation overhead.
- */
-
-:root {
+.footer-wrap {
   --footer-font: 'Manrope', system-ui, sans-serif;
   --footer-heading-font: 'Encode Sans Condensed', 'Manrope', sans-serif;
   --footer-bg: #ffffff;
@@ -13,14 +8,11 @@
   --footer-text: #282828;
   --footer-heading: #000000;
   --footer-link: inherit;
-  --footer-link-hover: #ff184e;
+  --footer-link-hover: var(--g-color, #ff184e);
   --footer-radius: 18px;
   --footer-gap: clamp(18px, 5vw, 32px);
   --footer-width: min(1280px, 100%);
   --footer-small: 0.92rem;
-}
-
-.footer-wrap {
   color: var(--footer-text);
   font-family: var(--footer-font);
   background: var(--footer-bg);

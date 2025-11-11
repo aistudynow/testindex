@@ -3,151 +3,7 @@
  * The rules are written so the block can be dropped into a standalone
  * demo while still matching the typography and hover treatments that
  * ship with the theme on production.
- */
-
-:root {
-  --g-color: #8224e3;
-  --g-color-90: #8224e3e6;
-  --body-family: Manrope, Arial, Helvetica, sans-serif;
-  --body-fweight: 400;
-  --body-fcolor: #04102f;
-  --body-fsize: 18px;
-  --body-fspace: normal;
-  --body-fstyle: normal;
-  --body-fheight: 1.7;
-  --body-transform: none;
-  --solid-white: #ffffff;
-  --heading-family: Manrope;
-  --heading-fweight: 700;
-  --heading-transform: none;
-  --heading-color: var(--body-fcolor);
-  --heading-sub-color: var(--g-color);
-  --h4-family: Manrope;
-  --h4-fweight: 700;
-  --h4-fsize: 20px;
-  --h4-fspace: -0.05em;
-  --h4-transform: none;
-  --meta-family: Manrope;
-  --meta-fweight: 400;
-  --meta-fsize: 13px;
-  --meta-fspace: normal;
-  --meta-transform: none;
-  --meta-fcolor: #666666;
-  --flex-gray-15: rgba(136, 136, 136, 0.15);
-  --shadow-7: rgba(0, 0, 0, 0.07);
-  --round-3: 0px;
-  --round-5: 0px;
-  --hyperlink-color: #1e73be;
-  --hyperlink-line-color: #8224e3;
-  --hyperlink-style: italic;
-  --hyperlink-weight: 700;
-}
-
-html,
-body {
-  font-family: inherit;
-  font-size: 100%;
-  font-weight: inherit;
-  font-style: inherit;
-  line-height: inherit;
-  margin: 0;
-  padding: 0;
-  vertical-align: baseline;
-  border: 0;
-  outline: 0;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-html {
-  font-size: var(--body-fsize);
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-body {
-  --bottom-spacing: 20px;
-  --el-spacing: 7px;
-  font-family: var(--body-family);
-  font-size: var(--body-fsize);
-  font-weight: var(--body-fweight);
-  font-style: var(--body-fstyle);
-  line-height: max(var(--body-fheight, 1.7), 1.4);
-  letter-spacing: var(--body-fspace);
-  text-transform: var(--body-transform);
-  color: var(--body-fcolor);
-  background-color: var(--solid-white);
-}
-
-body:not([data-theme='dark']).single {
-  background-color: var(--s-body-bg, var(--solid-white));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-@media all {
-  div {
-    font-family: inherit;
-    font-size: 100%;
-    font-weight: inherit;
-    font-style: inherit;
-    line-height: inherit;
-    margin: 0;
-    padding: 0;
-    vertical-align: baseline;
-    border: 0;
-    outline: 0;
-  }
-
-  .e-ct-outer > * {
-    margin-bottom: 30px;
-  }
-}
-
-@media (min-width: 1025px) {
-  .e-ct-outer > * {
-    margin-bottom: 35px;
-  }
-}
-
-.grid-container > .s-ct,
-.grid-container > .sidebar-wrap {
-  flex: 0 0 100%;
-  width: 100%;
-  padding-right: 20px;
-  padding-left: 20px;
-}
-
-@media (min-width: 1025px) {
-  .grid-container > .s-ct,
-  .grid-container > .sidebar-wrap {
-    padding-right: 30px;
-    padding-left: 30px;
-  }
-}
-
-@media (min-width: 992px) {
-  .grid-container > :nth-child(1) {
-    flex: 0 0 66.67%;
-    width: 66.67%;
-  }
-}
-
-
-
-
+*/
 
 .related-sec a {
   color: inherit;
@@ -168,6 +24,31 @@ body:not([data-theme='dark']).single {
 }
 
 .related-sec {
+  --related-font: 'Manrope', var(--body-family, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif);
+  --heading-family: var(--related-font);
+  --heading-fweight: 700;
+  --heading-transform: none;
+  --heading-color: var(--body-fcolor, #04102f);
+  --h4-family: var(--related-font);
+  --h4-fweight: 700;
+  --h4-fsize: 20px;
+  --h4-fspace: -0.05em;
+  --h4-transform: none;
+  --meta-family: var(--related-font);
+  --meta-fweight: 400;
+  --meta-fsize: 13px;
+  --meta-fspace: normal;
+  --meta-transform: none;
+  --meta-fcolor: #666666;
+  --flex-gray-15: rgba(136, 136, 136, 0.15);
+  --shadow-7: rgba(0, 0, 0, 0.07);
+  --round-3: 0px;
+  --round-5: 0px;
+  --hyperlink-color: #1e73be;
+  --hyperlink-line-color: var(--g-color, #8224e3);
+  --hyperlink-style: italic;
+  --hyperlink-weight: 700;
+  --related-spacing: 20px;
   position: relative;
   z-index: 20;
   display: block;
@@ -177,7 +58,8 @@ body:not([data-theme='dark']).single {
   border: 1px solid var(--flex-gray-15);
   background-color: var(--toc-bg, transparent);
   box-shadow: 0 5px 30px var(--shadow-7), 3px 3px 0 var(--body-fcolor);
-  --related-spacing: 20px;
+  font-family: var(--related-font);
+  color: var(--heading-color);
 }
 
 .related-sec.related-2 {
@@ -199,6 +81,7 @@ body:not([data-theme='dark']).single {
   line-height: 1;
   margin: 0;
 }
+
 
 .related-sec .heading-title span {
   display: inline-flex;

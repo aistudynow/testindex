@@ -6,8 +6,8 @@
 
 .e-shared-sec.entry-sec {
   --share-text: #04102f;
-  --share-accent: #8224e3;
-  --share-accent-strong: #5b13a5;
+  --share-accent: var(--g-color, #8224e3);
+  --share-accent-strong: color-mix(in srgb, var(--share-accent) 85%, #000 15%);
   --share-surface: #ffffff;
   --share-chip: rgba(136, 136, 136, 0.12);
   --share-chip-border: rgba(4, 16, 47, 0.08);

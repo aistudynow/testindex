@@ -5,6 +5,58 @@ body {
   overflow-x: hidden;
 }
 
+body.single {
+  --g-color: #8224e3;
+  --g-color-90: #8224e3e6;
+  --body-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --body-fsize: 18px;
+  --body-fweight: 400;
+  --body-fstyle: normal;
+  --body-fheight: 1.7;
+  --body-fspace: normal;
+  --body-transform: none;
+  --body-fcolor: #04102f;
+  --solid-white: #ffffff;
+  --heading-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --heading-fweight: 700;
+  --heading-fcolor: #04102f;
+  --heading-fspace: -0.025em;
+  --heading-transform: none;
+  --meta-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --meta-fweight: 400;
+  --meta-fsize: 13px;
+  --meta-fspace: normal;
+  --meta-transform: none;
+  --meta-fcolor: #666666;
+  --meta-b-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --meta-b-fweight: 700;
+  --meta-b-fcolor: #333333;
+  --meta-b-transform: uppercase;
+  --btn-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --btn-fweight: 700;
+  --btn-fsize: 12px;
+  --btn-fspace: normal;
+  --btn-transform: none;
+  --btn-fstyle: normal;
+  --input-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --input-fweight: 400;
+  --input-fsize: 14px;
+  --input-fspace: normal;
+  --input-fstyle: normal;
+  --input-transform: none;
+  --input-fcolor: inherit;
+  --round-3: 0px;
+  --round-5: 0px;
+  --round-7: 0px;
+  --shadow-7: #00000012;
+  --flex-gray-7: #88888812;
+  --flex-gray-15: #88888826;
+  --awhite: #ffffff;
+  --hyperlink-color: #1e73be;
+  --hyperlink-line-color: var(--g-color, #8224e3);
+  --hyperlink-weight: 700;
+  --hyperlink-style: italic;
+}
 
 
 
@@ -49,165 +101,74 @@ body {
 
 
 
-    .grid-container {
-        position: relative;
-        display: flex;
-        flex-flow: row wrap;
-        margin-right: -20px;
-        margin-left: -20px;
-    }
-
-    .grid-container > .s-ct,
-    .grid-container > .sidebar-wrap {
-        flex: 0 0 100%;
-        width: 100%;
-        padding-right: 20px;
-        padding-left: 20px;
-    }
-
-
-
-@media (max-width: 991px) {
-    .single-meta {
-        flex-flow: column-reverse nowrap;
-    }
-}
 
 
 .smeta-sec {
-    display: flex
-;
-    flex-flow: column-reverse nowrap;
-    text-align: left;
-    gap: .1em;
+  display: flex;
+  flex-flow: column-reverse nowrap;
+  text-align: left;
+  gap: 0.1em;
 }
-
-@media (max-width: 991px) {
-    .smeta-extra {
-        justify-content: space-between;
-        padding: 7px 15px;
-        border-radius: var(--round-5);
-        background-color: var(--flex-gray-7);
-    }
-}
-
-@media (max-width: 991px) {
-    .single-meta > * {
-        width: 100%;
-        gap: 10px;
-    }
-}
-
 
 .single-right-meta {
-    display: flex
-;
-    align-items: center;
-    flex-flow: row nowrap;
-    flex-shrink: 0;
-    white-space: nowrap;
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .is-meta {
-    color: var(--meta-fcolor);
+  color: var(--meta-fcolor);
 }
-.is-meta, .meta-text {
-    font-family: var(--meta-family);
-    font-size: var(--meta-fsize);
-    font-weight: var(--meta-fweight);
-    font-style: var(--meta-fstyle);
-    letter-spacing: var(--meta-fspace);
-    text-transform: var(--meta-transform);
+
+.is-meta,
+.meta-text {
+  font-family: var(--meta-family);
+  font-size: var(--meta-fsize);
+  font-weight: var(--meta-fweight);
+  font-style: var(--meta-fstyle);
+  letter-spacing: var(--meta-fspace);
+  text-transform: var(--meta-transform);
 }
 
 
 
 .s-ct {
-  --g-color: #8224e3;
-  --g-color-90: #8224e3e6;
-  --body-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --body-fweight: 400;
-  --body-fcolor: #04102f;
-  --body-fsize: 18px;
-  --body-fspace: normal;
-  --body-fstyle: normal;
-  --body-fheight: 1.7;
-  --body-transform: none;
-  --solid-white: #ffffff;
-  --heading-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --heading-fweight: 700;
-  --heading-fcolor: #04102f;
-  --heading-fspace: -0.025em;
-  --heading-transform: none;
   --headline-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --headline-fweight: 700;
   --headline-fsize: 60px;
   --headline-fspace: -0.025em;
-  --h1-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --h1-family: var(--headline-family);
   --h1-fweight: 700;
   --h1-fsize: 50px;
   --h1-fspace: -0.025em;
   --h1-transform: none;
-  --h2-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --h2-family: var(--headline-family);
   --h2-fweight: 700;
   --h2-fsize: 40px;
   --h2-fspace: -0.025em;
-  --h3-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --h3-family: var(--headline-family);
   --h3-fweight: 700;
   --h3-fsize: 25px;
   --h3-fspace: -0.04em;
-  --h4-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --h4-family: var(--headline-family);
   --h4-fweight: 700;
   --h4-fsize: 20px;
   --h4-fspace: -0.05em;
-  --meta-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --meta-fweight: 400;
-  --meta-fsize: 13px;
-  --meta-fspace: normal;
-  --meta-transform: none;
-  --meta-fcolor: #666666;
-  --meta-b-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --meta-b-fweight: 700;
-  --meta-b-fcolor: #333333;
-  --meta-b-transform: uppercase;
   --meta-width: auto;
   --meta-style-w: 1.5em;
   --meta-style-h: 1px;
   --meta-style-o: 1;
-  --btn-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --btn-fweight: 700;
-  --btn-fsize: 12px;
-  --btn-fspace: normal;
-  --btn-transform: none;
-  --btn-fstyle: normal;
-  --input-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --input-fweight: 400;
-  --input-fsize: 14px;
-  --input-fspace: normal;
-  --input-fstyle: normal;
-  --input-transform: none;
-  --input-fcolor: inherit;
   --excerpt-fsize: 14px;
   --height-40: 40px;
   --padding-40: 0 40px;
-  --round-3: 0px;
-  --round-5: 0px;
-  --round-7: 0px;
-  --shadow-7: #00000012;
-  --flex-gray-7: #88888812;
-  --flex-gray-15: #88888826;
-  --awhite: #ffffff;
-  --hyperlink-color: #1e73be;
-  --hyperlink-line-color: #8224e3;
-  --hyperlink-weight: 700;
-  --hyperlink-style: italic;
-  --effect: all 0.2s cubic-bezier(0.32, 0.74, 0.57, 1);
-  --timing: cubic-bezier(0.32, 0.74, 0.57, 1);
   --el-spacing: 12px;
   --bottom-spacing: 35px;
   --cp-spacing: 1.5rem;
-  
-  
+  --effect: all 0.2s cubic-bezier(0.32, 0.74, 0.57, 1);
+  --timing: cubic-bezier(0.32, 0.74, 0.57, 1);
+
   color: var(--body-fcolor);
   font-family: var(--body-family);
   font-size: var(--body-fsize);
@@ -220,28 +181,40 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 /* Layout wrapper ---------------------------------------------------- */
+
+
+
+
+
+
+
+
 .grid-container {
   position: relative;
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
   align-items: flex-start;
-  
-  margin-right: -20px !important;
-  margin-left: -20px !important;
+  --grid-gutter: clamp(16px, 2.2vw, 24px);
+  gap: var(--grid-gutter);
+  padding-inline: var(--grid-gutter);
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.grid-container > .s-ct,
-.grid-container > .sidebar-wrap {
-  flex: 0 0 100%;
-  width: 100%;
+.grid-container > :where(.s-ct, .sidebar-wrap) {
   min-width: 0;
-  padding-right: 20px !important;
-  padding-left: 20px !important;
   box-sizing: border-box;
 }
-
-
 
 .wd4-archive-summary__more {
     display: inline-flex;
@@ -266,62 +239,39 @@ body {
 
 @media (min-width: 992px) {
   .grid-container {
-    flex-flow: row nowrap;
-  }
-
-  .grid-container > .s-ct {
-    flex: 0 0 66.67%;
-    width: 66.67%;
-  }
-
-  .grid-container > .sidebar-wrap {
-    flex: 0 0 33.33%;
-    width: 33.33%;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   }
 }
 
 @media (min-width: 1025px) {
   .grid-container {
-    margin-right: -30px !important;
-    margin-left: -30px !important;
+    --grid-gutter: clamp(20px, 3vw, 30px);
   }
 
-  .grid-container > .s-ct,
-  .grid-container > .sidebar-wrap {
-    padding-right: 30px !important;
-    padding-left: 30px !important;
+  .grid-container .sidebar-inner {
+    padding-right: 0;
+    padding-left: var(--s-sidebar-padding, 0);
   }
 }
 
-@media (min-width: 1025px) {
+@media (max-width: 767px) {
   .grid-container {
-    margin-right: -30px !important;
-    margin-left: -30px !important;
-  }
-
-  .grid-container > .s-ct,
-  .grid-container > .sidebar-wrap {
-    padding-right: 30px !important;
-    padding-left: 30px !important;
+    --grid-gutter: 0px;
+    padding-inline: 0;
   }
 }
 
-@media (max-width: 991px) {
-  .s-ct .single-meta {
-    flex-flow: column-reverse nowrap;
-  }
+.single-standard-8 .grid-container {
+    margin-top: 20px;
+}
 
-  .s-ct .single-meta > * {
+
+.rb-container, .rb-s-container {
+    position: static;
+    display: block;
     width: 100%;
-    gap: 10px;
-  }
-
-  .s-ct .smeta-extra {
-    justify-content: space-between;
-    padding: 7px 15px;
-    border-radius: var(--round-5, 0px);
-    background-color: var(--flex-gray-7);
-  }
+    max-width: var(--rb-width, 1280px);
+    margin-inline: auto;
 }
 
 @media (max-width: 1024px) {
@@ -337,50 +287,8 @@ body {
   }
 }
 
-.single-standard-8 .grid-container {
-    margin-top: 20px;
-}
-
-
-.rb-container, .rb-s-container {
-    position: static;
-    display: block;
-    width: 100%;
-    max-width: var(--rb-width, 1280px);
-    margin-right: auto;
-    margin-left: auto;
-}
-
-
-
-
-
-@media (min-width: 1025px) {
-    .grid-container .sidebar-inner {
-        padding-right: 0;
-        padding-left: var(--s-sidebar-padding, 0);
-    }
-}
-
-
-
-/* Mobile tweaks ------------------------------------------------------ */
 @media (max-width: 767px) {
-  .grid-container {
-    margin-right: 0px !important;
-    margin-left:  0px !important;
-  }
-
-  .grid-container > .s-ct,
-  .grid-container > .sidebar-wrap {
-    padding-right: 0px !important;
-    padding-left: 0px !important;
-  }
-
-
-
-
-    .s-ct {
+  .s-ct {
     --body-fsize: 16px;
     --headline-fsize: 35px;
     --h1-fsize: 35px;
@@ -403,9 +311,6 @@ body {
     letter-spacing: -0.02em;
   }
 
-   
-
-
   .mobile-qview {
     overflow-x: hidden;
   }
@@ -418,7 +323,7 @@ body {
 
   .mobile-qview a {
     justify-content: center;
-    padding: 0 12px;
+    padding-inline: 12px;
   }
 }
 
@@ -428,6 +333,10 @@ body {
 
   box-sizing: border-box;
 }
+
+
+
+
 
 
 
@@ -565,6 +474,9 @@ body {
 
 
 @supports (content-visibility: auto) {
+ 
+ 
+ 
   /*
    * Defer deep layout work for the article body until after the hero area
    * paints. This keeps the post title (our LCP element) from waiting on
@@ -589,9 +501,13 @@ body {
     flex-flow: row nowrap;
     justify-content: space-between;
     width: 100%;
-    gap: 15px;
+    gap: clamp(12px, 2vw, 20px);
+    margin-bottom: clamp(18px, 3vw, 30px);
 }
 
+.single-meta > * {
+  min-width: 0;
+}
 
 .meta-s-line {
     --meta-style-w: 1.5em;
@@ -599,62 +515,51 @@ body {
     --meta-style-o: 1;
 }
 
+@media (max-width: 991px) {
+  .single-meta {
+    flex-flow: column-reverse nowrap;
+  }
 
-@media (min-width: 1025px) {
-  .s-ct .single-meta {
-    margin-bottom: 30px;
+  .single-meta > * {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .single-meta .smeta-extra {
+    justify-content: space-between;
+    padding: 7px 15px;
+    border-radius: var(--round-5, 0px);
+    background-color: var(--flex-gray-7);
   }
 }
-
-
-
-@media (max-width: 991px) {
-    .single-meta > * {
-        width: 100%;
-        gap: 10px;
-    }
-}
-
-
 
 @media (max-width: 767px) {
-  .s-ct .single-meta {
-    gap: 16px;
-    margin-bottom: 18px;
-  }
-
-
-
-  .s-ct .single-meta > * {
+  .single-meta > * {
     width: auto;
   }
 
-  .s-ct .smeta-in {
-   
+  .single-meta .smeta-in {
     align-items: center;
     gap: 10px;
   }
 
-  .s-ct .meta-avatar img {
+  .single-meta .meta-avatar img {
     width: 44px;
     height: 44px;
   }
 
-  .s-ct .smeta-sec {
+  .single-meta .smeta-sec {
     gap: 0.25em;
   }
 
-  .s-ct .smeta-extra {
-    
+  .single-meta .smeta-extra {
     flex-wrap: wrap;
     align-items: center;
-    
     gap: 12px 10px;
     min-width: 0;
-   
   }
 
-  .s-ct .t-shared-sec {
+  .single-meta .t-shared-sec {
     flex: 1 1 auto;
     flex-wrap: wrap;
     align-items: center;
@@ -662,7 +567,7 @@ body {
     min-width: 0;
   }
 
-  .s-ct .t-shared-sec > :not(.t-shared-header) {
+  .single-meta .t-shared-sec > :not(.t-shared-header) {
     gap: 6px;
   }
 

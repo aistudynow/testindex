@@ -1,133 +1,140 @@
-/* Improve contrast for download buttons */
-:where(.entry-content, .s-ct) .wp-block-file__button.wp-element-button,
-:where(.entry-content, .s-ct) .wp-block-file__button.wp-element-button:visited,
-:where(.entry-content, .s-ct) .wp-block-file__button,
-:where(.entry-content, .s-ct) .wp-block-file__button:visited {
-  background: #123262 !important;
-  border-color: #0a2347 !important;
-  color: #ffffff !important;
-}
-
-:where(.entry-content, .s-ct) .wp-block-file__button.wp-element-button:hover,
-:where(.entry-content, .s-ct) .wp-block-file__button.wp-element-button:focus-visible,
-:where(.entry-content, .s-ct) .wp-block-file__button:hover,
-:where(.entry-content, .s-ct) .wp-block-file__button:focus-visible {
-  background: #0f274f !important;
-  border-color: #071836 !important;
-  color: #ffffff !important;
-}
-
 /*
- * Download block styles extracted from the Foxiz theme.
- * Keeps the markup lightweight while inheriting the global theme tokens
- * declared in main.css so the button matches the rest of the site.
+ * Download block styles optimised for touch targets and reduced
+ * recalculation on iOS Safari.
  */
-:where(.entry-content, .s-ct) .wp-block-file {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--download-gap, 0.75em);
-  margin-bottom: var(--download-spacing, 1.5rem);
-  font-size: var(--download-text-size, 0.95rem);
-  --btn-fweight: 700;
-}
 
-:where(.entry-content, .s-ct) .wp-block-file > a:first-child {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  color: var(--download-link-color, var(--g-color, currentColor));
-  font-weight: var(--hyperlink-weight, 700);
-  font-style: var(--hyperlink-style, normal);
-  text-decoration: underline;
-  text-decoration-color: var(--download-link-underline, currentColor);
-  text-underline-offset: min(4px, 0.175em);
-  transition: var(--effect, all 0.2s ease);
-  overflow-wrap: anywhere;
-}
-
-:where(.entry-content, .s-ct) .wp-block-file > a:first-child:hover,
-:where(.entry-content, .s-ct) .wp-block-file > a:first-child:focus-visible {
-  color: var(--download-link-color-hover, var(--g-color, currentColor));
-  text-decoration-color: var(--download-link-color-hover, var(--g-color, currentColor));
-}
-
-:where(.entry-content, .s-ct) .wp-block-file a:not(.wp-block-file__button)::before {
-  content: "";
-  inline-size: 1.05em;
-  block-size: 1.05em;
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: currentColor;
-  -webkit-mask-image: var(--download-icon, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V4a1 1 0 0 1 1-1Zm-7 14h14v2H5Z'/></svg>"));
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  -webkit-mask-size: contain;
-  mask-image: var(--download-icon, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V4a1 1 0 0 1 1-1Zm-7 14h14v2H5Z'/></svg>"));
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-}
-
-:where(.entry-content, .s-ct) .wp-block-file__button,
-:where(.entry-content, .s-ct) .wp-block-file__button:visited {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35em;
-  padding: 0.7em 2.25em;
-  line-height: 1;
-  font-family: var(--btn-family, inherit);
-  font-size: clamp(0.9rem, 0.85rem + 0.2vw, 1.05rem);
-  font-weight: var(--btn-fweight, 700) !important;
-  letter-spacing: var(--btn-fspace, normal);
-  text-transform: var(--btn-transform, none);
-  border: 3px solid var(--btn-outline-color, var(--body-fcolor, #04102f));
-  border-radius: var(--round-5, 6px);
-  background: var(--btn-primary, var(--g-color, #8224e3));
-  color: var(--awhite, #fff) !important;
-  text-decoration: none;
-  text-decoration-color: transparent;
-  box-shadow:
-    1px 1px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
-    2px 2px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
-    3px 3px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
-    4px 4px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
-    5px 5px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65));
-  transition: var(--effect, all 0.2s ease);
-}
-
-:where(.entry-content, .s-ct) .wp-block-file__button:hover,
-:where(.entry-content, .s-ct) .wp-block-file__button:focus-visible {
-  background: var(--btn-primary-h, var(--g-color, #6c4dff));
-  color: var(--awhite, #fff) !important;
-  box-shadow:
-    0 0 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75)),
-    1px 1px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75)),
-    2px 2px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75)),
-    3px 3px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75));
-  transform: translate(-2px, -2px);
-}
-
-:where(.entry-content, .s-ct) .wp-block-file__button:focus-visible {
-  outline: 2px solid var(--g-color, currentColor);
-  outline-offset: 2px;
-}
-
-:where(.entry-content, .s-ct) .wp-block-file__button:active {
-  box-shadow: none;
-  transform: translate(5px, 5px);
-}
-
-@media (max-width: 480px) {
-  :where(.entry-content, .s-ct) .wp-block-file {
-    gap: 0.5rem;
+@layer post-download {
+  :where(.s-ct, .entry-content) .wp-block-file {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--download-gap, 0.75em);
+    margin-bottom: var(--download-spacing, 1.5rem);
+    font-size: var(--download-text-size, 0.95rem);
+    --btn-fweight: 700;
   }
 
-  :where(.entry-content, .s-ct) .wp-block-file__button {
-    width: 100%;
+  :where(.s-ct, .entry-content) .wp-block-file > a:first-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    color: var(--download-link-color, var(--g-color, currentColor));
+    font-weight: var(--hyperlink-weight, 700);
+    font-style: var(--hyperlink-style, normal);
+    text-decoration: underline;
+    text-decoration-color: var(--download-link-underline, currentColor);
+    text-underline-offset: min(4px, 0.175em);
+    transition: var(--effect, all 0.2s ease);
+    overflow-wrap: anywhere;
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file > a:first-child:hover,
+  :where(.s-ct, .entry-content) .wp-block-file > a:first-child:focus-visible {
+    color: var(--download-link-color-hover, var(--g-color, currentColor));
+    text-decoration-color: var(--download-link-color-hover, var(--g-color, currentColor));
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file a:not(.wp-block-file__button)::before {
+    content: "";
+    inline-size: 1.05em;
+    block-size: 1.05em;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    background: currentColor;
+    -webkit-mask: var(--download-icon, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V4a1 1 0 0 1 1-1Zm-7 14h14v2H5Z'/></svg>")) center/contain no-repeat;
+    mask: var(--download-icon, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 3a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V4a1 1 0 0 1 1-1Zm-7 14h14v2H5Z'/></svg>")) center/contain no-repeat;
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file__button,
+  :where(.s-ct, .entry-content) .wp-block-file__button:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35em;
+    padding: 0.7em 2.25em;
+    line-height: 1;
+    font-family: var(--btn-family, inherit);
+    font-size: clamp(0.9rem, 0.85rem + 0.2vw, 1.05rem);
+    font-weight: var(--btn-fweight, 700);
+    letter-spacing: var(--btn-fspace, normal);
+    text-transform: var(--btn-transform, none);
+    border: 3px solid var(--btn-outline-color, var(--body-fcolor, #04102f));
+    border-radius: var(--round-5, 10px);
+    background: var(--btn-primary, var(--g-color, #8224e3));
+    color: var(--awhite, #ffffff) !important;
+    text-decoration: none;
+    text-decoration-color: transparent;
+    box-shadow:
+      1px 1px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
+      2px 2px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
+      3px 3px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
+      4px 4px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65)),
+      5px 5px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.65));
+    transition: var(--effect, all 0.2s ease);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file__button:hover,
+  :where(.s-ct, .entry-content) .wp-block-file__button:focus-visible {
+    background: var(--btn-primary-h, color-mix(in srgb, var(--btn-primary, #8224e3), #000 12%));
+    color: var(--awhite, #ffffff) !important;
+    box-shadow:
+      0 0 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75)),
+      1px 1px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75)),
+      2px 2px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75)),
+      3px 3px 0 0 var(--btn-shadow-step, rgba(4, 16, 47, 0.75));
+    transform: translate(-2px, -2px);
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file__button:focus-visible {
+    outline: 2px solid var(--g-color, currentColor);
+    outline-offset: 2px;
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file__button:active {
+    box-shadow: none;
+    transform: translate(5px, 5px);
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file__button.wp-element-button,
+  :where(.s-ct, .entry-content) .wp-block-file__button.wp-element-button:visited,
+  :where(.s-ct, .entry-content) .wp-block-file__button,
+  :where(.s-ct, .entry-content) .wp-block-file__button:visited {
+    background: #123262 !important;
+    border-color: #0a2347 !important;
+    color: #ffffff !important;
+  }
+
+  :where(.s-ct, .entry-content) .wp-block-file__button.wp-element-button:hover,
+  :where(.s-ct, .entry-content) .wp-block-file__button.wp-element-button:focus-visible,
+  :where(.s-ct, .entry-content) .wp-block-file__button:hover,
+  :where(.s-ct, .entry-content) .wp-block-file__button:focus-visible {
+    background: #0f274f !important;
+    border-color: #071836 !important;
+    color: #ffffff !important;
+  }
+
+  @media (max-width: 480px) {
+    :where(.s-ct, .entry-content) .wp-block-file {
+      gap: 0.5rem;
+    }
+
+    :where(.s-ct, .entry-content) .wp-block-file__button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+@layer post-download.utils {
+  @media (prefers-reduced-motion: reduce) {
+    :where(.s-ct, .entry-content) .wp-block-file__button,
+    :where(.s-ct, .entry-content) .wp-block-file > a:first-child {
+      transition-duration: 0.01ms !important;
+      transition-delay: 0.01ms !important;
+    }
   }
 }
