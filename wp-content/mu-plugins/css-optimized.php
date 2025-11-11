@@ -182,12 +182,8 @@ a{color:inherit;text-decoration:none}
 .header-mobile .navbar-right{display:flex;justify-content:flex-end}
 .header-mobile .navbar-right>*{display:flex;align-items:center;height:100%;color:inherit}
 .header-mobile .mobile-search-icon{margin-left:auto}
-.privacy-bar{position:fixed;inset:auto auto 24px 24px;max-width:min(26rem,calc(100vw - 48px));display:none;opacity:0;pointer-events:none;z-index:2147483647;transform:translateY(10px);transition:opacity .2s ease,transform .2s ease;color:#fff}
-.privacy-bar.activated{display:block;opacity:1;pointer-events:auto;transform:translateY(0)}
-.privacy-inner{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:7px;background:rgba(15,18,23,.92);box-shadow:0 10px 24px rgba(15,18,23,.18)}
-.privacy-dismiss-btn{display:inline-flex;align-items:center;justify-content:center;min-height:2.25rem;padding:0 1.4rem;border-radius:999px;border:0;background:var(--g-color);color:#fff;font-weight:600}
 @media (max-width:1024px){.navbar-wrap{display:none}.header-mobile{display:flex}}
-@media (max-width:640px){.privacy-bar{inset:auto 16px 16px 16px;max-width:calc(100vw - 32px)}.privacy-inner{flex-direction:column;align-items:stretch;text-align:center;gap:.65rem}.privacy-dismiss-btn{width:100%}}
+]
 CSS;
 
         $critical_css = preg_replace( '/\s+/', ' ', trim( $critical_css ) );
