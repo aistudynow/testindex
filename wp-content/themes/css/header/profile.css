@@ -1040,15 +1040,6 @@ body.woocommerce-account .woocommerce-MyAccount-content {
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
 }
 
-/* ------------------------------------------------------------------
- * Disable privacy bar ONLY on author pages
- * ------------------------------------------------------------------ */
-
-body.author .privacy-inner,
-body.author .privacy-inner .privacy-content,
-body.author .privacy-inner .privacy-dismiss {
-  display: none !important;
-}
 
 
 

@@ -57,7 +57,6 @@
   --btn-primary: var(--g-color);
   --btn-primary-h: #d90c3c;
   --btn-accent: #fff;
-  --privacy-color: #fff;
   --rb-width: 1280px;
   --nav-height: 60px;
   --mbnav-height: 42px;
@@ -465,17 +464,7 @@ License URI:    https://themeforest.net/licenses/standard
 
 
 
-/* Improve contrast for the privacy consent button */
-.privacy-bar .privacy-dismiss-btn {
-  background-color: #0053a0;
-  color: #ffffff;
-}
 
-.privacy-bar .privacy-dismiss-btn:hover,
-.privacy-bar .privacy-dismiss-btn:focus-visible {
-  background-color: #003f7d;
-  color: #ffffff;
-}
 
 /* Improve contrast for download buttons */
 .wp-block-file .wp-block-file__button.wp-element-button,
@@ -724,136 +713,6 @@ License URI:    https://themeforest.net/licenses/standard
   }
 
 
-}
-
-
-
-
-
-/* Privacy banner ----------------------------------------------------- */
-
-
-/* Improve contrast for the privacy consent button */
-.privacy-bar .privacy-dismiss-btn {
-  background-color: #0053a0;
-  color: #ffffff;
-}
-
-.privacy-bar .privacy-dismiss-btn:hover,
-.privacy-bar .privacy-dismiss-btn:focus-visible {
-  background-color: #003f7d;
-  color: #ffffff;
-
-}
-
-
-
-
-
-
-
-
-
-.privacy-bar {
-  --rb-privacy-gap: clamp(12px, 3vw, 24px);
-  position: fixed;
-  inset: auto auto var(--rb-privacy-gap) var(--rb-privacy-gap);
-  max-width: min(26rem, calc(100vw - var(--rb-privacy-gap) * 2));
-  display: block;
-  visibility: hidden;
-  margin: 0;
-  padding: 0;
-  opacity: 0;
-  pointer-events: none;
-  z-index: var(--rb-privacy-z, 2147483647);
-  transform: translateY(10px);
-  /* 👇 only animate opacity + transform */
-  transition: opacity .2s ease, transform .2s ease;
-  font-size: .875rem;
-  line-height: 1.5;
-  color: var(--privacy-color, #fff);
-  will-change: transform, opacity;
-  contain: layout paint;
-}
-
-.privacy-bar.activated {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-
-.privacy-bar.privacy-left {
-  right: auto;
-}
-
-.privacy-inner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  padding: .75rem 1rem;
-  border-radius: var(--round-7, 12px);
-  background: var(--privacy-bg-color, rgba(15, 18, 23, 0.92));
-  box-shadow: 0 10px 24px rgba(15, 18, 23, 0.18);
-}
-
-.privacy-content {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.privacy-inner a:not(.is-btn) {
-  color: currentColor;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: currentColor;
-  transition: color .2s ease;
-}
-
-.privacy-inner a:not(.is-btn):hover,
-.privacy-inner a:not(.is-btn):focus-visible {
-  color: var(--g-color, #77b7ff);
-}
-
-.privacy-dismiss-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.25rem;
-  padding: 0 1.4rem;
-  border-radius: 999px;
-  border: 0;
-  background: var(--btn-primary, #f4b400);
-  color: var(--btn-accent, #191c20);
-  font-weight: 600;
-  transition: background .2s ease, transform .2s ease;
-}
-
-.privacy-dismiss-btn:hover,
-.privacy-dismiss-btn:focus-visible {
-  background: var(--btn-primary-h, #d89a00);
-  transform: translateY(-1px);
-}
-
-@media (max-width: 640px) {
-  .privacy-bar {
-    inset: auto var(--rb-privacy-gap) var(--rb-privacy-gap) var(--rb-privacy-gap);
-    max-width: calc(100vw - var(--rb-privacy-gap) * 2);
-  }
-
-  .privacy-inner {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-    gap: .65rem;
-  }
-
-  .privacy-dismiss-btn {
-    width: 100%;
-  }
 }
 
 
@@ -2113,17 +1972,7 @@ a.p-flink::before {
     padding: 7px 15px;
   }
 
-  .privacy-bar.privacy-left {
-    left: 10px;
-    right: 10px;
-    width: auto;
-  }
 
-  .privacy-inner {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
 
   .mobile-menu {
     padding: clamp(16px, 6vw, 22px) clamp(14px, 6vw, 20px);

@@ -54,8 +54,6 @@ body.wd-login-page .header-wrap,
 body.wd4-login-template .header-wrap,
 body.wd-login-page .footer-wrap,
 body.wd4-login-template .footer-wrap,
-body.wd-login-page .privacy-bar,
-body.wd4-login-template .privacy-bar,
 body.wd-login-page .site-outer > .footer-inner,
 body.wd4-login-template .site-outer > .footer-inner {
     display: none !important;
