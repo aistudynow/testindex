@@ -44,9 +44,11 @@ $is_own_profile = $author_id && is_user_logged_in() && get_current_user_id() ===
 
 
 
-$avatar_error            = '';
-$profile_update_message = '';
-$profile_update_error   = '';
+$avatar_error             = '';
+$profile_update_message  = '';
+$profile_update_error    = '';
+$follow_feedback_message = '';
+$follow_feedback_error   = '';
 
 if ( $is_own_profile && isset( $_GET['profile-updated'] ) ) {
     $profile_flag = sanitize_text_field( wp_unslash( $_GET['profile-updated'] ) );
@@ -55,6 +57,26 @@ if ( $is_own_profile && isset( $_GET['profile-updated'] ) ) {
         $profile_update_message = __( 'Profile details updated.', 'foxiz-child' );
     }
 }
+
+
+
+if ( isset( $_GET['wd4_follow_status'] ) ) {
+    $follow_status = sanitize_text_field( wp_unslash( $_GET['wd4_follow_status'] ) );
+
+    if ( 'followed' === $follow_status ) {
+        $follow_feedback_message = __( 'You are now following this author.', 'foxiz-child' );
+    } elseif ( 'unfollowed' === $follow_status ) {
+        $follow_feedback_message = __( 'You have unfollowed this author.', 'foxiz-child' );
+    } elseif ( 'error' === $follow_status ) {
+        $follow_feedback_error = __( 'We could not update your follow settings. Please try again.', 'foxiz-child' );
+    }
+}
+
+
+
+
+
+
 
 /**
  * Handle compact name updates for the profile owner.
@@ -336,10 +358,18 @@ if ( ! $experience_label ) {
     $experience_label = __( 'Years Experience', 'foxiz-child' );
 }
 
-$rating_value = $author_id ? get_user_meta( $author_id, 'profile_rating', true ) : '';
-if ( ! $rating_value ) {
-    $rating_value = '5';
-}
+
+
+
+
+
+
+
+
+
+
+
+
 $rating_value = (int) max( 0, min( 5, (int) $rating_value ) );
 
 $cta_primary_label = $author_id ? get_user_meta( $author_id, 'profile_cta_primary_label', true ) : '';
@@ -351,17 +381,47 @@ if ( ! $cta_primary_url ) {
     $cta_primary_url = $website;
 }
 
-$cta_secondary_label = $author_id ? get_user_meta( $author_id, 'profile_cta_secondary_label', true ) : '';
-$cta_secondary_url   = $author_id ? get_user_meta( $author_id, 'profile_cta_secondary_url', true ) : '';
+$cta_secondary_label          = $author_id ? get_user_meta( $author_id, 'profile_cta_secondary_label', true ) : '';
+$raw_cta_secondary_url        = $author_id ? get_user_meta( $author_id, 'profile_cta_secondary_url', true ) : '';
+$has_custom_secondary_url     = '' !== trim( (string) $raw_cta_secondary_url );
+$cta_secondary_url            = $has_custom_secondary_url ? $raw_cta_secondary_url : '';
+$follow_redirect_url          = $author_id ? remove_query_arg( 'wd4_follow_status', get_author_posts_url( $author_id ) ) : '';
+$show_follow_button           = (bool) ( $author_id && ! $is_own_profile && ! $has_custom_secondary_url );
+$show_secondary_cta           = (bool) ( $has_custom_secondary_url && '' !== $cta_secondary_url );
+$viewer_id                    = is_user_logged_in() ? get_current_user_id() : 0;
+$is_following_author          = false;
+$follow_action_value          = 'follow';
+$follow_button_label          = '';
+$follow_login_url             = $follow_redirect_url ? wp_login_url( $follow_redirect_url ) : wp_login_url();
+
 if ( ! $cta_secondary_label ) {
     $cta_secondary_label = __( 'Follow', 'foxiz-child' );
 }
-if ( ! $cta_secondary_url ) {
-    $cta_secondary_url = $author_id ? get_author_feed_link( $author_id ) : '';
+
+if ( $show_follow_button && $viewer_id && function_exists( 'wd4_is_user_following' ) ) {
+    $is_following_author = wd4_is_user_following( $viewer_id, $author_id );
 }
 
-$show_primary_cta   = $cta_primary_url;
-$show_secondary_cta = $cta_secondary_url;
+if ( $is_following_author ) {
+    $follow_action_value = 'unfollow';
+    $follow_button_label = __( 'Unfollow', 'foxiz-child' );
+} else {
+    $follow_button_label = $cta_secondary_label;
+}
+
+$show_primary_cta = $cta_primary_url;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 $is_admin_profile = $author_user && user_can( $author_user, 'manage_options' );
@@ -465,6 +525,20 @@ if ( ! $is_admin_profile ) {
                         <?php echo esc_html( $bio_text ); ?>
                     </p>
                 <?php endif; ?>
+                
+                
+                
+                  <?php if ( $follow_feedback_message ) : ?>
+                    <p class="wd4-author-hero__flash wd4-author-hero__flash--success">
+                        <?php echo esc_html( $follow_feedback_message ); ?>
+                    </p>
+                <?php elseif ( $follow_feedback_error ) : ?>
+                    <p class="wd4-author-hero__flash wd4-author-hero__flash--error">
+                        <?php echo esc_html( $follow_feedback_error ); ?>
+                    </p>
+                <?php endif; ?>
+                
+                
 
                 <div class="wd4-author-hero__buttons">
                     <?php if ( $show_primary_cta ) : ?>
@@ -488,8 +562,44 @@ if ( ! $is_admin_profile ) {
                         >
                             <?php echo esc_html( $cta_secondary_label ); ?>
                         </a>
+                        
+                        
+                        
+                        
+                        
+                       <?php elseif ( $show_follow_button ) : ?>
+                        <?php if ( is_user_logged_in() ) : ?>
+                            <form class="wd4-author-hero__follow-form" method="post">
+                                <?php wp_nonce_field( 'wd4_toggle_follow', 'wd4_follow_nonce' ); ?>
+                                <input type="hidden" name="wd4_follow_user" value="<?php echo esc_attr( $author_id ); ?>" />
+                                <input type="hidden" name="wd4_follow_action" value="<?php echo esc_attr( $follow_action_value ); ?>" />
+                                <input type="hidden" name="wd4_follow_redirect" value="<?php echo esc_attr( $follow_redirect_url ); ?>" />
+                                <button type="submit" class="wd4-author-hero__btn wd4-author-hero__btn--secondary">
+                                    <?php echo esc_html( $follow_button_label ); ?>
+                                </button>
+                            </form>
+                        <?php else : ?>
+                            <a
+                                class="wd4-author-hero__btn wd4-author-hero__btn--secondary"
+                                href="<?php echo esc_url( $follow_login_url ); ?>"
+                            >
+                                <?php echo esc_html( $cta_secondary_label ); ?>
+                            </a>
+                        <?php endif; ?>  
+                        
+                        
+                        
+                        
+                        
                     <?php endif; ?>
                 </div>
+                
+                
+                
+                
+                
+                
+                
 
                 <?php if ( $is_own_profile && current_user_can( 'upload_files' ) ) : ?>
                     <form class="wd4-author-avatar-form" method="post" enctype="multipart/form-data">
