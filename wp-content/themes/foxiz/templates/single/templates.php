@@ -580,9 +580,18 @@ if ( ! function_exists( 'foxiz_single_header_meta' ) ) {
                         <?php if ( foxiz_is_sponsored_post( $post_id ) ) : ?>
                                 <?php foxiz_single_sponsor( $post_id ); ?>
                         <?php endif; ?>
+                        
+                        
                         <div class="simple-meta__primary">
-                                <?php if ( ! empty( $show_avatar ) && $author_id ) : ?>
-                                        <a class="simple-meta__avatar" href="<?php echo esc_url( $author_url ); ?>" rel="nofollow">
+                                <?php if ( ! empty( $show_avatar ) && $author_id ) :
+                                        $avatar_label = $author_name ? sprintf(
+                                                /* translators: %s: author display name. */
+                                                __( 'View articles by %s', 'foxiz' ),
+                                                wp_strip_all_tags( $author_name )
+                                        ) : __( 'View author profile', 'foxiz' );
+                                ?>
+                                        <a class="simple-meta__avatar" href="<?php echo esc_url( $author_url ); ?>" rel="nofollow" aria-label="<?php echo esc_attr( $avatar_label ); ?>">
+                                          
                                                 <?php echo get_avatar( $author_id, 96, '', $author_name ?: get_the_title( $post_id ), [ 'loading' => 'lazy' ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                         </a>
                                 <?php endif; ?>
