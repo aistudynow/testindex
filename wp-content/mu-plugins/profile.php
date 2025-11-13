@@ -75,12 +75,15 @@ if ( ! function_exists( 'wd4_resolve_profile_redirect' ) ) {
             $fallback = home_url( '/' );
         }
 
+        
         $posted_redirect = '';
 
         if ( isset( $_POST['wd4_profile_redirect'] ) ) {
             $posted_redirect = esc_url_raw( wp_unslash( $_POST['wd4_profile_redirect'] ) );
         } elseif ( isset( $_POST['wd4_avatar_redirect'] ) ) {
             $posted_redirect = esc_url_raw( wp_unslash( $_POST['wd4_avatar_redirect'] ) );
+        } elseif ( isset( $_POST['wd4_follow_redirect'] ) ) {
+            $posted_redirect = esc_url_raw( wp_unslash( $_POST['wd4_follow_redirect'] ) );
         }
 
         if ( '' === $posted_redirect ) {
@@ -193,6 +196,170 @@ if ( ! function_exists( 'wd4_handle_frontend_profile_forms' ) ) {
 }
 
 add_action( 'init', 'wd4_handle_frontend_profile_forms' );
+
+
+
+
+
+if ( ! function_exists( 'wd4_normalize_follow_ids' ) ) {
+    function wd4_normalize_follow_ids( $ids, int $exclude_id = 0 ): array {
+        if ( ! is_array( $ids ) ) {
+            return array();
+        }
+
+        $normalized = array();
+
+        foreach ( $ids as $id ) {
+            $id = (int) $id;
+
+            if ( $id <= 0 || $id === $exclude_id ) {
+                continue;
+            }
+
+            $normalized[ $id ] = $id;
+        }
+
+        return array_values( $normalized );
+    }
+}
+
+if ( ! function_exists( 'wd4_get_following_ids' ) ) {
+    function wd4_get_following_ids( int $user_id ): array {
+        $ids = get_user_meta( $user_id, 'wd4_following', true );
+
+        return wd4_normalize_follow_ids( $ids, $user_id );
+    }
+}
+
+if ( ! function_exists( 'wd4_get_follower_ids' ) ) {
+    function wd4_get_follower_ids( int $user_id ): array {
+        $ids = get_user_meta( $user_id, 'wd4_followers', true );
+
+        return wd4_normalize_follow_ids( $ids, $user_id );
+    }
+}
+
+if ( ! function_exists( 'wd4_is_user_following' ) ) {
+    function wd4_is_user_following( int $follower_id, int $followee_id ): bool {
+        if ( $follower_id <= 0 || $followee_id <= 0 || $follower_id === $followee_id ) {
+            return false;
+        }
+
+        $following = wd4_get_following_ids( $follower_id );
+
+        return in_array( $followee_id, $following, true );
+    }
+}
+
+if ( ! function_exists( 'wd4_follow_user' ) ) {
+    function wd4_follow_user( int $follower_id, int $followee_id ): bool {
+        if ( $follower_id <= 0 || $followee_id <= 0 || $follower_id === $followee_id ) {
+            return false;
+        }
+
+        $following = wd4_get_following_ids( $follower_id );
+
+        if ( in_array( $followee_id, $following, true ) ) {
+            return true;
+        }
+
+        $following[] = $followee_id;
+
+        update_user_meta( $follower_id, 'wd4_following', wd4_normalize_follow_ids( $following, $follower_id ) );
+
+        $followers   = wd4_get_follower_ids( $followee_id );
+        $followers[] = $follower_id;
+
+        update_user_meta( $followee_id, 'wd4_followers', wd4_normalize_follow_ids( $followers, $followee_id ) );
+
+        do_action( 'wd4_user_followed', $follower_id, $followee_id );
+
+        return true;
+    }
+}
+
+if ( ! function_exists( 'wd4_unfollow_user' ) ) {
+    function wd4_unfollow_user( int $follower_id, int $followee_id ): bool {
+        if ( $follower_id <= 0 || $followee_id <= 0 || $follower_id === $followee_id ) {
+            return false;
+        }
+
+        $following = wd4_get_following_ids( $follower_id );
+
+        if ( ! in_array( $followee_id, $following, true ) ) {
+            return true;
+        }
+
+        $following = array_diff( $following, array( $followee_id ) );
+        update_user_meta( $follower_id, 'wd4_following', wd4_normalize_follow_ids( $following, $follower_id ) );
+
+        $followers = wd4_get_follower_ids( $followee_id );
+        $followers = array_diff( $followers, array( $follower_id ) );
+        update_user_meta( $followee_id, 'wd4_followers', wd4_normalize_follow_ids( $followers, $followee_id ) );
+
+        do_action( 'wd4_user_unfollowed', $follower_id, $followee_id );
+
+        return true;
+    }
+}
+
+if ( ! function_exists( 'wd4_handle_follow_requests' ) ) {
+    function wd4_handle_follow_requests(): void {
+        if ( empty( $_POST['wd4_follow_nonce'] ) || empty( $_POST['wd4_follow_user'] ) ) {
+            return;
+        }
+
+        $redirect = wd4_resolve_profile_redirect();
+        $redirect = remove_query_arg( 'wd4_follow_status', $redirect );
+
+        $status = 'error';
+
+        if ( ! is_user_logged_in() ) {
+            wp_safe_redirect( wp_login_url( $redirect ) );
+            exit;
+        }
+
+        $nonce = sanitize_text_field( wp_unslash( $_POST['wd4_follow_nonce'] ) );
+
+        if ( ! wp_verify_nonce( $nonce, 'wd4_toggle_follow' ) ) {
+            $redirect = add_query_arg( 'wd4_follow_status', $status, $redirect );
+            wp_safe_redirect( $redirect );
+            exit;
+        }
+
+        $target_id = absint( $_POST['wd4_follow_user'] );
+        $viewer_id = get_current_user_id();
+
+        if ( $target_id <= 0 || $viewer_id <= 0 || $target_id === $viewer_id ) {
+            $redirect = add_query_arg( 'wd4_follow_status', $status, $redirect );
+            wp_safe_redirect( $redirect );
+            exit;
+        }
+
+        $action = isset( $_POST['wd4_follow_action'] )
+            ? sanitize_text_field( wp_unslash( $_POST['wd4_follow_action'] ) )
+            : 'follow';
+
+        if ( 'unfollow' === $action ) {
+            $result = wd4_unfollow_user( $viewer_id, $target_id );
+            $status = $result ? 'unfollowed' : 'error';
+        } else {
+            $result = wd4_follow_user( $viewer_id, $target_id );
+            $status = $result ? 'followed' : 'error';
+        }
+
+        $redirect = add_query_arg( 'wd4_follow_status', $status, $redirect );
+
+        wp_safe_redirect( $redirect );
+        exit;
+    }
+}
+
+add_action( 'init', 'wd4_handle_follow_requests', 11 );
+
+
+
+
 
 
 
