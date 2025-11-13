@@ -1,6 +1,8 @@
 /*
  * Author profile + WooCommerce account wrapper.
  * Portfolio-style hero + HT-style list feed.
+ *
+ * Mobile-first, responsive, PageSpeed-friendly.
  */
 
 body.author .site-main.wd4-author-profile,
@@ -135,10 +137,11 @@ body.author .wd4-author-hero__content {
   position: relative;
 }
 
+/* Left: quote & stat */
+
 body.author .wd4-author-hero__testimonial {
   justify-self: start;
   max-width: clamp(200px, 28vw, 320px);
-  background: transparent;
   text-align: left;
   color: var(--wd4-profile-muted);
 }
@@ -174,12 +177,12 @@ body.author .wd4-author-hero__stat-label {
   color: var(--wd4-profile-muted);
 }
 
-/* Circle / photo */
+/* Center: circle / photo */
 
 body.author .wd4-author-hero__circle {
   position: relative;
   width: clamp(280px, 45vw, 500px);
-  height: clamp(280px, 45vw, 500px);
+  aspect-ratio: 1 / 1; /* helps CLS */
   border-radius: 50%;
   background: var(--wd4-profile-accent);
   box-shadow: var(--wd4-profile-shadow);
@@ -191,11 +194,10 @@ body.author .wd4-author-hero__circle {
 
 body.author .wd4-author-hero__circle-glow {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 50%;
   transform: translate(-50%, -50%);
   width: clamp(200px, 40vw, 400px);
-  height: clamp(200px, 40vw, 400px);
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   background: radial-gradient(
     circle,
@@ -229,6 +231,8 @@ body.author .wd4-author-hero__bio {
   text-align: center;
 }
 
+/* Decorative icons */
+
 body.author .wd4-author-hero__icon-right,
 body.author .wd4-author-hero__icon-left {
   position: absolute;
@@ -249,6 +253,8 @@ body.author .wd4-author-hero__icon-left {
   width: clamp(30px, 7vw, 50px);
   height: clamp(30px, 7vw, 50px);
 }
+
+/* Buttons */
 
 body.author .wd4-author-hero__buttons {
   position: absolute;
@@ -277,19 +283,26 @@ body.author .wd4-author-hero__btn {
   white-space: nowrap;
 }
 
-/* better contrast for primary CTA */
+/* Accessible focus outline */
+body.author .wd4-author-hero__btn:focus-visible {
+  outline: 2px solid var(--wd4-profile-outline);
+  outline-offset: 3px;
+}
+
+/* primary CTA */
 body.author .wd4-author-hero__btn--primary {
   background: #c62828;
   color: #ffffff;
 }
 
 body.author .wd4-author-hero__btn--primary:hover,
-body.author .wd4-author-hero__btn--primary:focus {
+body.author .wd4-author-hero__btn--primary:focus-visible {
   background: #b71c1c;
   transform: translateY(-2px);
   box-shadow: 0 15px 40px rgba(183, 28, 28, 0.4);
 }
 
+/* secondary CTA */
 body.author .wd4-author-hero__btn--secondary {
   background: #fff;
   color: var(--wd4-profile-outline);
@@ -297,7 +310,7 @@ body.author .wd4-author-hero__btn--secondary {
 }
 
 body.author .wd4-author-hero__btn--secondary:hover,
-body.author .wd4-author-hero__btn--secondary:focus {
+body.author .wd4-author-hero__btn--secondary:focus-visible {
   background: #f5f5f5;
   transform: translateY(-2px);
 }
@@ -310,6 +323,32 @@ body.author .wd4-author-hero__btn-icon {
   fill: none;
 }
 
+/* Flash messages in hero (follow feedback) */
+
+body.author .wd4-author-hero__flash {
+  grid-column: 1 / -1;
+  margin-top: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+body.author .wd4-author-hero__flash--success {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+body.author .wd4-author-hero__flash--error {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+body.author .wd4-author-hero__follow-form {
+  display: inline-block;
+}
+
+/* Profile notices */
 
 body.author .wd4-author-profile__notice {
   grid-column: 1 / -1;
@@ -329,6 +368,8 @@ body.author .wd4-author-profile__notice--error {
   background: #ffebee;
   color: #b71c1c;
 }
+
+/* Front-end profile form */
 
 body.author .wd4-author-profile-form {
   grid-column: 1 / -1;
@@ -386,12 +427,9 @@ body.author .wd4-author-profile-form__submit {
 }
 
 body.author .wd4-author-profile-form__submit:hover,
-body.author .wd4-author-profile-form__submit:focus {
+body.author .wd4-author-profile-form__submit:focus-visible {
   background: #d90c3c;
 }
-
-
-
 
 /* Front-end avatar upload form */
 
@@ -431,7 +469,7 @@ body.author .wd4-author-avatar-form__submit {
 }
 
 body.author .wd4-author-avatar-form__submit:hover,
-body.author .wd4-author-avatar-form__submit:focus {
+body.author .wd4-author-avatar-form__submit:focus-visible {
   background: #d5d5d5;
 }
 
@@ -557,7 +595,7 @@ body.author .wd4-author-feed .hdg3 a {
 }
 
 body.author .wd4-author-feed .hdg3 a:hover,
-body.author .wd4-author-feed .hdg3 a:focus {
+body.author .wd4-author-feed .hdg3 a:focus-visible {
   color: var(--ht-heading);
   text-decoration: underline;
 }
@@ -585,7 +623,7 @@ body.author .wd4-author-feed .cardMeta__cat {
 }
 
 body.author .wd4-author-feed .cardMeta__cat:hover,
-body.author .wd4-author-feed .cardMeta__cat:focus {
+body.author .wd4-author-feed .cardMeta__cat:focus-visible {
   color: var(--ht-primary-hover);
   text-decoration: underline;
 }
@@ -668,14 +706,14 @@ body.author .wd4-author-feed .navigation.pagination .page-numbers {
 
 body.author .wd4-author-feed .navigation.pagination .page-numbers.current,
 body.author .wd4-author-feed .navigation.pagination .page-numbers:hover,
-body.author .wd4-author-feed .navigation.pagination .page-numbers:focus {
+body.author .wd4-author-feed .navigation.pagination .page-numbers:focus-visible {
   background: var(--ht-primary);
   color: #fff;
   text-decoration: none;
 }
 
 /* ------------------------------------------------------------------
- * LIST VIEW â€“ grid, title left, image right
+ * LIST VIEW – grid, title left, image right
  * ------------------------------------------------------------------ */
 
 body.author .wd4-author-feed .cartHolder.listView {
@@ -754,7 +792,7 @@ body.author .wd4-author-feed .cartHolder.listView .cardMeta__time::before {
 }
 
 /* ------------------------------------------------------------------
- * HERO STAT BLOCK (right)
+ * HERO STAT BLOCK (right) + SUBSCRIBER CARD
  * ------------------------------------------------------------------ */
 
 body.author .wd4-author-hero__stats-right {
@@ -793,6 +831,33 @@ body.author .wd4-author-hero__experience-label {
   border-top: 3px solid var(--wd4-profile-outline);
 }
 
+/* Subscriber card – Jenny-style, no box, right aligned */
+
+body.author .wd4-author-hero__subscriber-card {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: right;
+  color: var(--wd4-profile-muted);
+}
+
+body.author .wd4-author-hero__subscriber-stars {
+  order: -1; /* stars on top */
+  display: flex;
+  gap: clamp(0.1rem, 0.5vw, 0.25rem);
+}
+
+body.author .wd4-author-hero__subscriber-level {
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--wd4-profile-text);
+}
+
+body.author .wd4-author-hero__subscriber-duration {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+}
+
 /* ------------------------------------------------------------------
  * RESPONSIVE LAYOUT
  * ------------------------------------------------------------------ */
@@ -800,12 +865,10 @@ body.author .wd4-author-hero__experience-label {
 @media (max-width: 1024px) {
   body.author .wd4-author-hero__circle {
     width: clamp(260px, 60vw, 420px);
-    height: clamp(260px, 60vw, 420px);
   }
 
   body.author .wd4-author-hero__circle-glow {
     width: clamp(200px, 50vw, 320px);
-    height: clamp(200px, 50vw, 320px);
   }
 }
 
@@ -815,7 +878,7 @@ body.author .wd4-author-hero__experience-label {
     gap: 1.5rem;
   }
 
-  /* hide testimonial on small screens, keep stats + bio */
+  /* hide testimonial on smaller screens */
   body.author .wd4-author-hero__testimonial {
     display: none;
   }
@@ -824,6 +887,17 @@ body.author .wd4-author-hero__experience-label {
     justify-self: center;
     text-align: center;
     max-width: none;
+  }
+
+  body.author .wd4-author-hero__subscriber-card {
+    justify-self: center;
+    text-align: center;
+    align-items: center;
+    max-width: min(320px, 80vw);
+  }
+
+  body.author .wd4-author-hero__subscriber-stars {
+    justify-content: center;
   }
 
   /* BIO: visible on tablet/mobile under circle */
@@ -865,7 +939,6 @@ body.author .wd4-author-hero__experience-label {
 
   body.author .wd4-author-hero__circle {
     width: clamp(200px, 80vw, 320px);
-    height: clamp(200px, 80vw, 320px);
   }
 
   body.author .wd4-author-hero__buttons {
@@ -967,7 +1040,7 @@ body.author .wd4-author-hero__circle {
   }
 }
 
-/* Mobile hero typography â€“ bigger title/subtitle, stats & bio visible */
+/* Mobile hero typography – bigger title/subtitle */
 @media (max-width: 480px) {
   body.author .wd4-author-hero__title {
     font-size: 3.8rem;
@@ -992,7 +1065,7 @@ body.author .wd4-author-hero__circle {
 }
 
 /* ------------------------------------------------------------------
- * DESKTOP HERO GRID â€“ testimonial left, circle center, stats right
+ * DESKTOP HERO GRID – testimonial left, circle center, stats/subscriber right
  * ------------------------------------------------------------------ */
 
 @media (min-width: 901px) {
@@ -1021,10 +1094,32 @@ body.author .wd4-author-hero__circle {
     max-width: clamp(200px, 24vw, 280px);
   }
 
+  /* subscriber card in the same right-hand position */
+  body.author .wd4-author-hero__subscriber-card {
+    grid-area: stats;
+    justify-self: end;
+    align-items: flex-end;
+    max-width: clamp(200px, 24vw, 280px);
+  }
+
+  body.author .wd4-author-hero__subscriber-stars {
+    justify-content: flex-end;
+  }
+
   /* items that should span full width below main row */
   body.author .wd4-author-hero__bio,
   body.author .wd4-author-hero__buttons,
   body.author .wd4-author-avatar-form {
+  }
+}
+
+/* ------------------------------------------------------------------
+ * REDUCED MOTION (PageSpeed / accessibility)
+ * ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  body.author .wd4-author-hero__btn {
+    transition: none;
   }
 }
 
@@ -1039,7 +1134,3 @@ body.woocommerce-account .woocommerce-MyAccount-content {
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
 }
-
-
-
-
