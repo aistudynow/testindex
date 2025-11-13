@@ -1,0 +1,522 @@
+/* =========================================================
+   GLOBAL RESET & TOKENS
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    color-scheme: light;
+    --wd-login-font: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+
+    --wd-login-bg: #ffffff;
+    --wd-login-text: #0f172a;
+    --wd-login-muted: #6b7280;
+
+    --wd-login-primary: #4f46e5;
+    --wd-login-primary-hover: #4338ca;
+    --wd-login-outline: rgba(79, 70, 229, 0.18);
+
+    --wd-login-divider: rgba(148, 163, 184, 0.45);
+    --wd-login-field-border: #e5e7eb;
+    --wd-login-field-border-focus: rgba(79, 70, 229, 0.45);
+     --wd-login-bg: #f8fafc;            /* page background slightly darker than pure white */
+    --wd-login-field-border: #d1d5db;  
+}
+
+/* =========================================================
+   PAGE LAYOUT (NO SCROLL ON DESKTOP)
+   ========================================================= */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body.wd-login-page,
+body.wd4-login-template {
+    min-height: 100vh;
+    background: var(--wd-login-bg);
+    font-family: var(--wd-login-font);
+    background: var(--wd-login-bg);
+    color: var(--wd-login-text);
+}
+
+/* hide theme header/footer/etc */
+body.wd-login-page #site-header,
+body.wd4-login-template #site-header,
+body.wd-login-page .header-wrap,
+body.wd4-login-template .header-wrap,
+body.wd-login-page .footer-wrap,
+body.wd4-login-template .footer-wrap,
+body.wd-login-page .site-outer > .footer-inner,
+body.wd4-login-template .site-outer > .footer-inner {
+    display: none !important;
+}
+
+body.wd-login-page .site-outer,
+body.wd4-login-template .site-outer {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* main container – full width, center content, no theme max-width */
+body.wd-login-page main.site-main.wd-login,
+body.wd4-login-template main.site-main.wd-login {
+    flex: 1 1 auto;
+    min-height: 100vh;
+    width: 100%;
+    max-width: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    margin: 0;
+}
+
+/* =========================================================
+   LOGIN COLUMN (WIDER)
+   ========================================================= */
+
+.wd-login__container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.wd-login__card {
+    width: 100%;
+    max-width: 780px;           /* << big column width */
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.wd-login__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* visually show title first even though subtitle comes first in HTML */
+.wd-login__title {
+    order: 0;
+    margin: 0;
+    font-size: clamp(2.2rem, 3.3vw, 2.8rem);
+    font-weight: 700;
+    color: var(--wd-login-text);
+}
+
+.wd-login__subtitle {
+    order: 1;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--wd-login-muted);
+}
+
+.wd-login__intro {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--wd-login-muted);
+    line-height: 1.6;
+}
+
+.wd-login__intro :where(p, ul, ol) {
+    margin: 0;
+}
+
+.wd-login__intro :where(p + p) {
+    margin-top: 0.75rem;
+}
+
+/* =========================================================
+   LOGGED-IN STATE
+   ========================================================= */
+
+.wd-login__status {
+    display: grid;
+    gap: 1.4rem;
+}
+
+.wd-login__status p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.wd-login__actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.wd-login__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.75rem 1.6rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+        color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wd-login__button--primary {
+    background: var(--wd-login-primary);
+    color: #ffffff;
+}
+
+.wd-login__button--primary:hover,
+.wd-login__button--primary:focus-visible {
+    background: var(--wd-login-primary-hover);
+}
+
+.wd-login__button--ghost {
+    background: transparent;
+    color: var(--wd-login-primary);
+    border-color: var(--wd-login-outline);
+}
+
+.wd-login__button--ghost:hover,
+.wd-login__button--ghost:focus-visible {
+    border-color: var(--wd-login-primary);
+    color: var(--wd-login-primary-hover);
+}
+
+/* =========================================================
+   GOOGLE BUTTONS
+   ========================================================= */
+
+.wd-login__social {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.wd-login__google-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.3rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--wd-login-text);
+    background: #ffffff;
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    background: #f9fafb;
+    border-color: var(--wd-login-field-border);
+}
+
+.wd-login__google-btn:hover,
+.wd-login__google-btn:focus-visible {
+    border-color: var(--wd-login-outline);
+    box-shadow: 0 10px 25px -18px rgba(15, 23, 42, 0.55);
+    transform: translateY(-1px);
+}
+
+.wd-login__google-btn--outline {
+    background: #ffffff;
+}
+
+.wd-login__google-icon {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+}
+
+.wd-login__google-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.wd-login__google-label {
+    font-size: 0.95rem;
+}
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.wd-login__divider {
+    position: relative;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--wd-login-muted);
+}
+
+.wd-login__divider span {
+    position: relative;
+    display: inline-block;
+    padding: 0 0.75rem;
+    background: var(--wd-login-bg);
+    z-index: 1;
+}
+
+.wd-login__divider::before {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--wd-login-divider);
+    transform: translateY(-50%);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.wd-login__form form {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.wd-login__form .login-username,
+.wd-login__form .login-password,
+.wd-login__form .login-remember,
+.wd-login__form .login-submit {
+    margin: 0;
+}
+
+.wd-login__form label {
+    display: grid;
+    gap: 0.4rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--wd-login-text);
+}
+
+/* inputs */
+
+.wd-login__form input[type="text"],
+.wd-login__form input[type="password"] {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--wd-login-field-border);
+    padding: 0.9rem 1.05rem;
+    font-size: 0.95rem;
+    background: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #f9fafb;
+    border-color: var(--wd-login-field-border);
+}
+
+.wd-login__form input[type="text"]:focus,
+.wd-login__form input[type="password"]:focus {
+    outline: none;
+    border-color: var(--wd-login-field-border-focus);
+    box-shadow: 0 0 0 3px var(--wd-login-outline);
+}
+
+/* remember line */
+
+.wd-login__form .login-remember {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--wd-login-muted);
+}
+
+.wd-login__form input[type="checkbox"] {
+    width: 1.05rem;
+    height: 1.05rem;
+    accent-color: var(--wd-login-primary);
+    border-radius: 0.35rem;
+}
+
+/* submit */
+
+.wd-login__form .login-submit {
+    margin-top: 1rem;
+}
+
+.wd-login__form .login-submit input[type="submit"] {
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    padding: 0.95rem 1.5rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+    background: var(--wd-login-primary);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.wd-login__form .login-submit input[type="submit"]:hover,
+.wd-login__form .login-submit input[type="submit"]:focus-visible {
+    background: var(--wd-login-primary-hover);
+    box-shadow: 0 18px 35px -22px rgba(79, 70, 229, 0.55);
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   EXTRA LINKS (Forgot / Register)
+   ========================================================= */
+
+.wd-login__extras {
+    margin-top: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+}
+
+.wd-login__link {
+    color: var(--wd-login-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.wd-login__link:hover,
+.wd-login__link:focus-visible {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+
+#login_error,
+.login .message,
+.wd-login__form #login_error,
+.wd-login__form .message {
+    margin: 0 0 1rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    background: rgba(248, 113, 113, 0.08);
+    color: #b91c1c;
+}
+
+.login .message,
+.wd-login__form .message {
+    border-color: rgba(79, 70, 229, 0.2);
+    background: rgba(79, 70, 229, 0.08);
+    color: var(--wd-login-primary);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+    body.wd-login-page main.site-main.wd-login,
+    body.wd4-login-template main.site-main.wd-login {
+        align-items: flex-start;
+        padding-top: 3.25rem;
+        padding-bottom: 2.5rem;
+        min-height: 100vh;
+    }
+
+    .wd-login__card {
+        max-width: 100%;
+    }
+}
+
+
+
+/* generic styling for ALL forms on the login page
+   (login, register, forgot) */
+
+.wd-login__form form {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.wd-login__form form p {
+    margin: 0;
+}
+
+.wd-login__form label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--wd-login-text);
+}
+
+.wd-login__form input[type="text"],
+.wd-login__form input[type="password"],
+.wd-login__form input[type="email"] {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--wd-login-field-border);
+    padding: 0.9rem 1.05rem;
+    font-size: 0.95rem;
+    background: #f9fafb;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wd-login__form input[type="text"]:focus,
+.wd-login__form input[type="password"]:focus,
+.wd-login__form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--wd-login-field-border-focus);
+    box-shadow: 0 0 0 3px var(--wd-login-outline);
+}
+
+.wd-login__form .login-submit {
+    margin-top: 1rem;
+}
+
+.wd-login__form .login-submit input[type="submit"] {
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    padding: 0.95rem 1.5rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+    background: var(--wd-login-primary);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.wd-login__topbar {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.wd-login__back {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--wd-login-primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.wd-login__back:hover,
+.wd-login__back:focus-visible {
+    text-decoration: underline;
+}
+

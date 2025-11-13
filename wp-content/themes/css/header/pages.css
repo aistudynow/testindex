@@ -1,0 +1,500 @@
+/*
+ * Layout and typography for static pages.
+ * Mirrors the single-post canvas spacing so standalone pages
+ * inherit the same reading width as the front page grid.
+ */
+
+:where(body.page, body.page-template-default) {
+  --rb-width: 100%;
+}
+
+@media (min-width: 768px) {
+  :where(body.page, body.page-template-default) {
+    --rb-width: calc(min(94vw, 960px) - 40px);
+  }
+}
+
+@media (min-width: 1024px) {
+  :where(body.page, body.page-template-default) {
+    --rb-width: calc(min(90vw, 1120px) - 40px);
+  }
+}
+
+@media (min-width: 1100px) {
+  :where(body.page, body.page-template-default) {
+    --rb-width: calc(min(84vw, 1200px) - 40px);
+  }
+}
+
+:where(body.page, body.page-template-default) .rb-container,
+:where(body.page, body.page-template-default) .rb-s-container {
+  position: static;
+  display: block;
+  width: 100%;
+  max-width: var(--rb-width, 1280px);
+  margin-inline: auto;
+}
+
+:where(body.page, body.page-template-default) .page-header.page-header-1 {
+  width: min(100%, calc(var(--rb-width, 1240px) + 40px));
+  margin-inline: auto;
+  padding: clamp(1.5rem, 1.2rem + 1vw, 2.5rem) 20px 0;
+  box-sizing: border-box;
+}
+
+:where(body.page, body.page-template-default) .page-header.page-header-1 .page-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+:where(body.page, body.page-template-default) .page-header.page-header-1 .s-title {
+  margin: 0;
+  text-align: center;
+  font-family: var(--h1-family, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
+  font-weight: var(--h1-fweight, 700);
+  font-size: clamp(2.25rem, 1.9rem + 1.1vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: var(--h1-fspace, -0.02em);
+  color: var(--heading-fcolor, #04102f);
+}
+
+:where(body.page, body.page-template-default) .grid-container {
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  width: min(100%, calc(var(--rb-width, 1240px) + 40px));
+  margin-inline: auto;
+  padding-inline: 20px;
+  padding-block: clamp(2rem, 1.5rem + 1vw, 3rem);
+  box-sizing: border-box;
+}
+
+:where(body.page, body.page-template-default) .grid-container > * {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1025px) {
+  :where(body.page, body.page-template-default) .grid-container {
+    width: min(100%, calc(var(--rb-width, 1240px) + 60px));
+    padding-inline: 30px;
+  }
+
+  :where(body.page, body.page-template-default) .page-header.page-header-1 {
+    width: min(100%, calc(var(--rb-width, 1240px) + 60px));
+    padding-inline: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  :where(body.page, body.page-template-default) .grid-container {
+    width: 100%;
+    padding-inline: 0;
+  }
+
+  :where(body.page, body.page-template-default) .page-header.page-header-1 {
+    padding-inline: 16px;
+  }
+}
+
+
+:where(body.page, body.page-template-default) .s-ct {
+  color: var(--body-fcolor, #04102f);
+}
+
+:where(body.page, body.page-template-default) .s-ct-inner {
+  background: var(--solid-white, #ffffff);
+  border-radius: clamp(12px, 10px + 0.5vw, 18px);
+  box-shadow: 0 18px 36px var(--shadow-12, rgba(4, 16, 47, 0.08));
+  padding: clamp(1.75rem, 1.5rem + 0.75vw, 2.75rem);
+}
+
+:where(body.page, body.page-template-default) .s-ct .s-title {
+  display: block;
+  width: 100%;
+  margin: 0 auto clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+  text-align: center;
+  font-family: var(--h1-family, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
+  font-weight: var(--h1-fweight, 700);
+  font-size: clamp(2.25rem, 1.9rem + 1.2vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: var(--h1-fspace, -0.02em);
+  color: var(--heading-fcolor, #04102f);
+}
+
+:where(body.page, body.page-template-default) .entry-content {
+  display: grid;
+  gap: clamp(1.4rem, 1.2rem + 0.5vw, 2.1rem);
+  font-size: clamp(1rem, 0.98rem + 0.1vw, 1.12rem);
+  line-height: 1.75;
+  font-family: var(--body-family, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
+  color: inherit;
+}
+
+:where(body.page, body.page-template-default) .entry-content > * {
+  margin: 0;
+}
+
+:where(body.page, body.page-template-default) .entry-content > :first-child {
+  margin-top: 0;
+}
+
+:where(body.page, body.page-template-default) .entry-content p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+:where(body.page, body.page-template-default) .entry-content p:empty {
+  display: none;
+}
+
+:where(body.page, body.page-template-default) .entry-content a:not(.wp-block-button__link) {
+  color: var(--g-color, #0066ff);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 65%, transparent);
+  text-underline-offset: 0.22em;
+  transition: var(--effect, all 0.2s ease);
+}
+
+:where(body.page, body.page-template-default) .entry-content a:not(.wp-block-button__link):hover,
+:where(body.page, body.page-template-default) .entry-content a:not(.wp-block-button__link):focus-visible {
+  color: var(--g-color-90, #004dcc);
+  text-decoration-color: currentColor;
+}
+
+:where(body.page, body.page-template-default) .entry-content h1,
+:where(body.page, body.page-template-default) .entry-content h2,
+:where(body.page, body.page-template-default) .entry-content h3,
+:where(body.page, body.page-template-default) .entry-content h4,
+:where(body.page, body.page-template-default) .entry-content h5,
+:where(body.page, body.page-template-default) .entry-content h6 {
+  font-family: var(--heading-family, "Segoe UI", "Helvetica Neue", Arial, sans-serif);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--heading-fcolor, #04102f);
+  letter-spacing: var(--heading-fspace, -0.02em);
+}
+
+:where(body.page, body.page-template-default) .entry-content h2 {
+  font-size: clamp(1.75rem, 1.55rem + 0.8vw, 2.35rem);
+}
+
+:where(body.page, body.page-template-default) .entry-content h3 {
+  font-size: clamp(1.35rem, 1.25rem + 0.5vw, 1.8rem);
+}
+
+:where(body.page, body.page-template-default) .entry-content h4 {
+  font-size: clamp(1.15rem, 1.05rem + 0.35vw, 1.4rem);
+}
+
+:where(body.page, body.page-template-default) .entry-content h2,
+:where(body.page, body.page-template-default) .entry-content h3,
+:where(body.page, body.page-template-default) .entry-content h4,
+:where(body.page, body.page-template-default) .entry-content h5,
+:where(body.page, body.page-template-default) .entry-content h6 {
+  margin-top: clamp(1rem, 0.8rem + 0.8vw, 1.75rem);
+}
+
+:where(body.page, body.page-template-default) .entry-content ul,
+:where(body.page, body.page-template-default) .entry-content ol {
+  display: grid;
+  gap: 0.65em;
+  padding-left: 1.25em;
+}
+
+:where(body.page, body.page-template-default) .entry-content li {
+  padding-left: 0.15em;
+}
+
+:where(body.page, body.page-template-default) .entry-content li + li {
+  margin-top: 0;
+}
+
+:where(body.page, body.page-template-default) .entry-content blockquote {
+  margin: 0;
+  padding: clamp(1.25rem, 1rem + 0.5vw, 1.75rem);
+  border-left: 4px solid var(--g-color, #0066ff);
+  border-radius: var(--round-5, 8px);
+  background: color-mix(in srgb, var(--g-color, #0066ff) 8%, transparent);
+  font-style: italic;
+}
+
+:where(body.page, body.page-template-default) .entry-content figure {
+  margin: 0;
+}
+
+:where(body.page, body.page-template-default) .entry-content img,
+:where(body.page, body.page-template-default) .entry-content video,
+:where(body.page, body.page-template-default) .entry-content iframe {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  border-radius: clamp(10px, 8px + 0.4vw, 16px);
+}
+
+:where(body.page, body.page-template-default) .entry-content .wp-block-image figcaption,
+:where(body.page, body.page-template-default) .entry-content figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.95em;
+  color: color-mix(in srgb, var(--body-fcolor, #04102f) 70%, transparent);
+  text-align: center;
+}
+
+:where(body.page, body.page-template-default) .entry-content .wp-block-embed,
+:where(body.page, body.page-template-default) .entry-content .wp-block-video,
+:where(body.page, body.page-template-default) .entry-content .wp-block-image,
+:where(body.page, body.page-template-default) .entry-content .vdo-wrap,
+:where(body.page, body.page-template-default) .entry-content vdo,
+:where(body.page, body.page-template-default) .entry-content .vdo_video_unit {
+  border-radius: clamp(10px, 8px + 0.4vw, 16px);
+  overflow: hidden;
+  background: #000;
+}
+
+:where(body.page, body.page-template-default) .entry-content .wp-block-embed iframe,
+:where(body.page, body.page-template-default) .entry-content .wp-block-video video,
+:where(body.page, body.page-template-default) .entry-content .vdo-wrap iframe,
+:where(body.page, body.page-template-default) .entry-content vdo iframe,
+:where(body.page, body.page-template-default) .entry-content vdo video {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+:where(body.page, body.page-template-default) .entry-content .wp-embed-responsive .wp-block-embed__wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+:where(body.page, body.page-template-default) .entry-content .wp-embed-responsive .wp-block-embed__wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+:where(body.page, body.page-template-default) .entry-content table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: var(--round-5, 8px);
+}
+
+:where(body.page, body.page-template-default) .entry-content table th,
+:where(body.page, body.page-template-default) .entry-content table td {
+  padding: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--body-fcolor, #04102f) 10%, transparent);
+  text-align: left;
+}
+
+:where(body.page, body.page-template-default) .entry-content .clearfix::before,
+:where(body.page, body.page-template-default) .entry-content .clearfix::after {
+  content: "";
+  display: table;
+}
+
+:where(body.page, body.page-template-default) .entry-content .clearfix::after {
+  clear: both;
+}
+
+:where(body.page, body.page-template-default) .entry-content .aligncenter {
+  margin-inline: auto;
+}
+
+:where(body.page, body.page-template-default) .entry-content .alignleft {
+  float: left;
+  margin: 0.25rem 1.5rem 1rem 0;
+  max-width: min(50%, 320px);
+}
+
+:where(body.page, body.page-template-default) .entry-content .alignright {
+  float: right;
+  margin: 0.25rem 0 1rem 1.5rem;
+  max-width: min(50%, 320px);
+}
+
+@media (max-width: 767px) {
+  :where(body.page, body.page-template-default) .entry-content .alignleft,
+  :where(body.page, body.page-template-default) .entry-content .alignright {
+    float: none;
+    margin: 1rem 0;
+    max-width: 100%;
+  }
+}
+
+:where(body.page, body.page-template-default) .entry-content hr {
+  border: none;
+  height: 1px;
+  background: color-mix(in srgb, var(--body-fcolor, #04102f) 15%, transparent);
+}
+
+:where(body.page, body.page-template-default) .entry-content code,
+:where(body.page, body.page-template-default) .entry-content pre {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.95em;
+  background: color-mix(in srgb, #1e293b 7%, transparent);
+  border-radius: var(--round-3, 6px);
+}
+
+:where(body.page, body.page-template-default) .entry-content code {
+  padding: 0.15em 0.4em;
+}
+
+:where(body.page, body.page-template-default) .entry-content pre {
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+
+:where(body.page, body.page-template-default) .entry-content .wp-block-columns {
+  display: grid;
+  gap: clamp(1.25rem, 1rem + 0.6vw, 1.75rem);
+}
+
+@media (min-width: 782px) {
+  :where(body.page, body.page-template-default) .entry-content .wp-block-columns {
+    grid-auto-flow: column;
+  }
+}
+
+:where(body.page, body.page-template-default) .entry-content .wp-block-column > * + * {
+  margin-top: 1rem;
+}
+
+:where(body.page, body.page-template-default) .entry-content .vdo-wrap.is-floating {
+  position: static !important;
+}
+
+/*
+ * Contact Form 7 styling for static pages
+ * Keeps the contact form aligned with the page card aesthetic
+ */
+:where(body.page, body.page-template-default) .wpcf7 {
+  margin-top: clamp(1.75rem, 1.2rem + 1vw, 2.5rem);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form {
+  display: grid;
+  gap: clamp(1.25rem, 1rem + 0.6vw, 1.75rem);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .input-col-1 {
+  display: grid;
+  gap: 0.45rem;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--heading-fcolor, #04102f) 92%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-form-control {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--body-fcolor, #04102f) 14%, transparent);
+  border-radius: 10px;
+  background: rgba(244, 247, 252, 0.55);
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form textarea.wpcf7-form-control {
+  min-height: clamp(9.5rem, 8.5rem + 3vw, 12rem);
+  resize: vertical;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-form-control:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--g-color, #0066ff) 78%, transparent);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--g-color, #0066ff) 18%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-not-valid {
+  border-color: #f97316;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #f97316 45%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .is-meta,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-not-valid-tip {
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--body-fcolor, #04102f) 55%, transparent);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-not-valid-tip {
+  color: #f97316;
+  margin-top: 0.15rem;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"],
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: fit-content;
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--g-color, #0066ff), #1f51ff);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"]:hover,
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"]:focus-visible,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit:hover,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit:focus-visible {
+  outline: none;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(31, 81, 255, 0.2);
+  filter: brightness(1.05);
+}
+
+:where(body.page, body.page-template-default) .wpcf7-form input[type="submit"]:active,
+:where(body.page, body.page-template-default) .wpcf7-form .wpcf7-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(31, 81, 255, 0.18);
+}
+
+:where(body.page, body.page-template-default) .wpcf7 .wpcf7-response-output {
+  margin: 0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--body-fcolor, #04102f) 12%, transparent);
+  background: rgba(248, 250, 255, 0.85);
+  font-size: 0.95rem;
+}
+
+:where(body.page, body.page-template-default) .wpcf7 .wpcf7-spinner {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  :where(body.page, body.page-template-default) .wpcf7-form {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  :where(body.page, body.page-template-default) .wpcf7-form .input-col-1.is-input-border:nth-last-of-type(1) {
+    grid-column: 1 / -1;
+  }
+
+  :where(body.page, body.page-template-default) .wpcf7-form textarea.wpcf7-form-control {
+    min-height: clamp(10.5rem, 9.5rem + 3vw, 14rem);
+  }
+}
